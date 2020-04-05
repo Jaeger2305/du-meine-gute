@@ -4,8 +4,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/Jaeger2305/du-meine-gute/handlers"
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 )
 
 func main() {
@@ -16,7 +19,15 @@ func main() {
 
 	log.Printf("Running on port %s\n", httpPort)
 
-	http.HandleFunc("/", handlers.GetGames)
-	http.HandleFunc("/status", handlers.GetStatus)
-	log.Fatal(http.ListenAndServe(":"+httpPort, nil))
+	router := chi.NewRouter()
+
+	router.Use(middleware.RequestID)
+	router.Use(middleware.Logger)
+	router.Use(middleware.Recoverer)
+	router.Use(middleware.Timeout(60 * time.Second))
+
+	router.Get("/", handlers.GetGames)
+	router.Get("/status", handlers.GetStatus)
+
+	log.Fatal(http.ListenAndServe(":"+httpPort, router))
 }
