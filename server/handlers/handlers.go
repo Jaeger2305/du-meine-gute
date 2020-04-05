@@ -3,7 +3,10 @@ package handlers
 import (
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
+
+	"github.com/gorilla/websocket"
 )
 
 // Game - represents the state of an individual game.
@@ -27,6 +30,43 @@ func JoinGame(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(joinedGame)
+}
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
+
+// GetLive websocket connection
+func GetLive(w http.ResponseWriter, r *http.Request) {
+	connection, err := upgrader.Upgrade(w, r, nil)
+	defer connection.Close()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	for {
+		_, p, err := connection.ReadMessage()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		response, err := RouteIncomingMessage(string(p))
+		if err != nil {
+			log.Println(err)
+		}
+		log.Println(response)
+		_, outgoingMessage, err := RouteOutgoingMessage(string(response))
+		if err != nil {
+			log.Println(err)
+		}
+		if outgoingMessage != "" {
+			if err := connection.WriteMessage(websocket.TextMessage, []byte(outgoingMessage)); err != nil {
+				log.Println(err)
+				return
+			}
+		}
+	}
 }
 
 // GetGames get all active games

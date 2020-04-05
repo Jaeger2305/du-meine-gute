@@ -4,10 +4,15 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 	"testing"
+
+	"github.com/go-chi/chi"
+	"github.com/gorilla/websocket"
 )
 
 // TestServeFiles returns the index.html
+// This is fragile, and will be refactored when we set up Vue clientside
 func TestServeFiles(t *testing.T) {
 	req, err := http.NewRequest("GET", "/", nil)
 	if err != nil {
@@ -29,6 +34,28 @@ func TestServeFiles(t *testing.T) {
     <form action="/games/join" method="post">
       <button type="submit">Join game</button>
     </form>
+    <input id="message-detail">Send message</input>
+    <button id="send-message">Send message</button>
+    <script>
+      // Create WebSocket connection.
+      const socket = new WebSocket('ws://localhost:4444/games/live');
+
+      // Connection opened
+      socket.addEventListener('open', function (event) {
+          socket.send('status');
+      });
+
+      // Listen for messages
+      socket.addEventListener('message', function (event) {
+          console.log('Message from server ', event.data);
+      });
+
+      const messageDetailButton = document.getElementById('message-detail');
+      const sendMessageButton = document.getElementById('send-message');
+      sendMessageButton.addEventListener('click', () => {
+        socket.send(messageDetailButton.value)
+      });
+    </script>
   </body>
 </html>`
 	if res.Body.String() != expected {
@@ -101,5 +128,24 @@ func TestGetStatus(t *testing.T) {
 	if res.Body.String() != expected {
 		t.Errorf("handler returned unexpected body: got %v want %v",
 			res.Body.String(), expected)
+	}
+}
+
+func TestGetLive(t *testing.T) {
+	router := chi.NewRouter()
+	router.Get("/games/live", GetLive)
+	server := httptest.NewServer(router)
+	defer server.Close()
+
+	wsURL := "ws" + strings.TrimPrefix(server.URL, "http") + "/games/live"
+
+	ws, _, err := websocket.DefaultDialer.Dial(wsURL, nil)
+	if err != nil {
+		t.Fatalf("could not open a ws connection on %s %v", wsURL, err)
+	}
+	defer ws.Close()
+
+	if err := ws.WriteMessage(websocket.TextMessage, []byte("success")); err != nil {
+		t.Fatalf("could not send message over ws connection %v", err)
 	}
 }

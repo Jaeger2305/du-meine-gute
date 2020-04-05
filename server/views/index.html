@@ -5,5 +5,27 @@
     <form action="/games/join" method="post">
       <button type="submit">Join game</button>
     </form>
+    <input id="message-detail">Send message</input>
+    <button id="send-message">Send message</button>
+    <script>
+      // Create WebSocket connection.
+      const socket = new WebSocket('ws://localhost:4444/games/live');
+
+      // Connection opened
+      socket.addEventListener('open', function (event) {
+          socket.send('status');
+      });
+
+      // Listen for messages
+      socket.addEventListener('message', function (event) {
+          console.log('Message from server ', event.data);
+      });
+
+      const messageDetailButton = document.getElementById('message-detail');
+      const sendMessageButton = document.getElementById('send-message');
+      sendMessageButton.addEventListener('click', () => {
+        socket.send(messageDetailButton.value)
+      });
+    </script>
   </body>
 </html>

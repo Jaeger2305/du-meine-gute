@@ -21,15 +21,18 @@ func main() {
 
 	router := chi.NewRouter()
 
+	// Middleware setup
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.Timeout(60 * time.Second))
 
+	// REST API
 	router.Get("/", handlers.ServeFiles)
 	router.Get("/games", handlers.GetGames)
 	router.Post("/games/join", handlers.JoinGame)
 	router.Get("/status", handlers.GetStatus)
+	router.Get("/games/live", handlers.GetLive)
 
 	log.Fatal(http.ListenAndServe(":"+httpPort, router))
 }
