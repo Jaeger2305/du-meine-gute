@@ -26,7 +26,9 @@ func main() {
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.Timeout(60 * time.Second))
 
-	router.Get("/", handlers.GetGames)
+	router.Get("/", handlers.ServeFiles)
+	router.Get("/games", handlers.GetGames)
+	router.Post("/games/join", handlers.JoinGame)
 	router.Get("/status", handlers.GetStatus)
 
 	log.Fatal(http.ListenAndServe(":"+httpPort, router))

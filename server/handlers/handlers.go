@@ -11,6 +11,24 @@ type Game struct {
 	Name string `json:"name"`
 }
 
+// ServeFiles from the static/views directory - useful for sending plain HTML to visualize content.
+func ServeFiles(w http.ResponseWriter, r *http.Request) {
+	p := "." + r.URL.Path
+	if p == "./" {
+		p = "./views/index.html"
+	}
+	http.ServeFile(w, r, p)
+}
+
+// JoinGame get all active games
+func JoinGame(w http.ResponseWriter, r *http.Request) {
+	joinedGame := Game{
+		Name: "test-game-1",
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(joinedGame)
+}
+
 // GetGames get all active games
 func GetGames(w http.ResponseWriter, r *http.Request) {
 	games := [2]Game{
