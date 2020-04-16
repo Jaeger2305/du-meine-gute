@@ -1,13 +1,56 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"io"
 	"log"
 	"net/http"
+	"time"
 
+	gameRepository "github.com/Jaeger2305/du-meine-gute/repository"
+	"github.com/Jaeger2305/du-meine-gute/storage"
+	models "github.com/Jaeger2305/du-meine-gute/storage/models"
 	"github.com/gorilla/websocket"
+	"go.mongodb.org/mongo-driver/bson"
 )
+
+// Error represents a handler error. It provides methods for a HTTP status
+// code and embeds the built-in error interface.
+type Error interface {
+	error
+	Status() int
+}
+
+// StatusError represents an error with an associated HTTP status code.
+type StatusError struct {
+	Code int
+	Err  error
+}
+
+// Error adapted to satisfy the status error interface.
+func (se StatusError) Error() string {
+	return se.Err.Error()
+}
+
+// Status adapted for the HTTP status code.
+func (se StatusError) Status() int {
+	return se.Code
+}
+
+// Env the application-wide configuration
+type Env struct {
+	DB   storage.ClientHelper
+	Port string
+	Host string
+}
+
+// HandlerFunc is the struct that takes a configured Env and a function matching
+// our useful signature.
+type HandlerFunc struct {
+	*Env
+	H func(e *Env, w http.ResponseWriter, r *http.Request) error
+}
 
 // Game - represents the state of an individual game.
 type Game struct {
@@ -70,13 +113,40 @@ func GetLive(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetGames get all active games
-func GetGames(w http.ResponseWriter, r *http.Request) {
-	games := [2]Game{
-		{Name: "test-game-1"},
-		{Name: "test-game-2"},
+func GetGames(client storage.ClientHelper) http.HandlerFunc {
+	// gamesCollection := db.Database("du-meine-gute").Collection("games")
+	gameStore := gameRepository.GetGameStore(client.Database("du-meine-gute"))
+	// gamesCollection.InsertOne(context.TODO(), storage.Simple{
+	// 	Name: "test-game-1",
+	// 	State: storage.Card{
+	// 		Name: "nested",
+	// 		Type: "dssd",
+	// 	},
+	// })
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		shortTimeoutContext, cancelGetGames := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancelGetGames()
+		// gamesCursor, _ := gamesCollection.Find(shortTimeoutContext, bson.D{})
+		// defer gamesCursor.Close(shortTimeoutContext)
+
+		var games []models.Test
+		// for gamesCursor.Next(shortTimeoutContext) {
+		// 	game := models.Test{}
+		// 	err := gamesCursor.Decode(&game)
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+		// 	games = append(games, game)
+		// }
+		game, err := gameStore.FindOne(shortTimeoutContext, bson.D{})
+		if err != nil {
+			log.Fatal(err)
+		}
+		games = append(games, *game)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(games)
 	}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(games)
+	return http.HandlerFunc(fn)
 }
 
 // GetStatus check the status of the server by returning a json alive string.
