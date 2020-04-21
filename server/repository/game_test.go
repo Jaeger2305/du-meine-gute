@@ -10,7 +10,7 @@ import (
 	models "github.com/Jaeger2305/du-meine-gute/storage/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -19,7 +19,7 @@ type MongoClient struct {
 }
 
 type DatabaseHelper struct {
-	mock.Mock
+	db mock.Mock
 }
 
 type CollectionHelper struct {
@@ -48,7 +48,7 @@ func (mockClient *MongoClient) Disconnect(context context.Context) error {
 }
 
 func (mockDatabase *DatabaseHelper) Collection(collectionName string) storage.CollectionHelper {
-	mockDatabase.Called(collectionName)
+	mockDatabase.db.Called(collectionName)
 	return new(CollectionHelper)
 }
 
@@ -105,22 +105,22 @@ func TestFindOne(t *testing.T) {
 		})
 
 	collectionHelper.(*CollectionHelper).
-		On("FindOne", context.Background(), bson.M{"error": true}).
+		On("FindOne", context.Background(), primitive.M{"error": true}).
 		Return(srHelperErr)
 
 	collectionHelper.(*CollectionHelper).
-		On("FindOne", context.Background(), bson.M{"error": false}).
+		On("FindOne", context.Background(), primitive.M{"error": false}).
 		Return(srHelperCorrect)
 
-	dbHelper.(*DatabaseHelper).
+	dbHelper.(*DatabaseHelper).db.
 		On("Collection", "games").Return(collectionHelper)
 
 	// Create new database with mocked Database interface
-	// gameDba := GetGameStore(dbHelper)
+	gameStore := GetGameStore(dbHelper)
 
 	// Call method with defined filter, that in our mocked function returns
 	// mocked-error
-	game := collectionHelper.FindOne(context.Background(), bson.M{"error": true})
+	game, _ := gameStore.FindOne(context.Background(), primitive.M{"error": true})
 
 	assert.Empty(t, game)
 	// assert.EqualError(t, err, "mocked-error")
