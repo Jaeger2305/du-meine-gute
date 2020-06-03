@@ -1,5 +1,7 @@
 # Getting started
 
+Copy the default.env.template and remove the template extension. This contains sensible defaults for local development.
+
 This builds and runs the main server, starting on port 4444 by default.
 
 `go run ./cmd`
