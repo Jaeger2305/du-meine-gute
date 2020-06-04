@@ -18,7 +18,7 @@ func main() {
 	setupConfig()
 	httpPort := viper.GetString("DMG_PORT")
 
-	client := storage.NewClient(mongo.Connect)
+	client := storage.NewClient(mongo.Connect, viper.GetString("DMG_CONNECTION_STRING"))
 	// defer client.Disconnect(context.background())
 
 	router := chi.NewRouter()

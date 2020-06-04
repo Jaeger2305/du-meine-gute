@@ -78,9 +78,9 @@ func (sr *mongoSingleResult) Decode(v interface{}) error {
 }
 
 // NewClient retrieves a DB connection to a mongo instance.
-func NewClient(ctr connector) ClientHelper {
+func NewClient(ctr connector, connectionString string) ClientHelper {
 	// Set client options
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	clientOptions := options.Client().ApplyURI(connectionString)
 
 	// Connect to MongoDB
 	connectContext, cancelConnectAttempt := context.WithTimeout(context.Background(), 10*time.Second)
