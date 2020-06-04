@@ -7,6 +7,11 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/mock"
+
+	"github.com/Jaeger2305/du-meine-gute/mocks"
+	"github.com/Jaeger2305/du-meine-gute/storage"
+	models "github.com/Jaeger2305/du-meine-gute/storage/models"
 	"github.com/go-chi/chi"
 	"github.com/gorilla/websocket"
 )
@@ -87,14 +92,46 @@ func TestJoinGame(t *testing.T) {
 	}
 }
 
+var mockClient storage.ClientHelper
+var mockDb storage.DatabaseHelper
+var mockCollection storage.CollectionHelper
+var srHelperExample storage.SingleResultHelper
+
 func TestGetGames(t *testing.T) {
+	// Because we're not using an object and accessing its methods, the whole structure needs to be mocked at the moment.
+	mockClient = &mocks.MongoClient{}
+	mockDb = &mocks.MockDatabase{}
+	mockCollection = &mocks.CollectionHelper{}
+	srHelperExample = &mocks.SingleResultHelper{}
+	mockDb.(*mocks.MockDatabase).Db.
+		On("Collection", "games").Return(mockCollection)
+	mockClient.(*mocks.MongoClient).
+		On("Database", "du-meine-gute").Return(mockDb)
+	mockCollection.(*mocks.CollectionHelper).
+		On("FindOne", mock.Anything, mock.Anything).
+		Return(srHelperExample)
+	srHelperExample.(*mocks.SingleResultHelper).
+		On("Decode", mock.AnythingOfType("*storage.Test")).
+		Return(nil).
+		Run(func(args mock.Arguments) {
+			arg := args.Get(0).(*models.Test)
+			arg.Name = "test-game-1"
+		})
+	// srHelperExample.(*mocks.SingleResultHelper).
+	// 	On("Decode", mock.AnythingOfType("*storage.Test")).
+	// 	Return(nil).
+	// 	Run(func(args mock.Arguments) {
+	// 		arg := args.Get(0).(*models.Test)
+	// 		arg.Name = "test-game-2"
+	// 	})
+
 	req, err := http.NewRequest("GET", "/games", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	res := httptest.NewRecorder()
-	handler := http.HandlerFunc(GetGames)
+	handler := GetGames(mockClient)
 	handler.ServeHTTP(res, req)
 
 	if res.Code != http.StatusOK {
@@ -102,7 +139,7 @@ func TestGetGames(t *testing.T) {
 			res.Code, http.StatusOK)
 	}
 
-	expected := `[{"name":"test-game-1"},{"name":"test-game-2"}]` + "\n"
+	expected := `[{"Name":"test-game-1","State":{"Name":"","Type":""}}]` + "\n"
 	if res.Body.String() != expected {
 		t.Errorf("handler returned unexpected body: got %v want %v",
 			res.Body.String(), expected)
