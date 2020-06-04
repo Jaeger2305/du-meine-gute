@@ -62,6 +62,11 @@ func (mockCollection *CollectionHelper) FindOne(ctx context.Context, filter inte
 	return ret.Get(0).(storage.SingleResultHelper)
 }
 
+func (mockCollection *CollectionHelper) InsertOne(ctx context.Context, document interface{}) (interface{}, error) {
+	ret := mockCollection.Called(ctx, document)
+	return ret.Get(0), ret.Error(1)
+}
+
 func (mockCursor *Cursor) Next(...interface{}) bool {
 	return true
 }

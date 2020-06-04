@@ -116,12 +116,8 @@ func GetLive(w http.ResponseWriter, r *http.Request) {
 func GetGames(client storage.ClientHelper) http.HandlerFunc {
 	// gamesCollection := db.Database("du-meine-gute").Collection("games")
 	gameStore := gameRepository.GetGameStore(client)
-	// gamesCollection.InsertOne(context.TODO(), storage.Simple{
+	// gameStore.InsertOne(context.TODO(), models.Test{
 	// 	Name: "test-game-1",
-	// 	State: storage.Card{
-	// 		Name: "nested",
-	// 		Type: "dssd",
-	// 	},
 	// })
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		shortTimeoutContext, cancelGetGames := context.WithTimeout(context.Background(), 10*time.Second)

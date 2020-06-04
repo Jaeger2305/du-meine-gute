@@ -26,6 +26,7 @@ type DatabaseHelper interface {
 
 type CollectionHelper interface {
 	FindOne(context.Context, interface{}) SingleResultHelper
+	InsertOne(context.Context, interface{}) (interface{}, error)
 	// Find(context.Context, ...interface{}) (Cursor, error)
 }
 
@@ -66,6 +67,11 @@ func (mc *mongoClient) Database(dbName string, options ...*options.DatabaseOptio
 func (md *mongoDatabase) Collection(colName string) CollectionHelper {
 	collection := md.db.Collection(colName)
 	return &mongoCollection{coll: collection}
+}
+
+func (mc *mongoCollection) InsertOne(ctx context.Context, document interface{}) (interface{}, error) {
+	res, err := mc.coll.InsertOne(ctx, document)
+	return res, err
 }
 
 func (mc *mongoCollection) FindOne(ctx context.Context, filter interface{}) SingleResultHelper {
