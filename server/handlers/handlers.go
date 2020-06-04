@@ -115,7 +115,7 @@ func GetLive(w http.ResponseWriter, r *http.Request) {
 // GetGames get all active games
 func GetGames(client storage.ClientHelper) http.HandlerFunc {
 	// gamesCollection := db.Database("du-meine-gute").Collection("games")
-	gameStore := gameRepository.GetGameStore(client.Database("du-meine-gute"))
+	gameStore := gameRepository.GetGameStore(client)
 	// gamesCollection.InsertOne(context.TODO(), storage.Simple{
 	// 	Name: "test-game-1",
 	// 	State: storage.Card{
@@ -138,7 +138,7 @@ func GetGames(client storage.ClientHelper) http.HandlerFunc {
 		// 	}
 		// 	games = append(games, game)
 		// }
-		game, err := gameStore.FindOne(shortTimeoutContext, bson.D{})
+		game, err := gameRepository.FindOne(gameStore, shortTimeoutContext, bson.D{})
 		if err != nil {
 			log.Fatal(err)
 		}

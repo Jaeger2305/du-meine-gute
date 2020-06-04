@@ -83,12 +83,14 @@ func (mockSingleResultHelper *SingleResultHelper) Decode(emptyGame interface{}) 
 func TestFindOne(t *testing.T) {
 
 	// Define variables for interfaces
+	var clientHelper databases.ClientHelper
 	var dbHelper databases.DatabaseHelper
 	var collectionHelper databases.CollectionHelper
 	var srHelperErr databases.SingleResultHelper
 	var srHelperCorrect databases.SingleResultHelper
 
 	// Set interfaces implementation to mocked structures
+	clientHelper = &MongoClient{}
 	dbHelper = &DatabaseHelper{}
 	collectionHelper = &CollectionHelper{}
 	srHelperErr = &SingleResultHelper{}
@@ -119,19 +121,22 @@ func TestFindOne(t *testing.T) {
 	dbHelper.(*DatabaseHelper).db.
 		On("Collection", "games").Return(collectionHelper)
 
+	clientHelper.(*MongoClient).
+		On("Database", "du-meine-gute").Return(dbHelper)
+
 	// Create new database with mocked Database interface
-	gameStore := GetGameStore(dbHelper)
+	gameStore := GetGameStore(clientHelper)
 
 	// Call method with defined filter, that in our mocked function returns
 	// mocked-error
-	game, err := gameStore.FindOne(context.Background(), primitive.M{"error": true})
+	game, err := FindOne(gameStore, context.Background(), primitive.M{"error": true})
 
 	assert.Empty(t, game)
 	assert.EqualError(t, err, "mocked-error")
 
 	// Now call the same function with different different filter for correct
 	// result
-	game, _ = gameStore.FindOne(context.Background(), primitive.M{"error": false})
+	game, _ = FindOne(gameStore, context.Background(), primitive.M{"error": false})
 
 	assert.Equal(t, &models.Test{Name: "mocked-game"}, game)
 	// assert.NoError(t, err)
