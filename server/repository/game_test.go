@@ -39,8 +39,8 @@ type GameStore struct {
 }
 
 func (mockClient *MongoClient) Database(dbName string, options ...*options.DatabaseOptions) storage.DatabaseHelper {
-	mockClient.Called(dbName)
-	return new(DatabaseHelper)
+	ret := mockClient.Called(dbName)
+	return ret.Get(0).(storage.DatabaseHelper)
 }
 
 func (mockClient *MongoClient) Disconnect(context context.Context) error {
@@ -48,8 +48,8 @@ func (mockClient *MongoClient) Disconnect(context context.Context) error {
 }
 
 func (mockDatabase *DatabaseHelper) Collection(collectionName string) storage.CollectionHelper {
-	mockDatabase.db.Called(collectionName)
-	return new(CollectionHelper)
+	ret := mockDatabase.db.Called(collectionName)
+	return ret.Get(0).(storage.CollectionHelper)
 }
 
 func (mockCollection *CollectionHelper) Find(...interface{}) (storage.Cursor, error) {
@@ -58,8 +58,8 @@ func (mockCollection *CollectionHelper) Find(...interface{}) (storage.Cursor, er
 }
 
 func (mockCollection *CollectionHelper) FindOne(ctx context.Context, filter interface{}) storage.SingleResultHelper {
-	mockCollection.Called(ctx, filter)
-	return new(SingleResultHelper)
+	ret := mockCollection.Called(ctx, filter)
+	return ret.Get(0).(storage.SingleResultHelper)
 }
 
 func (mockCursor *Cursor) Next(...interface{}) bool {
@@ -72,8 +72,12 @@ func (mockCursor *Cursor) Decode(...interface{}) error {
 	return nil
 }
 
-func (mockSingleResultHelper *SingleResultHelper) Decode(interface{}) error {
-	return nil
+func (mockSingleResultHelper *SingleResultHelper) Decode(emptyGame interface{}) error {
+	ret := mockSingleResultHelper.Called(emptyGame)
+	if ret.Get(0) == nil {
+		return nil
+	}
+	return ret.Get(0).(error)
 }
 
 func TestFindOne(t *testing.T) {
@@ -93,11 +97,11 @@ func TestFindOne(t *testing.T) {
 	// Because interfaces does not implement mock.Mock functions we need to use
 	// type assertion to mock implemented methods
 	srHelperErr.(*SingleResultHelper).
-		On("Decode", mock.AnythingOfType("*models.Test")).
+		On("Decode", mock.AnythingOfType("*storage.Test")).
 		Return(errors.New("mocked-error"))
 
 	srHelperCorrect.(*SingleResultHelper).
-		On("Decode", mock.AnythingOfType("*models.Test")).
+		On("Decode", mock.AnythingOfType("*storage.Test")).
 		Return(nil).
 		Run(func(args mock.Arguments) {
 			arg := args.Get(0).(*models.Test)
@@ -120,14 +124,14 @@ func TestFindOne(t *testing.T) {
 
 	// Call method with defined filter, that in our mocked function returns
 	// mocked-error
-	game, _ := gameStore.FindOne(context.Background(), primitive.M{"error": true})
+	game, err := gameStore.FindOne(context.Background(), primitive.M{"error": true})
 
 	assert.Empty(t, game)
-	// assert.EqualError(t, err, "mocked-error")
+	assert.EqualError(t, err, "mocked-error")
 
 	// Now call the same function with different different filter for correct
 	// result
-	// game, err = gameDba.FindOne(context.Background(), bson.M{"error": false})
+	game, _ = gameStore.FindOne(context.Background(), primitive.M{"error": false})
 
 	assert.Equal(t, &models.Test{Name: "mocked-game"}, game)
 	// assert.NoError(t, err)
