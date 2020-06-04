@@ -14,30 +14,30 @@ import (
 )
 
 // Define variables for interfaces
-var clientHelper databases.ClientHelper
-var dbHelper databases.DatabaseHelper
-var collectionHelper databases.CollectionHelper
+var mockClient databases.ClientHelper
+var mockDb databases.DatabaseHelper
+var mockCollection databases.CollectionHelper
 var srHelperErr databases.SingleResultHelper
 var srHelperCorrect databases.SingleResultHelper
 
 func TestGetGameStore(t *testing.T) {
 	// Set interfaces implementation to mocked structures
-	clientHelper = &mocks.MongoClient{}
-	dbHelper = &mocks.MockDatabase{}
-	collectionHelper = &mocks.CollectionHelper{}
-	dbHelper.(*mocks.MockDatabase).Db.
-		On("Collection", "games").Return(collectionHelper)
+	mockClient = &mocks.MongoClient{}
+	mockDb = &mocks.MockDatabase{}
+	mockCollection = &mocks.CollectionHelper{}
+	mockDb.(*mocks.MockDatabase).Db.
+		On("Collection", "games").Return(mockCollection)
 
-	clientHelper.(*mocks.MongoClient).
-		On("Database", "du-meine-gute").Return(dbHelper)
+	mockClient.(*mocks.MongoClient).
+		On("Database", "du-meine-gute").Return(mockDb)
 
-	gameStore := GetGameStore(clientHelper)
+	gameStore := GetGameStore(mockClient)
 	assert.Equal(t, gameStore, &mocks.CollectionHelper{})
 }
 
 func TestFindOne(t *testing.T) {
 	// Set interfaces implementation to mocked structures
-	collectionHelper = &mocks.CollectionHelper{}
+	mockCollection = &mocks.CollectionHelper{}
 	srHelperErr = &mocks.SingleResultHelper{}
 	srHelperCorrect = &mocks.SingleResultHelper{}
 
@@ -55,24 +55,24 @@ func TestFindOne(t *testing.T) {
 			arg.Name = "mocked-game"
 		})
 
-	collectionHelper.(*mocks.CollectionHelper).
+	mockCollection.(*mocks.CollectionHelper).
 		On("FindOne", context.Background(), primitive.M{"error": true}).
 		Return(srHelperErr)
 
-	collectionHelper.(*mocks.CollectionHelper).
+	mockCollection.(*mocks.CollectionHelper).
 		On("FindOne", context.Background(), primitive.M{"error": false}).
 		Return(srHelperCorrect)
 
 	// Call method with defined filter, that in our mocked function returns
 	// mocked-error
-	game, err := FindOne(collectionHelper, context.Background(), primitive.M{"error": true})
+	game, err := FindOne(mockCollection, context.Background(), primitive.M{"error": true})
 
 	assert.Empty(t, game)
 	assert.EqualError(t, err, "mocked-error")
 
 	// Now call the same function with different different filter for correct
 	// result
-	game, _ = FindOne(collectionHelper, context.Background(), primitive.M{"error": false})
+	game, _ = FindOne(mockCollection, context.Background(), primitive.M{"error": false})
 
 	assert.Equal(t, &models.Test{Name: "mocked-game"}, game)
 	// assert.NoError(t, err)
