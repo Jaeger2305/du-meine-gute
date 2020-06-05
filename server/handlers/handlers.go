@@ -116,7 +116,7 @@ func GetLive(w http.ResponseWriter, r *http.Request) {
 func GetGames(client storage.Client) http.HandlerFunc {
 	// gamesCollection := db.Database("du-meine-gute").Collection("games")
 	gameStore := gameRepository.GetGameStore(client)
-	// gameStore.InsertOne(context.TODO(), models.Test{
+	// gameStore.InsertOne(context.TODO(), models.Game{
 	// 	Name: "test-game-1",
 	// })
 	fn := func(w http.ResponseWriter, r *http.Request) {
@@ -125,9 +125,9 @@ func GetGames(client storage.Client) http.HandlerFunc {
 		// gamesCursor, _ := gamesCollection.Find(shortTimeoutContext, bson.D{})
 		// defer gamesCursor.Close(shortTimeoutContext)
 
-		var games []models.Test
+		var games []models.Game
 		// for gamesCursor.Next(shortTimeoutContext) {
-		// 	game := models.Test{}
+		// 	game := models.Game{}
 		// 	err := gamesCursor.Decode(&game)
 		// 	if err != nil {
 		// 		log.Fatal(err)

@@ -44,14 +44,14 @@ func TestFindOne(t *testing.T) {
 	// Because interfaces does not implement mock.Mock functions we need to use
 	// type assertion to mock implemented methods
 	srHelperErr.(*mocks.MockSingleResult).
-		On("Decode", mock.AnythingOfType("*storage.Test")).
+		On("Decode", mock.AnythingOfType("*storage.Game")).
 		Return(errors.New("mocked-error"))
 
 	srHelperCorrect.(*mocks.MockSingleResult).
-		On("Decode", mock.AnythingOfType("*storage.Test")).
+		On("Decode", mock.AnythingOfType("*storage.Game")).
 		Return(nil).
 		Run(func(args mock.Arguments) {
-			arg := args.Get(0).(*models.Test)
+			arg := args.Get(0).(*models.Game)
 			arg.Name = "mocked-game"
 		})
 
@@ -72,8 +72,8 @@ func TestFindOne(t *testing.T) {
 
 	// Now call the same function with different different filter for correct
 	// result
-	game, _ = FindOne(mockCollection, context.Background(), primitive.M{"error": false})
+	game, err = FindOne(mockCollection, context.Background(), primitive.M{"error": false})
 
-	assert.Equal(t, &models.Test{Name: "mocked-game"}, game)
-	// assert.NoError(t, err)
+	assert.Equal(t, &models.Game{Name: "mocked-game"}, game)
+	assert.NoError(t, err)
 }

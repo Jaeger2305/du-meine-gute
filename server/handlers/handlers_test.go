@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -111,17 +112,17 @@ func TestGetGames(t *testing.T) {
 		On("FindOne", mock.Anything, mock.Anything).
 		Return(srHelperExample)
 	srHelperExample.(*mocks.MockSingleResult).
-		On("Decode", mock.AnythingOfType("*storage.Test")).
+		On("Decode", mock.AnythingOfType("*storage.Game")).
 		Return(nil).
 		Run(func(args mock.Arguments) {
-			arg := args.Get(0).(*models.Test)
+			arg := args.Get(0).(*models.Game)
 			arg.Name = "test-game-1"
 		})
 	// srHelperExample.(*mocks.MockSingleResult).
-	// 	On("Decode", mock.AnythingOfType("*storage.Test")).
+	// 	On("Decode", mock.AnythingOfType("*storage.Game")).
 	// 	Return(nil).
 	// 	Run(func(args mock.Arguments) {
-	// 		arg := args.Get(0).(*models.Test)
+	// 		arg := args.Get(0).(*models.Game)
 	// 		arg.Name = "test-game-2"
 	// 	})
 
@@ -138,8 +139,8 @@ func TestGetGames(t *testing.T) {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			res.Code, http.StatusOK)
 	}
-
-	expected := `[{"Name":"test-game-1","State":{"Name":"","Type":""}}]` + "\n"
+	expectedObj, _ := json.Marshal(&models.Game{Name: "test-game-1"})
+	expected := "[" + string(expectedObj) + "]\n"
 	if res.Body.String() != expected {
 		t.Errorf("handler returned unexpected body: got %v want %v",
 			res.Body.String(), expected)
