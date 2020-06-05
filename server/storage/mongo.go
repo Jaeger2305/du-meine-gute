@@ -15,7 +15,7 @@ type Connector interface {
 
 type Client interface {
 	Database(string, ...*options.DatabaseOptions) Database
-	// Disconnect(context.Context) error
+	Disconnect(context.Context) error
 }
 
 type Database interface {
@@ -56,10 +56,9 @@ func (mc *mongoClient) Database(dbName string, options ...*options.DatabaseOptio
 	return &mongoDatabase{db: db}
 }
 
-// func (mc *mongoClient) Disconnect(context context.Context) error {
-// 	err := mc.cl.Disconnect(context)
-// 	return &mongoDatabase{error: err}
-// }
+func (mc *mongoClient) Disconnect(context context.Context) error {
+	return mc.cl.Disconnect(context)
+}
 
 type mongoDatabase struct {
 	db *mongo.Database
