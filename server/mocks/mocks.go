@@ -6,6 +6,7 @@ import (
 	"github.com/Jaeger2305/du-meine-gute/storage"
 	"github.com/stretchr/testify/mock"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 type MockConnector struct {
@@ -27,7 +28,13 @@ func (mockClient *MockClient) Database(dbName string, options ...*options.Databa
 }
 
 func (mockClient *MockClient) Disconnect(context context.Context) error {
-	return nil
+	ret := mockClient.Called(context)
+	return ret.Error(0)
+}
+
+func (mockClient *MockClient) Ping(context context.Context, rp *readpref.ReadPref) error {
+	ret := mockClient.Called(context, rp)
+	return ret.Error(0)
 }
 
 type MockDatabase struct {

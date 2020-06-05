@@ -7,6 +7,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 type Connector interface {
@@ -16,6 +17,7 @@ type Connector interface {
 type Client interface {
 	Database(string, ...*options.DatabaseOptions) Database
 	Disconnect(context.Context) error
+	Ping(context.Context, *readpref.ReadPref) error
 }
 
 type Database interface {
@@ -58,6 +60,10 @@ func (mc *mongoClient) Database(dbName string, options ...*options.DatabaseOptio
 
 func (mc *mongoClient) Disconnect(context context.Context) error {
 	return mc.cl.Disconnect(context)
+}
+
+func (mc *mongoClient) Ping(context context.Context, rp *readpref.ReadPref) error {
+	return mc.cl.Ping(context, rp)
 }
 
 type mongoDatabase struct {
@@ -104,7 +110,9 @@ func NewClient(connector Connector, connectionString string) Client {
 		log.Fatal(err)
 	}
 	// Check the connection
-	// err = client.Ping(context.TODO(), nil)
+	pingContext, cancelPingAttempt := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancelPingAttempt()
+	err = client.Ping(pingContext, nil)
 
 	if err != nil {
 		log.Fatal(err)
