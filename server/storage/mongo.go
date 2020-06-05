@@ -9,7 +9,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type connector func(context.Context, ...*options.ClientOptions) (*mongo.Client, error)
+// type Connector func(context.Context, ...*options.ClientOptions) (*mongo.Client, error)
+
+type Connector interface {
+	Connect(context.Context, ...*options.ClientOptions) (ClientHelper, error)
+}
 
 type Client interface {
 	GetMongoConnection(...interface{}) ClientHelper
@@ -38,6 +42,15 @@ type Cursor interface {
 	Next(...interface{}) bool
 	Close(...interface{}) error
 	Decode(...interface{}) error
+}
+
+type MongoConnector struct{}
+
+func (mc *MongoConnector) Connect(context context.Context, options ...*options.ClientOptions) (ClientHelper, error) {
+	client, err := mongo.Connect(context, options...)
+	return &mongoClient{
+		cl: client,
+	}, err
 }
 
 type mongoClient struct {
@@ -84,14 +97,14 @@ func (sr *mongoSingleResult) Decode(v interface{}) error {
 }
 
 // NewClient retrieves a DB connection to a mongo instance.
-func NewClient(ctr connector, connectionString string) ClientHelper {
+func NewClient(connector Connector, connectionString string) ClientHelper {
 	// Set client options
 	clientOptions := options.Client().ApplyURI(connectionString)
 
 	// Connect to MongoDB
 	connectContext, cancelConnectAttempt := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancelConnectAttempt()
-	client, err := ctr(connectContext, clientOptions)
+	client, err := connector.Connect(connectContext, clientOptions)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -101,8 +114,7 @@ func NewClient(ctr connector, connectionString string) ClientHelper {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return &mongoClient{cl: client}
-	// return client
+	return client
 }
 
 func NewDatabase(dbName string, client ClientHelper) DatabaseHelper {

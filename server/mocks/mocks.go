@@ -8,6 +8,15 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+type MockConnector struct {
+	mock.Mock
+}
+
+func (mockConnector *MockConnector) Connect(context context.Context, options ...*options.ClientOptions) (storage.ClientHelper, error) {
+	ret := mockConnector.Called(context, options)
+	return ret.Get(0).(storage.ClientHelper), ret.Error(1)
+}
+
 type MongoClient struct {
 	mock.Mock
 }

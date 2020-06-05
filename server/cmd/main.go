@@ -7,7 +7,6 @@ import (
 
 	"github.com/Jaeger2305/du-meine-gute/storage"
 	"github.com/spf13/viper"
-	"go.mongodb.org/mongo-driver/mongo"
 
 	"github.com/Jaeger2305/du-meine-gute/handlers"
 	"github.com/go-chi/chi"
@@ -17,8 +16,7 @@ import (
 func main() {
 	setupConfig()
 	httpPort := viper.GetString("DMG_PORT")
-
-	client := storage.NewClient(mongo.Connect, viper.GetString("DMG_CONNECTION_STRING"))
+	client := storage.NewClient(&storage.MongoConnector{}, viper.GetString("DMG_CONNECTION_STRING"))
 	// defer client.Disconnect(context.background())
 
 	router := chi.NewRouter()
