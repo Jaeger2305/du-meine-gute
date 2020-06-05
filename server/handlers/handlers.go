@@ -40,7 +40,7 @@ func (se StatusError) Status() int {
 
 // Env the application-wide configuration
 type Env struct {
-	DB   storage.ClientHelper
+	DB   storage.Client
 	Port string
 	Host string
 }
@@ -113,7 +113,7 @@ func GetLive(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetGames get all active games
-func GetGames(client storage.ClientHelper) http.HandlerFunc {
+func GetGames(client storage.Client) http.HandlerFunc {
 	// gamesCollection := db.Database("du-meine-gute").Collection("games")
 	gameStore := gameRepository.GetGameStore(client)
 	// gameStore.InsertOne(context.TODO(), models.Test{

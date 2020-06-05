@@ -12,62 +12,54 @@ type MockConnector struct {
 	mock.Mock
 }
 
-func (mockConnector *MockConnector) Connect(context context.Context, options ...*options.ClientOptions) (storage.ClientHelper, error) {
+func (mockConnector *MockConnector) Connect(context context.Context, options ...*options.ClientOptions) (storage.Client, error) {
 	ret := mockConnector.Called(context, options)
-	return ret.Get(0).(storage.ClientHelper), ret.Error(1)
+	return ret.Get(0).(storage.Client), ret.Error(1)
 }
 
-type MongoClient struct {
+type MockClient struct {
 	mock.Mock
+}
+
+func (mockClient *MockClient) Database(dbName string, options ...*options.DatabaseOptions) storage.Database {
+	ret := mockClient.Called(dbName)
+	return ret.Get(0).(storage.Database)
+}
+
+func (mockClient *MockClient) Disconnect(context context.Context) error {
+	return nil
 }
 
 type MockDatabase struct {
 	Db mock.Mock
 }
 
-type CollectionHelper struct {
-	mock.Mock
-}
-
-type Cursor struct {
-	mock.Mock
-}
-
-type SingleResultHelper struct {
-	mock.Mock
-}
-
-type GameStore struct {
-	mock.Mock
-}
-
-func (mockClient *MongoClient) Database(dbName string, options ...*options.DatabaseOptions) storage.DatabaseHelper {
-	ret := mockClient.Called(dbName)
-	return ret.Get(0).(storage.DatabaseHelper)
-}
-
-func (mockClient *MongoClient) Disconnect(context context.Context) error {
-	return nil
-}
-
-func (mockDatabase *MockDatabase) Collection(collectionName string) storage.CollectionHelper {
+func (mockDatabase *MockDatabase) Collection(collectionName string) storage.Collection {
 	ret := mockDatabase.Db.Called(collectionName)
-	return ret.Get(0).(storage.CollectionHelper)
+	return ret.Get(0).(storage.Collection)
 }
 
-func (mockCollection *CollectionHelper) Find(...interface{}) (storage.Cursor, error) {
+type MockCollection struct {
+	mock.Mock
+}
+
+func (mockCollection *MockCollection) Find(...interface{}) (storage.Cursor, error) {
 	mockCollection.Called()
 	return new(Cursor), nil
 }
 
-func (mockCollection *CollectionHelper) FindOne(ctx context.Context, filter interface{}) storage.SingleResultHelper {
+func (mockCollection *MockCollection) FindOne(ctx context.Context, filter interface{}) storage.SingleResult {
 	ret := mockCollection.Called(ctx, filter)
-	return ret.Get(0).(storage.SingleResultHelper)
+	return ret.Get(0).(storage.SingleResult)
 }
 
-func (mockCollection *CollectionHelper) InsertOne(ctx context.Context, document interface{}) (interface{}, error) {
+func (mockCollection *MockCollection) InsertOne(ctx context.Context, document interface{}) (interface{}, error) {
 	ret := mockCollection.Called(ctx, document)
 	return ret.Get(0), ret.Error(1)
+}
+
+type Cursor struct {
+	mock.Mock
 }
 
 func (mockCursor *Cursor) Next(...interface{}) bool {
@@ -80,8 +72,12 @@ func (mockCursor *Cursor) Decode(...interface{}) error {
 	return nil
 }
 
-func (mockSingleResultHelper *SingleResultHelper) Decode(emptyGame interface{}) error {
-	ret := mockSingleResultHelper.Called(emptyGame)
+type MockSingleResult struct {
+	mock.Mock
+}
+
+func (mockMockSingleResult *MockSingleResult) Decode(emptyGame interface{}) error {
+	ret := mockMockSingleResult.Called(emptyGame)
 	if ret.Get(0) == nil {
 		return nil
 	}

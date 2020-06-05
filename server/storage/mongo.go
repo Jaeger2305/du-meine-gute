@@ -9,32 +9,26 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// type Connector func(context.Context, ...*options.ClientOptions) (*mongo.Client, error)
-
 type Connector interface {
-	Connect(context.Context, ...*options.ClientOptions) (ClientHelper, error)
+	Connect(context.Context, ...*options.ClientOptions) (Client, error)
 }
 
 type Client interface {
-	GetMongoConnection(...interface{}) ClientHelper
-}
-
-type ClientHelper interface {
-	Database(string, ...*options.DatabaseOptions) DatabaseHelper
+	Database(string, ...*options.DatabaseOptions) Database
 	// Disconnect(context.Context) error
 }
 
-type DatabaseHelper interface {
-	Collection(string) CollectionHelper
+type Database interface {
+	Collection(string) Collection
 }
 
-type CollectionHelper interface {
-	FindOne(context.Context, interface{}) SingleResultHelper
+type Collection interface {
+	FindOne(context.Context, interface{}) SingleResult
 	InsertOne(context.Context, interface{}) (interface{}, error)
 	// Find(context.Context, ...interface{}) (Cursor, error)
 }
 
-type SingleResultHelper interface {
+type SingleResult interface {
 	Decode(v interface{}) error
 }
 
@@ -46,7 +40,7 @@ type Cursor interface {
 
 type MongoConnector struct{}
 
-func (mc *MongoConnector) Connect(context context.Context, options ...*options.ClientOptions) (ClientHelper, error) {
+func (mc *MongoConnector) Connect(context context.Context, options ...*options.ClientOptions) (Client, error) {
 	client, err := mongo.Connect(context, options...)
 	return &mongoClient{
 		cl: client,
@@ -56,18 +50,8 @@ func (mc *MongoConnector) Connect(context context.Context, options ...*options.C
 type mongoClient struct {
 	cl *mongo.Client
 }
-type mongoDatabase struct {
-	db *mongo.Database
-}
-type mongoCollection struct {
-	coll *mongo.Collection
-}
 
-type mongoSingleResult struct {
-	sr *mongo.SingleResult
-}
-
-func (mc *mongoClient) Database(dbName string, options ...*options.DatabaseOptions) DatabaseHelper {
+func (mc *mongoClient) Database(dbName string, options ...*options.DatabaseOptions) Database {
 	db := mc.cl.Database(dbName)
 	return &mongoDatabase{db: db}
 }
@@ -77,9 +61,17 @@ func (mc *mongoClient) Database(dbName string, options ...*options.DatabaseOptio
 // 	return &mongoDatabase{error: err}
 // }
 
-func (md *mongoDatabase) Collection(colName string) CollectionHelper {
+type mongoDatabase struct {
+	db *mongo.Database
+}
+
+func (md *mongoDatabase) Collection(colName string) Collection {
 	collection := md.db.Collection(colName)
 	return &mongoCollection{coll: collection}
+}
+
+type mongoCollection struct {
+	coll *mongo.Collection
 }
 
 func (mc *mongoCollection) InsertOne(ctx context.Context, document interface{}) (interface{}, error) {
@@ -87,9 +79,13 @@ func (mc *mongoCollection) InsertOne(ctx context.Context, document interface{}) 
 	return res, err
 }
 
-func (mc *mongoCollection) FindOne(ctx context.Context, filter interface{}) SingleResultHelper {
+func (mc *mongoCollection) FindOne(ctx context.Context, filter interface{}) SingleResult {
 	singleResult := mc.coll.FindOne(ctx, filter)
 	return &mongoSingleResult{sr: singleResult}
+}
+
+type mongoSingleResult struct {
+	sr *mongo.SingleResult
 }
 
 func (sr *mongoSingleResult) Decode(v interface{}) error {
@@ -97,7 +93,7 @@ func (sr *mongoSingleResult) Decode(v interface{}) error {
 }
 
 // NewClient retrieves a DB connection to a mongo instance.
-func NewClient(connector Connector, connectionString string) ClientHelper {
+func NewClient(connector Connector, connectionString string) Client {
 	// Set client options
 	clientOptions := options.Client().ApplyURI(connectionString)
 
@@ -116,16 +112,3 @@ func NewClient(connector Connector, connectionString string) ClientHelper {
 	}
 	return client
 }
-
-func NewDatabase(dbName string, client ClientHelper) DatabaseHelper {
-	return client.Database(dbName)
-}
-
-// func (u *gameDatabase) FindOne(ctx context.Context, filter interface{}) (*models.Game, error) {
-// 	game := &models.Game{}
-// 	err := g.db.Collection(collectionName).FindOne(ctx, filter).Decode(game)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return user, nil
-// }

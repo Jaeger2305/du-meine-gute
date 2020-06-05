@@ -92,32 +92,32 @@ func TestJoinGame(t *testing.T) {
 	}
 }
 
-var mockClient storage.ClientHelper
-var mockDb storage.DatabaseHelper
-var mockCollection storage.CollectionHelper
-var srHelperExample storage.SingleResultHelper
+var mockClient storage.Client
+var mockDb storage.Database
+var mockCollection storage.Collection
+var srHelperExample storage.SingleResult
 
 func TestGetGames(t *testing.T) {
 	// Because we're not using an object and accessing its methods, the whole structure needs to be mocked at the moment.
-	mockClient = &mocks.MongoClient{}
+	mockClient = &mocks.MockClient{}
 	mockDb = &mocks.MockDatabase{}
-	mockCollection = &mocks.CollectionHelper{}
-	srHelperExample = &mocks.SingleResultHelper{}
+	mockCollection = &mocks.MockCollection{}
+	srHelperExample = &mocks.MockSingleResult{}
 	mockDb.(*mocks.MockDatabase).Db.
 		On("Collection", "games").Return(mockCollection)
-	mockClient.(*mocks.MongoClient).
+	mockClient.(*mocks.MockClient).
 		On("Database", "du-meine-gute").Return(mockDb)
-	mockCollection.(*mocks.CollectionHelper).
+	mockCollection.(*mocks.MockCollection).
 		On("FindOne", mock.Anything, mock.Anything).
 		Return(srHelperExample)
-	srHelperExample.(*mocks.SingleResultHelper).
+	srHelperExample.(*mocks.MockSingleResult).
 		On("Decode", mock.AnythingOfType("*storage.Test")).
 		Return(nil).
 		Run(func(args mock.Arguments) {
 			arg := args.Get(0).(*models.Test)
 			arg.Name = "test-game-1"
 		})
-	// srHelperExample.(*mocks.SingleResultHelper).
+	// srHelperExample.(*mocks.MockSingleResult).
 	// 	On("Decode", mock.AnythingOfType("*storage.Test")).
 	// 	Return(nil).
 	// 	Run(func(args mock.Arguments) {

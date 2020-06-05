@@ -11,9 +11,9 @@ import (
 
 func TestNewClient(t *testing.T) {
 	var mockConnector storage.Connector
-	var mockClient storage.ClientHelper
+	var mockClient storage.Client
 	mockConnector = &mocks.MockConnector{}
-	mockClient = &mocks.MongoClient{}
+	mockClient = &mocks.MockClient{}
 	mockConnector.(*mocks.MockConnector).On("Connect", mock.Anything, mock.Anything).Return(mockClient, nil)
 	res := storage.NewClient(mockConnector, "test-connection-string")
 	assert.NotNil(t, res)
