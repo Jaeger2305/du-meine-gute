@@ -131,7 +131,7 @@ func TestGetGames(t *testing.T) {
 	// 		arg.Name = "test-game-2"
 	// 	})
 
-	req, err := http.NewRequest("GET", "/games", nil)
+	req, err := http.NewRequest("GET", "/game", nil)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -34,7 +34,7 @@ func setupRoutes(client storage.Client) *chi.Mux {
 
 	// REST API
 	// router.Get("/", handlers.ServeFiles)
-	router.Get("/games", handlers.GetGames(client))
+	router.Get("/game", handlers.GetGames(client))
 	router.Get("/game/{gameID}", handlers.GetGame(client))
 	// router.Post("/games/join", handlers.JoinGame)
 	// router.Get("/status", handlers.GetStatus)
