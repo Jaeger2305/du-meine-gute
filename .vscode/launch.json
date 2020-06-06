@@ -9,8 +9,10 @@
       "type": "go",
       "request": "launch",
       "mode": "auto",
-      "program": "${workspaceFolder}\\server\\cmd",
+      "program": "${workspaceFolder}/server/cmd",
+      "cwd": "${workspaceFolder}/server",
       "env": {},
+      "envFile": "${workspaceFolder}/server/default.env",
       "args": []
     }
   ]
