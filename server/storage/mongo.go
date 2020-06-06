@@ -27,7 +27,7 @@ type Database interface {
 type Collection interface {
 	FindOne(context.Context, interface{}) SingleResult
 	InsertOne(context.Context, interface{}) (interface{}, error)
-	// Find(context.Context, ...interface{}) (Cursor, error)
+	Find(context.Context, interface{}) (Cursor, error)
 }
 
 type SingleResult interface {
@@ -35,9 +35,9 @@ type SingleResult interface {
 }
 
 type Cursor interface {
-	Next(...interface{}) bool
-	Close(...interface{}) error
-	Decode(...interface{}) error
+	Next(context.Context) bool
+	Close(context.Context) error
+	Decode(v interface{}) error
 }
 
 type MongoConnector struct{}
@@ -87,6 +87,27 @@ func (mc *mongoCollection) InsertOne(ctx context.Context, document interface{}) 
 func (mc *mongoCollection) FindOne(ctx context.Context, filter interface{}) SingleResult {
 	singleResult := mc.coll.FindOne(ctx, filter)
 	return &mongoSingleResult{sr: singleResult}
+}
+
+func (mc *mongoCollection) Find(ctx context.Context, filter interface{}) (Cursor, error) {
+	result, err := mc.coll.Find(ctx, filter)
+	return &mongoCursor{cur: result}, err
+}
+
+type mongoCursor struct {
+	cur *mongo.Cursor
+}
+
+func (cur *mongoCursor) Close(ctx context.Context) error {
+	return cur.cur.Close(ctx)
+}
+
+func (cur *mongoCursor) Decode(v interface{}) error {
+	return cur.cur.Decode(v)
+}
+
+func (cur *mongoCursor) Next(ctx context.Context) bool {
+	return cur.cur.Next(ctx)
 }
 
 type mongoSingleResult struct {

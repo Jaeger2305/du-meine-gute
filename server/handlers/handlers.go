@@ -12,7 +12,6 @@ import (
 	"github.com/Jaeger2305/du-meine-gute/errors"
 	gameRepository "github.com/Jaeger2305/du-meine-gute/repository"
 	"github.com/Jaeger2305/du-meine-gute/storage"
-	models "github.com/Jaeger2305/du-meine-gute/storage/models"
 	"github.com/go-chi/chi"
 	"github.com/gorilla/websocket"
 	"go.mongodb.org/mongo-driver/bson"
@@ -127,23 +126,10 @@ func GetGames(client storage.Client) http.HandlerFunc {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		shortTimeoutContext, cancelGetGames := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancelGetGames()
-		// gamesCursor, _ := gamesCollection.Find(shortTimeoutContext, bson.D{})
-		// defer gamesCursor.Close(shortTimeoutContext)
-
-		var games []models.Game
-		// for gamesCursor.Next(shortTimeoutContext) {
-		// 	game := models.Game{}
-		// 	err := gamesCursor.Decode(&game)
-		// 	if err != nil {
-		// 		log.Fatal(err)
-		// 	}
-		// 	games = append(games, game)
-		// }
-		game, err := gameRepository.FindOne(gameStore, shortTimeoutContext, bson.D{})
+		games, err := gameRepository.Find(gameStore, shortTimeoutContext, bson.D{})
 		if err != nil {
 			log.Fatal(err)
 		}
-		games = append(games, *game)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(games)
 	}

@@ -17,6 +17,7 @@ import (
 var mockClient databases.Client
 var mockDb databases.Database
 var mockCollection databases.Collection
+var mockCursor databases.Cursor
 var srHelperErr databases.SingleResult
 var srHelperCorrect databases.SingleResult
 
@@ -75,5 +76,46 @@ func TestFindOne(t *testing.T) {
 	game, err = FindOne(mockCollection, context.Background(), primitive.M{"error": false})
 
 	assert.Equal(t, &models.Game{Name: "mocked-game"}, game)
+	assert.NoError(t, err)
+}
+
+func TestFind(t *testing.T) {
+	// Set interfaces implementation to mocked structures
+	mockCollection = &mocks.MockCollection{}
+	mockCursor = &mocks.MockCursor{}
+
+	// Because interfaces does not implement mock.Mock functions we need to use
+	// type assertion to mock implemented methods
+	mockCursor.(*mocks.MockCursor).
+		On("Decode", mock.AnythingOfType("*storage.Game")).
+		Return(nil).
+		Run(func(args mock.Arguments) {
+			arg := args.Get(0).(*models.Game)
+			arg.Name = "mocked-game"
+		})
+	mockCursor.(*mocks.MockCursor).
+		On("Next", mock.Anything).
+		Return(true).
+		Twice()
+	mockCursor.(*mocks.MockCursor).
+		On("Next", mock.Anything).
+		Return(false).
+		Once()
+	mockCursor.(*mocks.MockCursor).
+		On("Close", mock.Anything).
+		Return(nil)
+
+	mockCollection.(*mocks.MockCollection).
+		On("Find", context.Background(), primitive.M{"error": false}).
+		Return(mockCursor, nil)
+
+	// Now call the same function with different different filter for correct
+	// result
+	games, err := Find(mockCollection, context.Background(), primitive.M{"error": false})
+
+	var expectedGames []*models.Game
+	expectedGames = append(expectedGames, &models.Game{Name: "mocked-game"})
+	expectedGames = append(expectedGames, &models.Game{Name: "mocked-game"})
+	assert.Equal(t, expectedGames, games)
 	assert.NoError(t, err)
 }

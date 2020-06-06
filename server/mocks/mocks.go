@@ -50,9 +50,9 @@ type MockCollection struct {
 	mock.Mock
 }
 
-func (mockCollection *MockCollection) Find(...interface{}) (storage.Cursor, error) {
-	mockCollection.Called()
-	return new(Cursor), nil
+func (mockCollection *MockCollection) Find(ctx context.Context, filter interface{}) (storage.Cursor, error) {
+	ret := mockCollection.Called(ctx, filter)
+	return ret.Get(0).(storage.Cursor), ret.Error(1)
 }
 
 func (mockCollection *MockCollection) FindOne(ctx context.Context, filter interface{}) storage.SingleResult {
@@ -65,26 +65,29 @@ func (mockCollection *MockCollection) InsertOne(ctx context.Context, document in
 	return ret.Get(0), ret.Error(1)
 }
 
-type Cursor struct {
+type MockCursor struct {
 	mock.Mock
 }
 
-func (mockCursor *Cursor) Next(...interface{}) bool {
-	return true
+func (mockCursor *MockCursor) Next(ctx context.Context) bool {
+	ret := mockCursor.Called(ctx)
+	return ret.Get(0).(bool)
 }
-func (mockCursor *Cursor) Close(...interface{}) error {
-	return nil
+func (mockCursor *MockCursor) Close(ctx context.Context) error {
+	ret := mockCursor.Called(ctx)
+	return ret.Error(0)
 }
-func (mockCursor *Cursor) Decode(...interface{}) error {
-	return nil
+func (mockCursor *MockCursor) Decode(emptyElem interface{}) error {
+	ret := mockCursor.Called(emptyElem)
+	return ret.Error(0)
 }
 
 type MockSingleResult struct {
 	mock.Mock
 }
 
-func (mockMockSingleResult *MockSingleResult) Decode(emptyGame interface{}) error {
-	ret := mockMockSingleResult.Called(emptyGame)
+func (mockMockSingleResult *MockSingleResult) Decode(emptyElem interface{}) error {
+	ret := mockMockSingleResult.Called(emptyElem)
 	if ret.Get(0) == nil {
 		return nil
 	}
