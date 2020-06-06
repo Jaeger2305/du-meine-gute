@@ -3,16 +3,21 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"time"
 
+	"github.com/Jaeger2305/du-meine-gute/errors"
 	gameRepository "github.com/Jaeger2305/du-meine-gute/repository"
 	"github.com/Jaeger2305/du-meine-gute/storage"
 	models "github.com/Jaeger2305/du-meine-gute/storage/models"
+	"github.com/go-chi/chi"
 	"github.com/gorilla/websocket"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // Error represents a handler error. It provides methods for a HTTP status
@@ -141,6 +146,47 @@ func GetGames(client storage.Client) http.HandlerFunc {
 		games = append(games, *game)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(games)
+	}
+	return http.HandlerFunc(fn)
+}
+
+// GetGame get a single game
+func GetGame(client storage.Client) http.HandlerFunc {
+	gameStore := gameRepository.GetGameStore(client)
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		shortTimeoutContext, cancelGetGames := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancelGetGames()
+		w.Header().Set("Content-Type", "application/json")
+		stringID := chi.URLParam(r, "gameID")
+		idToFetch, inputErr := primitive.ObjectIDFromHex(stringID)
+		if inputErr != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(&errors.HTTPError{
+				Status:      http.StatusBadRequest,
+				Description: fmt.Sprintf("Invalid input - %s", stringID),
+				IsError:     true,
+			})
+			return
+		}
+		game, err := gameRepository.FindOne(gameStore, shortTimeoutContext, bson.M{"_id": idToFetch})
+		switch err {
+		case nil:
+			json.NewEncoder(w).Encode(game)
+		case mongo.ErrNoDocuments:
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(&errors.HTTPError{
+				Status:      http.StatusNotFound,
+				Description: fmt.Sprintf("No game documents found for %v", stringID),
+				IsError:     true,
+			})
+		default:
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(&errors.HTTPError{
+				Status:      http.StatusInternalServerError,
+				Description: "unknown error",
+				IsError:     true,
+			})
+		}
 	}
 	return http.HandlerFunc(fn)
 }

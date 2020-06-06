@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -8,8 +9,12 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 
+	"github.com/Jaeger2305/du-meine-gute/errors"
 	"github.com/Jaeger2305/du-meine-gute/mocks"
 	"github.com/Jaeger2305/du-meine-gute/storage"
 	models "github.com/Jaeger2305/du-meine-gute/storage/models"
@@ -145,6 +150,115 @@ func TestGetGames(t *testing.T) {
 		t.Errorf("handler returned unexpected body: got %v want %v",
 			res.Body.String(), expected)
 	}
+}
+
+func TestGetGame(t *testing.T) {
+	stringID := "5ed91ed202c719f3f43e23af"
+	idToFetch, _ := primitive.ObjectIDFromHex(stringID)
+	// Because we're not using an object and accessing its methods, the whole structure needs to be mocked at the moment.
+	mockClient = &mocks.MockClient{}
+	mockDb = &mocks.MockDatabase{}
+	mockCollection = &mocks.MockCollection{}
+	srHelperExample = &mocks.MockSingleResult{}
+	mockDb.(*mocks.MockDatabase).Db.
+		On("Collection", "games").Return(mockCollection)
+	mockClient.(*mocks.MockClient).
+		On("Database", "du-meine-gute").Return(mockDb)
+	mockCollection.(*mocks.MockCollection).
+		On("FindOne", mock.Anything, bson.M{"_id": idToFetch}).
+		Return(srHelperExample)
+	srHelperExample.(*mocks.MockSingleResult).
+		On("Decode", mock.AnythingOfType("*storage.Game")).
+		Return(nil).
+		Run(func(args mock.Arguments) {
+			arg := args.Get(0).(*models.Game)
+			arg.Name = "test-game-1"
+		})
+
+	req, err := http.NewRequest("GET", "/game/"+stringID, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("gameID", stringID)
+
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	res := httptest.NewRecorder()
+	handler := GetGame(mockClient)
+	handler.ServeHTTP(res, req)
+
+	if res.Code != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			res.Code, http.StatusOK)
+	}
+	expectedObj, _ := json.Marshal(&models.Game{Name: "test-game-1"})
+	expected := string(expectedObj) + "\n"
+	if res.Body.String() != expected {
+		t.Errorf("handler returned unexpected body: got %v want %v",
+			res.Body.String(), expected)
+	}
+
+	// Test bad input is handled
+	badStringID := "cannot-cast-to-objectid"
+	badReq, badReqErr := http.NewRequest("GET", "/game/"+badStringID, nil)
+	if badReqErr != nil {
+		t.Fatal(err)
+	}
+
+	badReqCtx := chi.NewRouteContext()
+	badReqCtx.URLParams.Add("gameID", badStringID)
+
+	badReq = badReq.WithContext(context.WithValue(badReq.Context(), chi.RouteCtxKey, badReqCtx))
+
+	badRes := httptest.NewRecorder()
+	handler.ServeHTTP(badRes, badReq)
+	badExpectedObj := &errors.HTTPError{
+		Status:  http.StatusBadRequest,
+		IsError: true,
+	}
+	badResObj := &errors.HTTPError{}
+	json.Unmarshal(badRes.Body.Bytes(), badResObj)
+	badExpectedObj.Description = badResObj.Description
+	assert.ObjectsAreEqual(badResObj, badExpectedObj)
+	badExpectedSerialised, _ := json.Marshal(badExpectedObj)
+	badExpected := string(badExpectedSerialised) + "\n"
+	if badRes.Body.String() != badExpected {
+		t.Errorf("handler returned unexpected body: got %v want %v",
+			badRes.Body.String(), badExpected)
+	}
+
+	// Test not found is handled
+	notFoundStringID := "ffffffffffffffffffffffff"
+
+	notFoundReq, notFoundReqErr := http.NewRequest("GET", "/game/"+notFoundStringID, nil)
+	if notFoundReqErr != nil {
+		t.Fatal(err)
+	}
+
+	notFoundReqCtx := chi.NewRouteContext()
+	notFoundReqCtx.URLParams.Add("gameID", notFoundStringID)
+
+	notFoundReq = notFoundReq.WithContext(context.WithValue(notFoundReq.Context(), chi.RouteCtxKey, notFoundReqCtx))
+
+	notFoundRes := httptest.NewRecorder()
+	handler.ServeHTTP(notFoundRes, notFoundReq)
+	notFoundExpectedObj := &errors.HTTPError{
+		Status:  http.StatusNotFound,
+		IsError: true,
+	}
+	notFoundResObj := &errors.HTTPError{}
+	json.Unmarshal(notFoundRes.Body.Bytes(), notFoundResObj)
+	notFoundExpectedObj.Description = notFoundResObj.Description
+	assert.ObjectsAreEqual(notFoundResObj, notFoundExpectedObj)
+	notFoundExpectedSerialised, _ := json.Marshal(notFoundExpectedObj)
+	notFoundExpected := string(notFoundExpectedSerialised) + "\n"
+	if notFoundRes.Body.String() != notFoundExpected {
+		t.Errorf("handler returned unexpected body: got %v want %v",
+			notFoundRes.Body.String(), notFoundExpected)
+	}
+
 }
 
 func TestGetStatus(t *testing.T) {
