@@ -10,6 +10,7 @@ import (
 	models "github.com/Jaeger2305/du-meine-gute/storage/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -106,12 +107,12 @@ func TestFind(t *testing.T) {
 		Return(nil)
 
 	mockCollection.(*mocks.MockCollection).
-		On("Find", context.Background(), primitive.M{"error": false}).
+		On("Find", context.Background(), bson.D{}).
 		Return(mockCursor, nil)
 
 	// Now call the same function with different different filter for correct
 	// result
-	games, err := Find(mockCollection, context.Background(), primitive.M{"error": false})
+	games, err := Find(mockCollection, context.Background(), bson.D{})
 
 	var expectedGames []*models.Game
 	expectedGames = append(expectedGames, &models.Game{Name: "mocked-game"})

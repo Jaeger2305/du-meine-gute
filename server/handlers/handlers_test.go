@@ -102,34 +102,40 @@ var mockClient storage.Client
 var mockDb storage.Database
 var mockCollection storage.Collection
 var srHelperExample storage.SingleResult
+var mockCursor storage.Cursor
 
 func TestGetGames(t *testing.T) {
 	// Because we're not using an object and accessing its methods, the whole structure needs to be mocked at the moment.
 	mockClient = &mocks.MockClient{}
 	mockDb = &mocks.MockDatabase{}
 	mockCollection = &mocks.MockCollection{}
-	srHelperExample = &mocks.MockSingleResult{}
+	mockCursor = &mocks.MockCursor{}
 	mockDb.(*mocks.MockDatabase).Db.
 		On("Collection", "games").Return(mockCollection)
 	mockClient.(*mocks.MockClient).
 		On("Database", "du-meine-gute").Return(mockDb)
-	mockCollection.(*mocks.MockCollection).
-		On("FindOne", mock.Anything, mock.Anything).
-		Return(srHelperExample)
-	srHelperExample.(*mocks.MockSingleResult).
+	mockCursor.(*mocks.MockCursor).
 		On("Decode", mock.AnythingOfType("*storage.Game")).
 		Return(nil).
 		Run(func(args mock.Arguments) {
 			arg := args.Get(0).(*models.Game)
-			arg.Name = "test-game-1"
+			arg.Name = "mocked-game"
 		})
-	// srHelperExample.(*mocks.MockSingleResult).
-	// 	On("Decode", mock.AnythingOfType("*storage.Game")).
-	// 	Return(nil).
-	// 	Run(func(args mock.Arguments) {
-	// 		arg := args.Get(0).(*models.Game)
-	// 		arg.Name = "test-game-2"
-	// 	})
+	mockCursor.(*mocks.MockCursor).
+		On("Next", mock.Anything).
+		Return(true).
+		Twice()
+	mockCursor.(*mocks.MockCursor).
+		On("Next", mock.Anything).
+		Return(false).
+		Once()
+	mockCursor.(*mocks.MockCursor).
+		On("Close", mock.Anything).
+		Return(nil)
+
+	mockCollection.(*mocks.MockCollection).
+		On("Find", mock.Anything, bson.D{}).
+		Return(mockCursor, nil)
 
 	req, err := http.NewRequest("GET", "/game", nil)
 	if err != nil {
@@ -144,8 +150,10 @@ func TestGetGames(t *testing.T) {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			res.Code, http.StatusOK)
 	}
-	expectedObj, _ := json.Marshal(&models.Game{Name: "test-game-1"})
-	expected := "[" + string(expectedObj) + "]\n"
+	var expectedGames []*models.Game
+	expectedGames = append(expectedGames, &models.Game{Name: "mocked-game"}, &models.Game{Name: "mocked-game"})
+	expectedBytes, _ := json.Marshal(expectedGames)
+	expected := string(expectedBytes) + "\n"
 	if res.Body.String() != expected {
 		t.Errorf("handler returned unexpected body: got %v want %v",
 			res.Body.String(), expected)
