@@ -13,6 +13,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 
 	"github.com/Jaeger2305/du-meine-gute/errors"
 	"github.com/Jaeger2305/du-meine-gute/mocks"
@@ -102,6 +103,7 @@ var mockClient storage.Client
 var mockDb storage.Database
 var mockCollection storage.Collection
 var srHelperExample storage.SingleResult
+var srHelperError storage.SingleResult
 var mockCursor storage.Cursor
 
 func TestGetGames(t *testing.T) {
@@ -162,12 +164,15 @@ func TestGetGames(t *testing.T) {
 
 func TestGetGame(t *testing.T) {
 	stringID := "5ed91ed202c719f3f43e23af"
+	notFoundStringID := "ffffffffffffffffffffffff"
 	idToFetch, _ := primitive.ObjectIDFromHex(stringID)
+	notFoundIDToFetch, _ := primitive.ObjectIDFromHex(notFoundStringID)
 	// Because we're not using an object and accessing its methods, the whole structure needs to be mocked at the moment.
 	mockClient = &mocks.MockClient{}
 	mockDb = &mocks.MockDatabase{}
 	mockCollection = &mocks.MockCollection{}
 	srHelperExample = &mocks.MockSingleResult{}
+	srHelperError = &mocks.MockSingleResult{}
 	mockDb.(*mocks.MockDatabase).Db.
 		On("Collection", "games").Return(mockCollection)
 	mockClient.(*mocks.MockClient).
@@ -175,6 +180,12 @@ func TestGetGame(t *testing.T) {
 	mockCollection.(*mocks.MockCollection).
 		On("FindOne", mock.Anything, bson.M{"_id": idToFetch}).
 		Return(srHelperExample)
+	mockCollection.(*mocks.MockCollection).
+		On("FindOne", mock.Anything, bson.M{"_id": notFoundIDToFetch}).
+		Return(srHelperError)
+	srHelperError.(*mocks.MockSingleResult).
+		On("Decode", mock.AnythingOfType("*storage.Game")).
+		Return(mongo.ErrNoDocuments)
 	srHelperExample.(*mocks.MockSingleResult).
 		On("Decode", mock.AnythingOfType("*storage.Game")).
 		Return(nil).
@@ -238,8 +249,6 @@ func TestGetGame(t *testing.T) {
 	}
 
 	// Test not found is handled
-	notFoundStringID := "ffffffffffffffffffffffff"
-
 	notFoundReq, notFoundReqErr := http.NewRequest("GET", "/game/"+notFoundStringID, nil)
 	if notFoundReqErr != nil {
 		t.Fatal(err)
