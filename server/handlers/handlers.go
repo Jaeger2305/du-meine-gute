@@ -7,11 +7,13 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/Jaeger2305/du-meine-gute/errors"
 	gameRepository "github.com/Jaeger2305/du-meine-gute/repository"
 	"github.com/Jaeger2305/du-meine-gute/storage"
+	models "github.com/Jaeger2305/du-meine-gute/storage/models"
 	"github.com/go-chi/chi"
 	"github.com/gorilla/websocket"
 	"go.mongodb.org/mongo-driver/bson"
@@ -173,6 +175,54 @@ func GetGame(client storage.Client) http.HandlerFunc {
 				IsError:     true,
 			})
 		}
+	}
+	return http.HandlerFunc(fn)
+}
+
+// CreateGame create a new game
+func CreateGame(client storage.Client) http.HandlerFunc {
+
+	gameStore := gameRepository.GetGameStore(client)
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		dec := json.NewDecoder(r.Body)
+
+		// Decode the game from the request body.
+		var game models.Game
+		decodeInputError := dec.Decode(&game)
+		if decodeInputError != nil {
+			buf := new(strings.Builder)
+			numberOfBytes, copyBodyToBufferError := io.Copy(buf, r.Body)
+			if copyBodyToBufferError != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				json.NewEncoder(w).Encode(&errors.HTTPError{
+					Status:      http.StatusBadRequest,
+					Description: fmt.Sprintf("Invalid input - couldn't even parse request with byte count %s", string(numberOfBytes)),
+					IsError:     true,
+				})
+				return
+			}
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(&errors.HTTPError{
+				Status:      http.StatusBadRequest,
+				Description: fmt.Sprintf("Invalid input - %s - %s", decodeInputError, buf.String()),
+				IsError:     true,
+			})
+			return
+		}
+		shortTimeoutContext, cancelCreateGame := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancelCreateGame()
+		w.Header().Set("Content-Type", "application/json")
+		insertedGame, insertError := gameStore.InsertOne(shortTimeoutContext, &game)
+		if insertError != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(&errors.HTTPError{
+				Status:      http.StatusInternalServerError,
+				Description: fmt.Sprintf("Couldn't insert game"),
+				IsError:     true,
+			})
+			return
+		}
+		json.NewEncoder(w).Encode(insertedGame)
 	}
 	return http.HandlerFunc(fn)
 }

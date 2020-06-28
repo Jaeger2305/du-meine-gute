@@ -43,3 +43,8 @@ func Find(store storage.Collection, ctx context.Context, filter interface{}) ([]
 
 	return games, nil
 }
+
+func InsertOne(store storage.Collection, ctx context.Context, game *models.Game) (*models.Game, error) {
+	insertedGame, insertError := store.InsertOne(ctx, game)
+	return insertedGame.(*models.Game), insertError
+}

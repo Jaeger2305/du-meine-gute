@@ -120,3 +120,24 @@ func TestFind(t *testing.T) {
 	assert.Equal(t, expectedGames, games)
 	assert.NoError(t, err)
 }
+
+func TestInsert(t *testing.T) {
+	// Arrange
+	mockCollection = &mocks.MockCollection{}
+	mockCollection.(*mocks.MockCollection).
+		On("InsertOne", context.Background(), &models.Game{
+			Name: "test-game-1",
+		}).
+		Return(&models.Game{
+			Name: "test-game-1",
+		}, nil)
+	newGame := &models.Game{
+		Name: "test-game-1",
+	}
+
+	// Act
+	_, err := InsertOne(mockCollection, context.Background(), newGame)
+
+	// Assert
+	assert.NoError(t, err)
+}

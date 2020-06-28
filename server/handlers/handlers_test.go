@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"net/http"
@@ -276,6 +277,51 @@ func TestGetGame(t *testing.T) {
 			notFoundRes.Body.String(), notFoundExpected)
 	}
 
+}
+
+func TestCreateGame(t *testing.T) {
+	// Arrange
+	mockClient = &mocks.MockClient{}
+	mockDb = &mocks.MockDatabase{}
+	mockCollection = &mocks.MockCollection{}
+	srHelperExample = &mocks.MockSingleResult{}
+	srHelperError = &mocks.MockSingleResult{}
+	mockDb.(*mocks.MockDatabase).Db.
+		On("Collection", "games").Return(mockCollection)
+	mockClient.(*mocks.MockClient).
+		On("Database", "du-meine-gute").Return(mockDb)
+	mockCollection.(*mocks.MockCollection).
+		On("InsertOne", mock.Anything, &models.Game{
+			Name: "test-game-1",
+		}).
+		Return(&models.Game{
+			Name: "test-game-1",
+		}, nil)
+
+	newGameJSON, _ := json.Marshal(&models.Game{Name: "test-game-1"})
+
+	// Act
+	req, err := http.NewRequest("POST", "/game", bytes.NewBuffer(newGameJSON))
+	if err != nil {
+		t.Fatal(err)
+	}
+	res := httptest.NewRecorder()
+	handler := CreateGame(mockClient)
+	handler.ServeHTTP(res, req)
+
+	// Should test a few more invalid inputs here, but this is just a quick test for now.
+
+	// Assert
+	if res.Code != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			res.Code, http.StatusOK)
+	}
+	expectedObj, _ := json.Marshal(&models.Game{Name: "test-game-1"})
+	expected := string(expectedObj) + "\n"
+	if res.Body.String() != expected {
+		t.Errorf("handler returned unexpected body: got %v want %v",
+			res.Body.String(), expected)
+	}
 }
 
 func TestGetStatus(t *testing.T) {
