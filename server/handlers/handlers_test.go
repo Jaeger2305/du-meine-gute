@@ -234,11 +234,11 @@ func TestGetGame(t *testing.T) {
 
 	badRes := httptest.NewRecorder()
 	handler.ServeHTTP(badRes, badReq)
-	badExpectedObj := &errors.HTTPError{
+	badExpectedObj := &responses.HTTPBasic{
 		Status:  http.StatusBadRequest,
 		IsError: true,
 	}
-	badResObj := &errors.HTTPError{}
+	badResObj := &responses.HTTPBasic{}
 	json.Unmarshal(badRes.Body.Bytes(), badResObj)
 	badExpectedObj.Description = badResObj.Description
 	assert.ObjectsAreEqual(badResObj, badExpectedObj)
@@ -262,11 +262,11 @@ func TestGetGame(t *testing.T) {
 
 	notFoundRes := httptest.NewRecorder()
 	handler.ServeHTTP(notFoundRes, notFoundReq)
-	notFoundExpectedObj := &errors.HTTPError{
+	notFoundExpectedObj := &responses.HTTPBasic{
 		Status:  http.StatusNotFound,
 		IsError: true,
 	}
-	notFoundResObj := &errors.HTTPError{}
+	notFoundResObj := &responses.HTTPBasic{}
 	json.Unmarshal(notFoundRes.Body.Bytes(), notFoundResObj)
 	notFoundExpectedObj.Description = notFoundResObj.Description
 	assert.ObjectsAreEqual(notFoundResObj, notFoundExpectedObj)

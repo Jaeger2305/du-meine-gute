@@ -6,6 +6,7 @@ import (
 
 	"github.com/Jaeger2305/du-meine-gute/storage"
 	models "github.com/Jaeger2305/du-meine-gute/storage/models"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func GetGameStore(client storage.Client) storage.Collection {
@@ -47,4 +48,9 @@ func Find(store storage.Collection, ctx context.Context, filter interface{}) ([]
 func InsertOne(store storage.Collection, ctx context.Context, game *models.Game) (*models.Game, error) {
 	insertedGame, insertError := store.InsertOne(ctx, game)
 	return insertedGame.(*models.Game), insertError
+}
+
+func Update(store storage.Collection, ctx context.Context, filter interface{}, update interface{}) (*mongo.UpdateResult, error) {
+	updateResult, updateError := store.UpdateOne(ctx, filter, update)
+	return updateResult.(*mongo.UpdateResult), updateError
 }

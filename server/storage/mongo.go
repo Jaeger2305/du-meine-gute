@@ -2,9 +2,12 @@ package storage
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
+	"github.com/astaxie/beego/session"
+	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -26,6 +29,7 @@ type Database interface {
 
 type Collection interface {
 	FindOne(context.Context, interface{}) SingleResult
+	UpdateOne(context.Context, interface{}, interface{}) (interface{}, error)
 	InsertOne(context.Context, interface{}) (interface{}, error)
 	Find(context.Context, interface{}) (Cursor, error)
 }
@@ -84,6 +88,11 @@ func (mc *mongoCollection) InsertOne(ctx context.Context, document interface{}) 
 	return res, err
 }
 
+func (mc *mongoCollection) UpdateOne(ctx context.Context, filter interface{}, update interface{}) (interface{}, error) {
+	res, err := mc.coll.UpdateOne(ctx, filter, update)
+	return res, err
+}
+
 func (mc *mongoCollection) FindOne(ctx context.Context, filter interface{}) SingleResult {
 	singleResult := mc.coll.FindOne(ctx, filter)
 	return &mongoSingleResult{sr: singleResult}
@@ -139,4 +148,23 @@ func NewClient(connector Connector, connectionString string) Client {
 		log.Fatal(err)
 	}
 	return client
+}
+
+func NewSessionManager() *session.Manager {
+	sessionConfig := &session.ManagerConfig{
+		CookieName:      "gosessionid",
+		EnableSetCookie: false,
+		ProviderConfig:  fmt.Sprintf("{\"cookieName\":\"gosessionid\",\"securityKey\":\"%s\"}", viper.GetString("DMG_SESSION_SECRET")),
+		Gclifetime:      3600,
+		Secure:          viper.GetString("DMG_ENV") != "development",
+	}
+	sessionManager, newManagerError := session.NewManager("cookie", sessionConfig)
+
+	if newManagerError != nil {
+		log.Fatal("Couldn't get manager", newManagerError)
+	}
+
+	go sessionManager.GC()
+
+	return sessionManager
 }

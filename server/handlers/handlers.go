@@ -10,10 +10,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Jaeger2305/du-meine-gute/errors"
 	gameRepository "github.com/Jaeger2305/du-meine-gute/repository"
+	"github.com/Jaeger2305/du-meine-gute/responses"
 	"github.com/Jaeger2305/du-meine-gute/storage"
 	models "github.com/Jaeger2305/du-meine-gute/storage/models"
+	"github.com/astaxie/beego/session"
 	"github.com/go-chi/chi"
 	"github.com/gorilla/websocket"
 	"go.mongodb.org/mongo-driver/bson"
@@ -72,13 +73,47 @@ func ServeFiles(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, p)
 }
 
-// JoinGame get all active games
-func JoinGame(w http.ResponseWriter, r *http.Request) {
-	joinedGame := Game{
-		Name: "test-game-1",
+// Login sets up a user's session. Currently no auth or anything.
+func Login(client storage.Client, sessionManager *session.Manager) http.HandlerFunc {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		// Parse input
+		dec := json.NewDecoder(r.Body)
+		var loginObject struct {
+			Username string `json:"username"`
+		}
+		decodeInputError := dec.Decode(&loginObject)
+		if decodeInputError != nil {
+			buf := new(strings.Builder)
+			numberOfBytes, copyBodyToBufferError := io.Copy(buf, r.Body)
+			if copyBodyToBufferError != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				json.NewEncoder(w).Encode(&responses.HTTPBasic{
+					Status:      http.StatusBadRequest,
+					Description: fmt.Sprintf("Invalid input - couldn't even parse request with byte count %s", string(numberOfBytes)),
+					IsError:     true,
+				})
+				return
+			}
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusBadRequest,
+				Description: fmt.Sprintf("Invalid input - %s - %s", decodeInputError, buf.String()),
+				IsError:     true,
+			})
+		}
+
+		// Verify login
+		log.Println("attempting to log in", loginObject.Username)
+
+		// Update the session
+		sess, _ := sessionManager.SessionStart(w, r)
+		defer sess.SessionRelease(w)
+		sess.Set("username", loginObject.Username)
+
+		// Communicate success
+		log.Println("logged in", loginObject.Username)
 	}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(joinedGame)
+	return http.HandlerFunc(fn)
 }
 
 var upgrader = websocket.Upgrader{
@@ -118,6 +153,94 @@ func GetLive(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// JoinGame sets up a session and saves the user into the game
+func JoinGame(client storage.Client, sessionManager *session.Manager) http.HandlerFunc {
+	gameStore := gameRepository.GetGameStore(client)
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		// Parse input
+		dec := json.NewDecoder(r.Body)
+		var joinGameObject struct {
+			GameID string `json:"gameID"`
+		}
+		decodeInputError := dec.Decode(&joinGameObject)
+		if decodeInputError != nil {
+			buf := new(strings.Builder)
+			numberOfBytes, copyBodyToBufferError := io.Copy(buf, r.Body)
+			if copyBodyToBufferError != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				json.NewEncoder(w).Encode(&responses.HTTPBasic{
+					Status:      http.StatusBadRequest,
+					Description: fmt.Sprintf("Invalid input - couldn't even parse request with byte count %s", string(numberOfBytes)),
+					IsError:     true,
+				})
+				return
+			}
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusBadRequest,
+				Description: fmt.Sprintf("Invalid input - %s - %s", decodeInputError, buf.String()),
+				IsError:     true,
+			})
+		}
+
+		// Validate operation
+		sess, _ := sessionManager.SessionStart(w, r)
+		defer sess.SessionRelease(w)
+		// activeGame := sess.Get("activeGame") // check that not already in a game
+		shortTimeoutContext, cancelGetGames := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancelGetGames()
+		idToFetch, inputErr := primitive.ObjectIDFromHex(joinGameObject.GameID)
+		if inputErr != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusBadRequest,
+				Description: fmt.Sprintf("Invalid input - %s", joinGameObject.GameID),
+				IsError:     true,
+			})
+			return
+		}
+
+		// Perform operation
+		// Add player to game object
+		// Just update the name at the moment.
+		updateResult, updateError := gameRepository.Update(gameStore, shortTimeoutContext, bson.M{"_id": idToFetch}, bson.M{
+			"$set": &bson.M{
+				"name": sess.Get("username").(string),
+			},
+		})
+		switch updateError {
+		case nil:
+			log.Println("Updated game successfully", joinGameObject.GameID, "with count", updateResult.ModifiedCount)
+		case mongo.ErrNoDocuments:
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusNotFound,
+				Description: fmt.Sprintf("No game documents found for %v", joinGameObject.GameID),
+				IsError:     true,
+			})
+		default:
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusInternalServerError,
+				Description: "unknown error",
+				IsError:     true,
+			})
+		}
+
+		// Update session
+		sess.Set("game", joinGameObject.GameID)
+
+		// Communicate
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(&responses.HTTPBasic{
+			Status:      200,
+			Description: "Updated successfully",
+			IsError:     false,
+		})
+	}
+	return http.HandlerFunc(fn)
+}
+
 // GetGames get all active games
 func GetGames(client storage.Client) http.HandlerFunc {
 	// gamesCollection := db.Database("du-meine-gute").Collection("games")
@@ -149,7 +272,7 @@ func GetGame(client storage.Client) http.HandlerFunc {
 		idToFetch, inputErr := primitive.ObjectIDFromHex(stringID)
 		if inputErr != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(&errors.HTTPError{
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
 				Status:      http.StatusBadRequest,
 				Description: fmt.Sprintf("Invalid input - %s", stringID),
 				IsError:     true,
@@ -162,14 +285,14 @@ func GetGame(client storage.Client) http.HandlerFunc {
 			json.NewEncoder(w).Encode(game)
 		case mongo.ErrNoDocuments:
 			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(&errors.HTTPError{
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
 				Status:      http.StatusNotFound,
 				Description: fmt.Sprintf("No game documents found for %v", stringID),
 				IsError:     true,
 			})
 		default:
 			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(&errors.HTTPError{
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
 				Status:      http.StatusInternalServerError,
 				Description: "unknown error",
 				IsError:     true,
@@ -194,7 +317,7 @@ func CreateGame(client storage.Client) http.HandlerFunc {
 			numberOfBytes, copyBodyToBufferError := io.Copy(buf, r.Body)
 			if copyBodyToBufferError != nil {
 				w.WriteHeader(http.StatusBadRequest)
-				json.NewEncoder(w).Encode(&errors.HTTPError{
+				json.NewEncoder(w).Encode(&responses.HTTPBasic{
 					Status:      http.StatusBadRequest,
 					Description: fmt.Sprintf("Invalid input - couldn't even parse request with byte count %s", string(numberOfBytes)),
 					IsError:     true,
@@ -202,7 +325,7 @@ func CreateGame(client storage.Client) http.HandlerFunc {
 				return
 			}
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(&errors.HTTPError{
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
 				Status:      http.StatusBadRequest,
 				Description: fmt.Sprintf("Invalid input - %s - %s", decodeInputError, buf.String()),
 				IsError:     true,
@@ -215,7 +338,7 @@ func CreateGame(client storage.Client) http.HandlerFunc {
 		insertedGame, insertError := gameStore.InsertOne(shortTimeoutContext, &game)
 		if insertError != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(&errors.HTTPError{
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
 				Status:      http.StatusInternalServerError,
 				Description: fmt.Sprintf("Couldn't insert game"),
 				IsError:     true,
