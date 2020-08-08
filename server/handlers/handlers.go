@@ -106,6 +106,7 @@ func Login(client storage.Client, sessionManager storage.SessionManager) http.Ha
 
 		// Update the session
 		sess, _ := sessionManager.SessionStart(w, r)
+		defer sess.SessionRelease(w)
 		sess.Set("username", loginObject.Username)
 
 		// Communicate success
@@ -190,6 +191,7 @@ func JoinGame(client storage.Client, sessionManager storage.SessionManager) http
 		}
 
 		sess, sessionStartErr := sessionManager.SessionStart(w, r)
+		defer sess.SessionRelease(w)
 		if sessionStartErr != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(&responses.HTTPBasic{
@@ -203,14 +205,16 @@ func JoinGame(client storage.Client, sessionManager storage.SessionManager) http
 		// Validate operation
 		activeGame := sess.Get("activegame") // check that not already in a game
 		if activeGame != nil {
-			w.WriteHeader(http.StatusBadRequest)
+			w.WriteHeader(http.StatusConflict)
 			json.NewEncoder(w).Encode(&responses.HTTPBasic{
-				Status:      http.StatusBadRequest,
+				Status:      http.StatusConflict,
 				Description: fmt.Sprintf("already in a game - %s", activeGame),
 				IsError:     true,
 			})
 			return
 		}
+
+		usernameJoiningGame := sess.Get("username").(string)
 
 		shortTimeoutContext, cancelGetGames := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancelGetGames()
@@ -227,12 +231,52 @@ func JoinGame(client storage.Client, sessionManager storage.SessionManager) http
 			return
 		}
 
+		// Get the game, and validate we can add to it.
+		isPlayerInGame := false
+		gameToJoin, getGameErr := gameRepository.FindOne(gameStore, shortTimeoutContext, bson.M{"_id": idToFetch})
+		switch getGameErr {
+		case nil:
+			// Check player not already in game
+			for _, player := range gameToJoin.State.Players {
+				if player.Name == usernameJoiningGame {
+					isPlayerInGame = true
+				}
+			}
+		case mongo.ErrNoDocuments:
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusNotFound,
+				Description: fmt.Sprintf("No game documents found for %v", idToFetch),
+				IsError:     true,
+			})
+			return
+		default:
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusInternalServerError,
+				Description: "unknown error",
+				IsError:     true,
+			})
+			return
+		}
+
+		if isPlayerInGame {
+			w.WriteHeader(http.StatusConflict)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusConflict,
+				Description: "already in the game",
+				IsError:     true,
+			})
+			return
+		}
+
 		// Perform operation
 		// Add player to game object
-		// Just update the name at the moment, as there's no array of players or anything yet.
 		updateResult, updateError := gameRepository.Update(gameStore, shortTimeoutContext, bson.M{"_id": idToFetch}, bson.M{
-			"$set": &bson.M{
-				"name": sess.Get("username").(string),
+			"$push": &bson.M{
+				"State.Players": &models.Player{
+					Name: usernameJoiningGame,
+				},
 			},
 		})
 		switch updateError {
@@ -278,13 +322,109 @@ func JoinGame(client storage.Client, sessionManager storage.SessionManager) http
 	return http.HandlerFunc(fn)
 }
 
+// LeaveGame removes a user from their current game
+func LeaveGame(client storage.Client, sessionManager storage.SessionManager) http.HandlerFunc {
+	gameStore := gameRepository.GetGameStore(client)
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		// Parse input
+		sess, sessionStartErr := sessionManager.SessionStart(w, r)
+		defer sess.SessionRelease(w)
+		if sessionStartErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusInternalServerError,
+				Description: fmt.Sprintf("Couldn't start a session"),
+				IsError:     true,
+			})
+			return
+		}
+		usernameLeavingGame := sess.Get("username").(string)
+
+		// Validate operation
+		activeGame := sess.Get("activegame") // check that not already in a game
+		if activeGame == nil {
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusBadRequest,
+				Description: fmt.Sprintf("not in a game - %s", activeGame),
+				IsError:     true,
+			})
+			return
+		} // Extract the object ID from the encoded hex passed over HTTP.
+		idToFetch, inputErr := primitive.ObjectIDFromHex(activeGame.(string))
+		if inputErr != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusBadRequest,
+				Description: fmt.Sprintf("Invalid session - %s", activeGame),
+				IsError:     true,
+			})
+			return
+		}
+
+		shortTimeoutContext, cancelGetGames := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancelGetGames()
+
+		// Perform operation
+		// Remove player from the game object
+		updateResult, updateError := gameRepository.Update(gameStore, shortTimeoutContext, bson.M{"_id": idToFetch}, bson.M{
+			"$pull": &bson.M{
+				"State.Players": &bson.M{
+					"name": &bson.M{
+						"$eq": usernameLeavingGame,
+					},
+				},
+			},
+		})
+		switch updateError {
+		case nil:
+			log.Println("Updated game successfully", activeGame, "with count", updateResult.ModifiedCount)
+		case mongo.ErrNoDocuments:
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusNotFound,
+				Description: fmt.Sprintf("No game documents found for %v", activeGame),
+				IsError:     true,
+			})
+			return
+		default:
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusInternalServerError,
+				Description: "unknown error",
+				IsError:     true,
+			})
+			return
+		}
+
+		// Update session
+		setActiveGameSessionErr := sess.Delete("activegame")
+		if setActiveGameSessionErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusInternalServerError,
+				Description: fmt.Sprintf("Couldn't update active game in user's session - %s", usernameLeavingGame),
+				IsError:     true,
+			})
+			return
+		}
+		sess.SessionRelease(w) // commits updates to provider, and must be before writing to header, so we can't defer this.
+
+		// Communicate
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(&responses.HTTPBasic{
+			Status:      200,
+			Description: "Updated successfully",
+			IsError:     false,
+		})
+	}
+	return http.HandlerFunc(fn)
+}
+
 // GetGames get all active games
 func GetGames(client storage.Client) http.HandlerFunc {
 	// gamesCollection := db.Database("du-meine-gute").Collection("games")
 	gameStore := gameRepository.GetGameStore(client)
-	// gameStore.InsertOne(context.TODO(), models.Game{
-	// 	Name: "test-game-1",
-	// })
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		shortTimeoutContext, cancelGetGames := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancelGetGames()

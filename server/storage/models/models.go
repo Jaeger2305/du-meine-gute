@@ -10,9 +10,11 @@ type Game struct {
 
 // Player details, for example those within a game
 type Player struct {
-	Name string
-	Age  int
-	City string
+	Name        string
+	Age         int
+	City        string
+	CardsInHand []Card
+	CardsInPlay []Card
 }
 
 // Card representation from the game

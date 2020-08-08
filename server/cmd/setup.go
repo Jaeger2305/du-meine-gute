@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 
@@ -40,6 +39,7 @@ func setupRoutes(client storage.Client, sessionManager storage.SessionManager) *
 	router.Get("/game/{gameID}", handlers.GetGame(client))
 	router.Post("/games", handlers.CreateGame(client))
 	router.With(authorised(client, sessionManager)).Post("/games/join", handlers.JoinGame(client, sessionManager))
+	router.With(authorised(client, sessionManager)).Post("/games/leave", handlers.LeaveGame(client, sessionManager))
 	router.Post("/login", handlers.Login(client, sessionManager))
 	// router.Get("/status", handlers.GetStatus)
 	router.With(authorised(client, sessionManager)).Get("/games/live", handlers.GetLive)
@@ -52,7 +52,6 @@ func authorised(client storage.Client, sessionManager storage.SessionManager) fu
 			sess, _ := sessionManager.SessionStart(w, r)
 			defer sess.SessionRelease(w)
 			username := sess.Get("username")
-			log.Println(sess.Get("activegame"))
 			if username == nil {
 				http.Error(w, http.StatusText(403), 403)
 				return

@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"strings"
 	"testing"
 
@@ -24,59 +23,6 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// TestServeFiles returns the index.html
-// This is fragile, and will be refactored when we set up Vue clientside
-func TestServeFiles(t *testing.T) {
-	req, err := http.NewRequest("GET", "/", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	res := httptest.NewRecorder()
-	os.Chdir("..") // Go doesn't handle working directory differences for tests very well.
-	// https://stackoverflow.com/questions/23847003/golang-tests-and-working-directory
-	handler := http.HandlerFunc(ServeFiles)
-	handler.ServeHTTP(res, req)
-	if res.Code != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			res.Code, http.StatusOK)
-	}
-	expected := `<html>
-  <head></head>
-  <body>
-    <h1>Du Meine Güte</h1>
-    <form action="/games/join" method="post">
-      <button type="submit">Join game</button>
-    </form>
-    <input id="message-detail">Send message</input>
-    <button id="send-message">Send message</button>
-    <script>
-      // Create WebSocket connection.
-      const socket = new WebSocket('ws://localhost:4444/games/live');
-
-      // Connection opened
-      socket.addEventListener('open', function (event) {
-          socket.send('status');
-      });
-
-      // Listen for messages
-      socket.addEventListener('message', function (event) {
-          console.log('Message from server ', event.data);
-      });
-
-      const messageDetailButton = document.getElementById('message-detail');
-      const sendMessageButton = document.getElementById('send-message');
-      sendMessageButton.addEventListener('click', () => {
-        socket.send(messageDetailButton.value)
-      });
-    </script>
-  </body>
-</html>`
-	if res.Body.String() != expected {
-		t.Errorf("handler returned unexpected body: got %v want %v",
-			res.Body.String(), expected)
-	}
-}
-
 var mockClient storage.Client
 var mockDb storage.Database
 var mockCollection storage.Collection
@@ -86,6 +32,72 @@ var mockCursor storage.Cursor
 
 // TestJoinGame returns the game thats been joined
 func TestJoinGame(t *testing.T) {
+	// Arrange
+	mockUsername := "test-user"
+	mockClient = &mocks.MockClient{}
+	mockDb = &mocks.MockDatabase{}
+	mockCollection = &mocks.MockCollection{}
+	srHelperExample = &mocks.MockSingleResult{}
+	srHelperExample.(*mocks.MockSingleResult).
+		On("Decode", mock.AnythingOfType("*storage.Game")).
+		Return(nil).
+		Run(func(args mock.Arguments) {
+			arg := args.Get(0).(*models.Game)
+			arg.Name = "test-game-1"
+		})
+	mockGameID := "5f2e8e87bef4c2c54981fc85"
+	idToFetch, _ := primitive.ObjectIDFromHex(mockGameID)
+	mockDb.(*mocks.MockDatabase).Db.
+		On("Collection", "games").Return(mockCollection)
+	mockClient.(*mocks.MockClient).
+		On("Database", "du-meine-gute").Return(mockDb)
+	mockCollection.(*mocks.MockCollection).
+		On("UpdateOne", mock.Anything, mock.Anything, mock.Anything).
+		Return(&mongo.UpdateResult{
+			ModifiedCount: 1,
+		}, nil)
+	mockCollection.(*mocks.MockCollection).
+		On("FindOne", mock.Anything, bson.M{"_id": idToFetch}).
+		Return(srHelperExample)
+
+	mockSessionManager := &mocks.MockSessionManager{}
+	mockSession := &mocks.MockSession{}
+	mockSession.On("SessionRelease", mock.Anything).Return()
+	mockSession.On("Get", "username").Return(mockUsername)
+	mockSession.On("Get", "activegame").Return(nil)
+	mockSession.On("Set", "activegame", mockGameID).Return(nil)
+
+	mockSessionManager.On("SessionStart", mock.Anything, mock.Anything).Return(mockSession, nil)
+
+	// Act
+	updates, _ := json.Marshal(&bson.M{"GameID": mockGameID})
+	req, err := http.NewRequest("POST", "/game/join", bytes.NewBuffer(updates))
+	if err != nil {
+		t.Fatal(err)
+	}
+	res := httptest.NewRecorder()
+	handler := JoinGame(mockClient, mockSessionManager)
+	handler.ServeHTTP(res, req)
+
+	// Assert
+	if res.Code != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			res.Code, http.StatusOK)
+	}
+	expectedObj, _ := json.Marshal(&responses.HTTPBasic{
+		Status:      200,
+		Description: "Updated successfully",
+		IsError:     false,
+	})
+	expected := string(expectedObj) + "\n"
+	if res.Body.String() != expected {
+		t.Errorf("handler returned unexpected body: got %v want %v",
+			res.Body.String(), expected)
+	}
+}
+
+// TestLeaveGame returns the game thats been left
+func TestLeaveGame(t *testing.T) {
 	// Arrange
 	mockUsername := "test-user"
 	mockClient = &mocks.MockClient{}
@@ -102,25 +114,25 @@ func TestJoinGame(t *testing.T) {
 		On("UpdateOne", mock.Anything, mock.Anything, mock.Anything).
 		Return(&mongo.UpdateResult{
 			ModifiedCount: 1,
-			UpsertedID:    mockGameID,
 		}, nil)
 
 	mockSessionManager := &mocks.MockSessionManager{}
 	mockSession := &mocks.MockSession{}
 	mockSession.On("SessionRelease", mock.Anything).Return()
 	mockSession.On("Get", "username").Return(mockUsername)
-	mockSession.On("Set", "game", mockGameID).Return(nil)
+	mockSession.On("Get", "activegame").Return(mockGameID)
+	mockSession.On("Delete", "activegame").Return(nil)
 
 	mockSessionManager.On("SessionStart", mock.Anything, mock.Anything).Return(mockSession, nil)
 
 	// Act
 	updates, _ := json.Marshal(&bson.M{"GameID": mockGameID})
-	req, err := http.NewRequest("POST", "/game/join", bytes.NewBuffer(updates))
+	req, err := http.NewRequest("POST", "/game/leave", bytes.NewBuffer(updates))
 	if err != nil {
 		t.Fatal(err)
 	}
 	res := httptest.NewRecorder()
-	handler := JoinGame(mockClient, mockSessionManager)
+	handler := LeaveGame(mockClient, mockSessionManager)
 	handler.ServeHTTP(res, req)
 
 	// Assert
