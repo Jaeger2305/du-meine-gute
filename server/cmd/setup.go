@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -51,6 +52,7 @@ func authorised(client storage.Client, sessionManager storage.SessionManager) fu
 			sess, _ := sessionManager.SessionStart(w, r)
 			defer sess.SessionRelease(w)
 			username := sess.Get("username")
+			log.Println(sess.Get("activegame"))
 			if username == nil {
 				http.Error(w, http.StatusText(403), 403)
 				return

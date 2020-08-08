@@ -106,11 +106,18 @@ func Login(client storage.Client, sessionManager storage.SessionManager) http.Ha
 
 		// Update the session
 		sess, _ := sessionManager.SessionStart(w, r)
-		defer sess.SessionRelease(w)
 		sess.Set("username", loginObject.Username)
 
 		// Communicate success
 		log.Println("logged in", loginObject.Username)
+
+		sess.SessionRelease(w)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(&responses.HTTPBasic{
+			Status:      200,
+			Description: "Logged in",
+			IsError:     false,
+		})
 	}
 	return http.HandlerFunc(fn)
 }
@@ -182,9 +189,7 @@ func JoinGame(client storage.Client, sessionManager storage.SessionManager) http
 			})
 		}
 
-		// Validate operation
 		sess, sessionStartErr := sessionManager.SessionStart(w, r)
-		defer sess.SessionRelease(w)
 		if sessionStartErr != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(&responses.HTTPBasic{
@@ -194,7 +199,19 @@ func JoinGame(client storage.Client, sessionManager storage.SessionManager) http
 			})
 			return
 		}
-		// activeGame := sess.Get("activeGame") // check that not already in a game
+
+		// Validate operation
+		activeGame := sess.Get("activegame") // check that not already in a game
+		if activeGame != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusBadRequest,
+				Description: fmt.Sprintf("already in a game - %s", activeGame),
+				IsError:     true,
+			})
+			return
+		}
+
 		shortTimeoutContext, cancelGetGames := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancelGetGames()
 
@@ -238,7 +255,7 @@ func JoinGame(client storage.Client, sessionManager storage.SessionManager) http
 		}
 
 		// Update session
-		setActiveGameSessionErr := sess.Set("game", joinGameObject.GameID)
+		setActiveGameSessionErr := sess.Set("activegame", joinGameObject.GameID)
 		if setActiveGameSessionErr != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(&responses.HTTPBasic{
@@ -250,6 +267,7 @@ func JoinGame(client storage.Client, sessionManager storage.SessionManager) http
 		}
 
 		// Communicate
+		sess.SessionRelease(w) // commits updates to provider, and must be before writing to header, so we can't defer this.
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(&responses.HTTPBasic{
 			Status:      200,
