@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"time"
 
 	"github.com/astaxie/beego/session"
@@ -150,7 +151,23 @@ func NewClient(connector Connector, connectionString string) Client {
 	return client
 }
 
-func NewSessionManager() *session.Manager {
+type SessionManager interface {
+	SessionStart(w http.ResponseWriter, r *http.Request) (session.Store, error)
+}
+
+// type SessionManager struct{}
+
+// func (sm *SessionManager) SessionStart(w http.ResponseWriter, r *http.Request) (Session, error) {
+// 	return session.Manager.SessionStart(w, r)
+// }
+
+type Session interface {
+	SessionRelease(w http.ResponseWriter)
+	Get(key interface{}) interface{}
+	Set(key interface{}, value interface{}) error
+}
+
+func NewSessionManager() SessionManager {
 	sessionConfig := &session.ManagerConfig{
 		CookieName:      "gosessionid",
 		EnableSetCookie: false,

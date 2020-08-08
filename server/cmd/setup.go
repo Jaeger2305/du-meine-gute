@@ -7,7 +7,6 @@ import (
 
 	"github.com/Jaeger2305/du-meine-gute/handlers"
 	"github.com/Jaeger2305/du-meine-gute/storage"
-	"github.com/astaxie/beego/session"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/spf13/viper"
@@ -25,7 +24,7 @@ func setupConfig() {
 	viper.AutomaticEnv()
 }
 
-func setupRoutes(client storage.Client, sessionManager *session.Manager) *chi.Mux {
+func setupRoutes(client storage.Client, sessionManager storage.SessionManager) *chi.Mux {
 	router := chi.NewRouter()
 
 	// Middleware setup
@@ -46,7 +45,7 @@ func setupRoutes(client storage.Client, sessionManager *session.Manager) *chi.Mu
 	return router
 }
 
-func authorised(client storage.Client, sessionManager *session.Manager) func(http.Handler) http.Handler {
+func authorised(client storage.Client, sessionManager storage.SessionManager) func(http.Handler) http.Handler {
 	fn := func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			sess, _ := sessionManager.SessionStart(w, r)

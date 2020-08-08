@@ -2,8 +2,10 @@ package mocks
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/Jaeger2305/du-meine-gute/storage"
+	"github.com/astaxie/beego/session"
 	"github.com/stretchr/testify/mock"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -65,6 +67,11 @@ func (mockCollection *MockCollection) InsertOne(ctx context.Context, document in
 	return ret.Get(0), ret.Error(1)
 }
 
+func (mockCollection *MockCollection) UpdateOne(ctx context.Context, filter interface{}, update interface{}) (interface{}, error) {
+	ret := mockCollection.Called(ctx, filter, update)
+	return ret.Get(0), ret.Error(1)
+}
+
 type MockCursor struct {
 	mock.Mock
 }
@@ -92,4 +99,45 @@ func (mockMockSingleResult *MockSingleResult) Decode(emptyElem interface{}) erro
 		return nil
 	}
 	return ret.Get(0).(error)
+}
+
+type MockSessionManager struct {
+	mock.Mock
+}
+
+func (mockSessionManager *MockSessionManager) SessionStart(w http.ResponseWriter, r *http.Request) (session.Store, error) {
+	ret := mockSessionManager.Called(w, r)
+	return ret.Get(0).(session.Store), ret.Error(1)
+}
+
+type MockSession struct {
+	mock.Mock
+}
+
+func (mockSession *MockSession) SessionRelease(w http.ResponseWriter) {
+	mockSession.Called(w)
+	return
+}
+
+func (mockSession *MockSession) Get(key interface{}) interface{} {
+	ret := mockSession.Called(key)
+	return ret.Get(0)
+}
+
+func (mockSession *MockSession) Set(key interface{}, value interface{}) error {
+	ret := mockSession.Called(key, value)
+	return ret.Error(0)
+}
+
+func (mockSession *MockSession) Delete(key interface{}) error {
+	ret := mockSession.Called(key)
+	return ret.Error(0)
+}
+func (mockSession *MockSession) Flush() error {
+	ret := mockSession.Called()
+	return ret.Error(0)
+}
+func (mockSession *MockSession) SessionID() string {
+	ret := mockSession.Called()
+	return ret.String(0)
 }

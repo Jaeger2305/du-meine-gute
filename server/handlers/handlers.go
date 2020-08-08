@@ -14,7 +14,6 @@ import (
 	"github.com/Jaeger2305/du-meine-gute/responses"
 	"github.com/Jaeger2305/du-meine-gute/storage"
 	models "github.com/Jaeger2305/du-meine-gute/storage/models"
-	"github.com/astaxie/beego/session"
 	"github.com/go-chi/chi"
 	"github.com/gorilla/websocket"
 	"go.mongodb.org/mongo-driver/bson"
@@ -74,7 +73,7 @@ func ServeFiles(w http.ResponseWriter, r *http.Request) {
 }
 
 // Login sets up a user's session. Currently no auth or anything.
-func Login(client storage.Client, sessionManager *session.Manager) http.HandlerFunc {
+func Login(client storage.Client, sessionManager storage.SessionManager) http.HandlerFunc {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		// Parse input
 		dec := json.NewDecoder(r.Body)
@@ -154,7 +153,7 @@ func GetLive(w http.ResponseWriter, r *http.Request) {
 }
 
 // JoinGame sets up a session and saves the user into the game
-func JoinGame(client storage.Client, sessionManager *session.Manager) http.HandlerFunc {
+func JoinGame(client storage.Client, sessionManager storage.SessionManager) http.HandlerFunc {
 	gameStore := gameRepository.GetGameStore(client)
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		// Parse input
@@ -184,11 +183,22 @@ func JoinGame(client storage.Client, sessionManager *session.Manager) http.Handl
 		}
 
 		// Validate operation
-		sess, _ := sessionManager.SessionStart(w, r)
+		sess, sessionStartErr := sessionManager.SessionStart(w, r)
 		defer sess.SessionRelease(w)
+		if sessionStartErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusInternalServerError,
+				Description: fmt.Sprintf("Couldn't start a session"),
+				IsError:     true,
+			})
+			return
+		}
 		// activeGame := sess.Get("activeGame") // check that not already in a game
 		shortTimeoutContext, cancelGetGames := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancelGetGames()
+
+		// Extract the object ID from the encoded hex passed over HTTP.
 		idToFetch, inputErr := primitive.ObjectIDFromHex(joinGameObject.GameID)
 		if inputErr != nil {
 			w.WriteHeader(http.StatusBadRequest)
@@ -202,7 +212,7 @@ func JoinGame(client storage.Client, sessionManager *session.Manager) http.Handl
 
 		// Perform operation
 		// Add player to game object
-		// Just update the name at the moment.
+		// Just update the name at the moment, as there's no array of players or anything yet.
 		updateResult, updateError := gameRepository.Update(gameStore, shortTimeoutContext, bson.M{"_id": idToFetch}, bson.M{
 			"$set": &bson.M{
 				"name": sess.Get("username").(string),
@@ -228,7 +238,16 @@ func JoinGame(client storage.Client, sessionManager *session.Manager) http.Handl
 		}
 
 		// Update session
-		sess.Set("game", joinGameObject.GameID)
+		setActiveGameSessionErr := sess.Set("game", joinGameObject.GameID)
+		if setActiveGameSessionErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusInternalServerError,
+				Description: fmt.Sprintf("Couldn't update active game in user's session - %s", joinGameObject.GameID),
+				IsError:     true,
+			})
+			return
+		}
 
 		// Communicate
 		w.Header().Set("Content-Type", "application/json")

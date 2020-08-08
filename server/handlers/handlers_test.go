@@ -16,8 +16,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"github.com/Jaeger2305/du-meine-gute/errors"
 	"github.com/Jaeger2305/du-meine-gute/mocks"
+	"github.com/Jaeger2305/du-meine-gute/responses"
 	"github.com/Jaeger2305/du-meine-gute/storage"
 	models "github.com/Jaeger2305/du-meine-gute/storage/models"
 	"github.com/go-chi/chi"
@@ -77,35 +77,68 @@ func TestServeFiles(t *testing.T) {
 	}
 }
 
-// TestJoinGame returns the game thats been joined
-func TestJoinGame(t *testing.T) {
-	req, err := http.NewRequest("POST", "/games/join", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	res := httptest.NewRecorder()
-	handler := http.HandlerFunc(JoinGame)
-	handler.ServeHTTP(res, req)
-
-	if res.Code != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			res.Code, http.StatusOK)
-	}
-
-	expected := `{"name":"test-game-1"}` + "\n"
-	if res.Body.String() != expected {
-		t.Errorf("handler returned unexpected body: got %v want %v",
-			res.Body.String(), expected)
-	}
-}
-
 var mockClient storage.Client
 var mockDb storage.Database
 var mockCollection storage.Collection
 var srHelperExample storage.SingleResult
 var srHelperError storage.SingleResult
 var mockCursor storage.Cursor
+
+// TestJoinGame returns the game thats been joined
+func TestJoinGame(t *testing.T) {
+	// Arrange
+	mockUsername := "test-user"
+	mockClient = &mocks.MockClient{}
+	mockDb = &mocks.MockDatabase{}
+	mockCollection = &mocks.MockCollection{}
+	srHelperExample = &mocks.MockSingleResult{}
+	srHelperError = &mocks.MockSingleResult{}
+	mockGameID := "5f2e8e87bef4c2c54981fc85"
+	mockDb.(*mocks.MockDatabase).Db.
+		On("Collection", "games").Return(mockCollection)
+	mockClient.(*mocks.MockClient).
+		On("Database", "du-meine-gute").Return(mockDb)
+	mockCollection.(*mocks.MockCollection).
+		On("UpdateOne", mock.Anything, mock.Anything, mock.Anything).
+		Return(&mongo.UpdateResult{
+			ModifiedCount: 1,
+			UpsertedID:    mockGameID,
+		}, nil)
+
+	mockSessionManager := &mocks.MockSessionManager{}
+	mockSession := &mocks.MockSession{}
+	mockSession.On("SessionRelease", mock.Anything).Return()
+	mockSession.On("Get", "username").Return(mockUsername)
+	mockSession.On("Set", "game", mockGameID).Return(nil)
+
+	mockSessionManager.On("SessionStart", mock.Anything, mock.Anything).Return(mockSession, nil)
+
+	// Act
+	updates, _ := json.Marshal(&bson.M{"GameID": mockGameID})
+	req, err := http.NewRequest("POST", "/game/join", bytes.NewBuffer(updates))
+	if err != nil {
+		t.Fatal(err)
+	}
+	res := httptest.NewRecorder()
+	handler := JoinGame(mockClient, mockSessionManager)
+	handler.ServeHTTP(res, req)
+
+	// Assert
+	if res.Code != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			res.Code, http.StatusOK)
+	}
+	expectedObj, _ := json.Marshal(&responses.HTTPBasic{
+		Status:      200,
+		Description: "Updated successfully",
+		IsError:     false,
+	})
+	expected := string(expectedObj) + "\n"
+	if res.Body.String() != expected {
+		t.Errorf("handler returned unexpected body: got %v want %v",
+			res.Body.String(), expected)
+	}
+}
 
 func TestGetGames(t *testing.T) {
 	// Because we're not using an object and accessing its methods, the whole structure needs to be mocked at the moment.
