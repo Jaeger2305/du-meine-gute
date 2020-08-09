@@ -393,11 +393,11 @@ func TestGetStatus(t *testing.T) {
 
 func TestGetLive(t *testing.T) {
 	router := chi.NewRouter()
-	router.Get("/games/live", GetLive)
+	router.Get("/game/live", GetLive)
 	server := httptest.NewServer(router)
 	defer server.Close()
 
-	wsURL := "ws" + strings.TrimPrefix(server.URL, "http") + "/games/live"
+	wsURL := "ws" + strings.TrimPrefix(server.URL, "http") + "/game/live"
 
 	ws, _, err := websocket.DefaultDialer.Dial(wsURL, nil)
 	if err != nil {

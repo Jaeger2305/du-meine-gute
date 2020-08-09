@@ -37,12 +37,12 @@ func setupRoutes(client storage.Client, sessionManager storage.SessionManager) *
 	router.Get("/", handlers.ServeFiles)
 	router.Get("/game", handlers.GetGames(client))
 	router.Get("/game/{gameID}", handlers.GetGame(client))
-	router.Post("/games", handlers.CreateGame(client))
-	router.With(authorised(client, sessionManager)).Post("/games/join", handlers.JoinGame(client, sessionManager))
-	router.With(authorised(client, sessionManager)).Post("/games/leave", handlers.LeaveGame(client, sessionManager))
+	router.Post("/game", handlers.CreateGame(client))
+	router.With(authorised(client, sessionManager)).Post("/game/join", handlers.JoinGame(client, sessionManager))
+	router.With(authorised(client, sessionManager)).Post("/game/leave", handlers.LeaveGame(client, sessionManager))
 	router.Post("/login", handlers.Login(client, sessionManager))
 	// router.Get("/status", handlers.GetStatus)
-	router.With(authorised(client, sessionManager)).Get("/games/live", handlers.GetLive)
+	router.With(authorised(client, sessionManager)).Get("/game/live", handlers.GetLive)
 	return router
 }
 
