@@ -25,5 +25,7 @@ module.exports = {
   globals: {
     TNS_APP_MODE: true,
     TNS_APP_PLATFORM: true
-  }
+  },
+
+  ignorePatterns: ["webpack.config.js"]
 };
