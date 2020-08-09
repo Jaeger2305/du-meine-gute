@@ -1,24 +1,23 @@
-# client
+# NativeScript-Vue Application
 
-## Project setup
-```
+> A native application for the niche German boardgame
+
+## Usage
+
+``` bash
+# Install dependencies
 npm install
-```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+# Preview on device
+tns preview
 
-### Compiles and minifies for production
-```
-npm run build
-```
+# Build, watch for changes and run the application
+tns run
 
-### Lints and fixes files
-```
-npm run lint
-```
+# Build, watch for changes and debug the application
+tns debug <platform>
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+# Build for production
+tns build <platform> --env.production
+
+```

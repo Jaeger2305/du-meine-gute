@@ -1,55 +1,39 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "strict": true,
-    "jsx": "preserve",
-    "importHelpers": true,
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
-    "baseUrl": ".",
-    "types": [
-      "node"
-    ],
+    "target": "es5",                          /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'. */
+    "module": "commonjs",                     /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */
+    "lib": [
+      "dom", "es2015"
+    ],                             /* Specify library files to be included in the compilation. */
+    "sourceMap": true,                     /* Generates corresponding '.map' file. */
+    "noEmitHelpers": true,
+    "importHelpers": true,                 /* Import emit helpers from 'tslib'. */
+    "moduleResolution": "node",            /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
+    "baseUrl": ".",                       /* Base directory to resolve non-absolute module names. */
     "paths": {
       "@/*": [
         "app/*"
-      ],
-      "assets/*": [
-        "app/assets/*"
-      ],
-      "fonts/*": [
-        "app/fonts/*"
-      ],
-      "components/*": [
-        "app/components/*"
-      ],
-      "styles/*": [
-        "app/styles/*"
-      ],
-      "src/*": [
-        "app/*"
       ]
-    },
-    "lib": [
-      "esnext",
-      "dom",
-      "dom.iterable",
-      "scripthost"
-    ],
-    "noImplicitAny": false
+     },                           /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
+    "typeRoots": [
+      "types"
+    ],                       /* List of folders to include type definitions from. */
+    "types": [
+      "node"
+    ],                           /* Type declaration files to be included in compilation. */
+    "allowSyntheticDefaultImports": true,  /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */
+    "esModuleInterop": true,                   /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
+    "experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
+    "emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
+
+    "skipLibCheck": true
   },
   "include": [
-    "tests/**/*.ts",
-    "tests/**/*.tsx",
-    "types/**/*.d.ts",
-    "app/**/*.ts",
-    "app/**/*.tsx",
-    "app/**/*.vue"
+    "app",
+    "types"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "platforms"
   ]
 }

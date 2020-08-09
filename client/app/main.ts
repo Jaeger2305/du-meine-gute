@@ -1,13 +1,16 @@
-import Vue from 'nativescript-vue';
+import Vue from "nativescript-vue";
+import App from "./components/App";
+import VueDevtools from "nativescript-vue-devtools";
 
-import App from './App.vue';
+if (TNS_ENV !== "production") {
+  Vue.use(VueDevtools);
+}
+import store from "./store";
 
-// Set the following to `true` to hide the logs created by nativescript-vue
-Vue.config.silent = false;
-// Set the following to `false` to not colorize the logs created by nativescript-vue
-// disabled in template due to typing issue for Typescript projects....NEEDS TO BE FIXED
-// Vue.config.debug = true;
+// Prints Vue logs when --env.production is *NOT* set while building
+Vue.config.silent = TNS_ENV === "production";
 
 new Vue({
-  render: h => h('frame', [h(App)]),
+  store,
+  render: (h) => h("frame", [h(App)]),
 }).$start();
