@@ -1,10 +1,10 @@
 <template>
-  <Page>
+  <Page actionBarHidden="true">
     <GridLayout columns="*" rows="*">
       <Button text="fetchGames" @tap="fetchGames" />
       <ListView for="game in games">
         <v-template>
-          <Label class="message" :text="JSON.stringify(game)" col="0" row="0" />
+          <GameListItem :game="game" />
         </v-template>
       </ListView>
     </GridLayout>
@@ -12,12 +12,14 @@
 </template>
 
 <script lang="ts">
-const axios = require("axios");
 export default {
   data() {
     return {
       games: [],
     };
+  },
+  async created() {
+    await this.fetchGames();
   },
   methods: {
     async fetchGames() {

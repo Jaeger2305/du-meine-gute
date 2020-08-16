@@ -1,7 +1,10 @@
 package storage
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 // Game representation in mongo collection
 type Game struct {
+	ID      primitive.ObjectID `json:"_id" bson:"_id"`
 	Name    string
 	History []struct{}
 	Config  struct{}
