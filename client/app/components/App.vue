@@ -31,12 +31,7 @@ export default {
       let response;
       try {
         console.log("trying");
-        // response = await axios({
-        //   method: "get",
-        //   url: "https://10.0.2.2:8080",
-        //   responseType: "json",
-        // });
-        response = await fetch("http://10.0.2.2:4444/game");
+        response = await fetch(`${dmgAppConfig.apiUrl}/game`);
         console.log("got here at least");
         const data = await response.json();
         console.log(data);
