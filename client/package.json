@@ -15,27 +15,32 @@
     }
   },
   "dependencies": {
-    "vuex": "^3.3.0",
-    "@vue/devtools": "^5.3.3",
-    "nativescript-socketio": "^3.3.1",
-    "nativescript-vue-devtools": "^1.4.0",
-    "nativescript-toasty": "^3.0.0-alpha.2",
     "@nativescript/theme": "^2.2.1",
+    "@vue/devtools": "^5.3.3",
+    "axios": "^0.19.2",
+    "nativescript-orientation": "^2.2.5",
+    "nativescript-socketio": "^3.3.1",
+    "nativescript-toasty": "^3.0.0-alpha.2",
     "nativescript-vue": "^2.6.1",
-    "tns-core-modules": "^6.5.1"
+    "nativescript-vue-devtools": "^1.4.0",
+    "tns-core-modules": "^6.5.1",
+    "vuex": "^3.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
+    "@types/node": "^13.11.1",
+    "@vue/cli": "^4.4.6",
     "babel-loader": "^8.1.0",
     "nativescript-dev-webpack": "^1.5.1",
-    "nativescript-vue-template-compiler": "^2.6.0",
-    "nativescript-worker-loader": "~0.11.0",
+    "nativescript-vue-template-compiler": "^2.7.1",
+    "nativescript-worker-loader": "^0.11.0",
     "node-sass": "^4.13.1",
+    "rimraf": "^3.0.2",
     "tns-platform-declarations": "^6.5.1",
     "typescript": "^3.8.3",
-    "@types/node": "^13.11.1",
     "vue": "^2.6.11",
-    "vue-loader": "^15.9.1"
+    "vue-loader": "^15.9.3",
+    "webpack": "^4.44.1"
   }
 }

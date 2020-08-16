@@ -22,5 +22,5 @@ func main() {
 
 	httpPort := viper.GetString("DMG_PORT")
 	log.Printf("Running on port %s\n", httpPort)
-	log.Fatal(http.ListenAndServe(":"+httpPort, router))
+	log.Fatal(http.ListenAndServe("localhost:"+httpPort, router))
 }
