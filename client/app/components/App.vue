@@ -1,44 +1,24 @@
 <template>
   <Page>
-    <ActionBar title="Welcome to NativeScript-Vue!" />
+    <ActionBar title="Du Meine Güte" />
     <GridLayout columns="*" rows="*">
-      <Button text="fetchGames" @tap="fetchGames" />
-      <Label class="message" :text="msg" col="0" row="0" />
-      <ListView for="game in games">
-        <v-template>
-          <Label class="message" :text="JSON.stringify(game)" col="0" row="0" />
-        </v-template>
-      </ListView>
+      <Button text="gotologin" @tap="login" />
     </GridLayout>
   </Page>
 </template>
 
 <script lang="ts">
-const axios = require("axios");
-var orientation = require("nativescript-orientation");
+import Login from "./Login.vue";
+import Lobby from "./Lobby.vue";
+import orientation from "nativescript-orientation";
+
 orientation.enableRotation();
 orientation.setOrientation("landscape");
-console.log(orientation.getOrientation()); // Returns the enum DeviceOrientation value
+
 export default {
-  data() {
-    return {
-      msg: "Hello Worldfgddddd!",
-      games: [],
-    };
-  },
   methods: {
-    async fetchGames() {
-      let response;
-      try {
-        console.log("trying");
-        response = await fetch(`${dmgAppConfig.apiUrl}/game`);
-        console.log("got here at least");
-        const data = await response.json();
-        console.log(data);
-        this.games = data;
-      } catch (error) {
-        console.error("the localhost fetch failed.", error);
-      }
+    login() {
+      this.$navigateTo(Login);
     },
   },
 };
@@ -48,12 +28,5 @@ export default {
 ActionBar {
   background-color: #53ba82;
   color: #ffffff;
-}
-
-.message {
-  vertical-align: center;
-  text-align: center;
-  font-size: 20;
-  color: #333333;
 }
 </style>
