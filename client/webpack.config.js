@@ -338,6 +338,8 @@ module.exports = (env) => {
             env && env.DMG_API_URL
               ? JSON.stringify(env.DMG_API_URL)
               : undefined,
+          wsUrl:
+            env && env.DMG_WS_URL ? JSON.stringify(env.DMG_WS_URL) : undefined,
         },
       }),
       // Remove all files from the out dir.

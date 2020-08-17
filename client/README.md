@@ -30,8 +30,8 @@ By default, the following environment variables are present when running android
 
 Android emulator has its own network, so the API URL differs with iOS for local development.
 
-`tns run android --env.DMG_API_URL=http://10.0.2.2:4444`
-`tns run ios --env.DMG_API_URL=http://localhost:4444`
+`tns run android --env.DMG_API_URL=http://10.0.2.2:4444 --env.DMG_WS_URL=ws://10.0.2.2:4444`
+`tns run ios --env.DMG_API_URL=http://localhost:4444 --env.DMG_WS_URL=ws://localhost:4444`
 
 The env vars for the app should be prefixed with `DMG_` to avoid clashes.
 

@@ -16,6 +16,7 @@ import (
 	models "github.com/Jaeger2305/du-meine-gute/storage/models"
 	"github.com/go-chi/chi"
 	"github.com/gorilla/websocket"
+	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -130,6 +131,11 @@ var upgrader = websocket.Upgrader{
 
 // GetLive websocket connection
 func GetLive(w http.ResponseWriter, r *http.Request) {
+	// Whitelist all origins if in local development
+	if viper.GetString("DMG_ENV") == "development" {
+		upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+	}
+
 	connection, err := upgrader.Upgrade(w, r, nil)
 	defer connection.Close()
 	if err != nil {
