@@ -515,6 +515,7 @@ func CreateGame(client storage.Client) http.HandlerFunc {
 			})
 			return
 		}
+		game.ID = primitive.NewObjectID()
 		shortTimeoutContext, cancelCreateGame := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancelCreateGame()
 		w.Header().Set("Content-Type", "application/json")
