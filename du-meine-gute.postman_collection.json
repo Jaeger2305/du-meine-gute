@@ -12,7 +12,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"username\": \"richard\"\n}",
+          "raw": "{\n    \"username\": \"testuser\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -45,7 +45,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"GameID\": \"5f2ef8d576a4c6661ad5847e\"\n}",
+          "raw": "{\n    \"GameID\": \"5f3c4a22e29a4af381e1f32f\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -75,7 +75,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"Name\": \"richard\"\n}",
+          "raw": "{\n    \"Name\": \"richard-2337\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -106,10 +106,10 @@
           }
         },
         "url": {
-          "raw": "localhost:4444/game/leave",
+          "raw": "localhost:4444/games/leave",
           "host": ["localhost"],
           "port": "4444",
-          "path": ["game", "leave"]
+          "path": ["games", "leave"]
         }
       },
       "response": []
