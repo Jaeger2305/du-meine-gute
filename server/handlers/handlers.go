@@ -130,40 +130,92 @@ var upgrader = websocket.Upgrader{
 }
 
 // GetLive websocket connection
-func GetLive(w http.ResponseWriter, r *http.Request) {
+func GetLive(client storage.Client, sessionManager storage.SessionManager) http.HandlerFunc {
 	// Whitelist all origins if in local development
 	if viper.GetString("DMG_ENV") == "development" {
 		upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 	}
 
-	connection, err := upgrader.Upgrade(w, r, nil)
-	defer connection.Close()
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	for {
-		_, p, err := connection.ReadMessage()
-		if err != nil {
-			log.Println(err)
+	gameStore := gameRepository.GetGameStore(client)
+
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		session, sessionStartErr := sessionManager.SessionStart(w, r)
+		defer session.SessionRelease(w)
+
+		if sessionStartErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusInternalServerError,
+				Description: fmt.Sprintf("Couldn't start a session"),
+				IsError:     true,
+			})
 			return
 		}
-		response, err := RouteIncomingMessage(string(p))
-		if err != nil {
-			log.Println(err)
+
+		activeGame, isActiveGameSet := session.Get("activegame").(string)
+		if !isActiveGameSet {
+			// Currently difficult to set this session var when using websockets.
+			// I've been instead hardcoding this block directly to the game I'm trying to join.
+			// Not sustainable. When it comes to testing within the app instead of via postman requests, I can re-evaluate.
+			// Could also create a specific test environment if need be.
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusBadRequest,
+				Description: fmt.Sprintf("User not in a game - %", activeGame),
+				IsError:     true,
+			})
+			return
 		}
-		log.Println(response)
-		_, outgoingMessage, err := RouteOutgoingMessage(string(response))
-		if err != nil {
-			log.Println(err)
+
+		idToFetch, activeGameParseError := primitive.ObjectIDFromHex(activeGame)
+		if activeGameParseError != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusBadRequest,
+				Description: fmt.Sprintf("No active game found for user - %s", activeGame),
+				IsError:     true,
+			})
+			return
 		}
-		if outgoingMessage != "" {
-			if err := connection.WriteMessage(websocket.TextMessage, []byte(outgoingMessage)); err != nil {
+
+		connection, upgradeErr := upgrader.Upgrade(w, r, nil)
+		defer connection.Close()
+
+		if upgradeErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusInternalServerError,
+				Description: fmt.Sprintf("Couldn't upgrade connection - %s", upgradeErr),
+				IsError:     true,
+			})
+			return
+		}
+
+		// Start the websocket loop
+		for {
+			_, p, err := connection.ReadMessage()
+			if err != nil {
 				log.Println(err)
 				return
 			}
+			response, err := RouteIncomingMessage(string(p), gameStore, idToFetch)
+			if err != nil {
+				log.Println(err)
+			}
+			log.Println(response)
+			_, outgoingMessage, err := RouteOutgoingMessage(string(response))
+			if err != nil {
+				log.Println(err)
+			}
+			if outgoingMessage != "" {
+				if err := connection.WriteMessage(websocket.TextMessage, []byte(outgoingMessage)); err != nil {
+					log.Println(err)
+					return
+				}
+			}
 		}
 	}
+	return http.HandlerFunc(fn)
 }
 
 // JoinGame sets up a session and saves the user into the game

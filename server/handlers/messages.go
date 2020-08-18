@@ -1,7 +1,16 @@
 package handlers
 
 import (
+	"context"
 	"fmt"
+	"log"
+	"time"
+
+	gameRepository "github.com/Jaeger2305/du-meine-gute/repository"
+	"github.com/Jaeger2305/du-meine-gute/storage"
+	cards "github.com/Jaeger2305/du-meine-gute/storage/cards"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func drawCard() string {
@@ -21,7 +30,7 @@ func status() string {
 }
 
 // RouteIncomingMessage handles incoming websocket messages, and calls the appropriate function handlers.
-func RouteIncomingMessage(message string) (string, error) {
+func RouteIncomingMessage(message string, gameStore storage.Collection, idToFetch primitive.ObjectID) (string, error) {
 	switch message {
 	case "drawCard":
 		drawCard()
