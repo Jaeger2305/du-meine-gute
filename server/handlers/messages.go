@@ -21,7 +21,19 @@ func playCard() string {
 	return "played card"
 }
 
-func ready() string {
+func ready(gameStore storage.Collection, idToFetch primitive.ObjectID) string {
+	initialCards := cards.GetCards()
+	shortTimeoutContext, cancelUpdateGame := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancelUpdateGame()
+	updateResult, updateError := gameRepository.Update(gameStore, shortTimeoutContext, bson.M{"_id": idToFetch}, bson.M{
+		"$push": &bson.M{
+			"State.CardsInDeck": initialCards,
+		},
+	})
+	switch updateError {
+	case nil:
+		log.Println("Updated game successfully", idToFetch, "with count", updateResult.ModifiedCount)
+	}
 	return "readied game"
 }
 
@@ -39,7 +51,7 @@ func RouteIncomingMessage(message string, gameStore storage.Collection, idToFetc
 		playCard()
 		return "success", nil
 	case "ready":
-		ready()
+		ready(gameStore, idToFetch)
 		return "success", nil
 	case "status":
 		status()
@@ -54,6 +66,8 @@ func RouteOutgoingMessage(message string) (int, string, error) {
 	switch message {
 	case "success":
 		return 2, "success", nil
+	case "drawCard":
+		return 3, "drawCard", nil
 	}
-	return 1, "", nil
+	return 1, "error", nil
 }
