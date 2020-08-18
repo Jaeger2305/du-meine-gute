@@ -220,7 +220,17 @@ func JoinGame(client storage.Client, sessionManager storage.SessionManager) http
 			return
 		}
 
-		usernameJoiningGame := sess.Get("username").(string)
+		usernameJoiningGame, isUsernameSet := sess.Get("username").(string)
+
+		if !isUsernameSet {
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusUnauthorized,
+				Description: fmt.Sprintf("no username set when trying to join game - %s", activeGame),
+				IsError:     true,
+			})
+			return
+		}
 
 		shortTimeoutContext, cancelGetGames := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancelGetGames()
@@ -524,7 +534,7 @@ func CreateGame(client storage.Client) http.HandlerFunc {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(&responses.HTTPBasic{
 				Status:      http.StatusInternalServerError,
-				Description: fmt.Sprintf("Couldn't insert game"),
+				Description: fmt.Sprintf("Couldn't insert game - %s", insertError),
 				IsError:     true,
 			})
 			return
