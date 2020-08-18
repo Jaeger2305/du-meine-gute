@@ -42,16 +42,25 @@ func setupRoutes(client storage.Client, sessionManager storage.SessionManager) *
 	router.With(authorised(client, sessionManager)).Post("/game/leave", handlers.LeaveGame(client, sessionManager))
 	router.Post("/login", handlers.Login(client, sessionManager))
 	// router.Get("/status", handlers.GetStatus)
-	router.With(authorised(client, sessionManager)).Get("/game/live", handlers.GetLive)
+	router.With(authorised(client, sessionManager)).Get("/game/live", handlers.GetLive(client, sessionManager))
 	return router
 }
 
 func authorised(client storage.Client, sessionManager storage.SessionManager) func(http.Handler) http.Handler {
 	fn := func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			sess, _ := sessionManager.SessionStart(w, r)
-			defer sess.SessionRelease(w)
-			username := sess.Get("username")
+			session, _ := sessionManager.SessionStart(w, r)
+			defer session.SessionRelease(w)
+
+			// If in development, skip authentication.
+			if viper.GetString("DMG_ENV") == "development" {
+				session.Set("username", "testuser")
+				session.SessionRelease(w)
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			username := session.Get("username")
 			if username == nil {
 				http.Error(w, http.StatusText(403), 403)
 				return
