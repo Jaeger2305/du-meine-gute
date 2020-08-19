@@ -67,8 +67,8 @@ func (mockCollection *MockCollection) InsertOne(ctx context.Context, document in
 	return ret.Get(0), ret.Error(1)
 }
 
-func (mockCollection *MockCollection) UpdateOne(ctx context.Context, filter interface{}, update interface{}) (interface{}, error) {
-	ret := mockCollection.Called(ctx, filter, update)
+func (mockCollection *MockCollection) UpdateOne(ctx context.Context, filter interface{}, update interface{}, options *options.UpdateOptions) (interface{}, error) {
+	ret := mockCollection.Called(ctx, filter, update, options)
 	return ret.Get(0), ret.Error(1)
 }
 

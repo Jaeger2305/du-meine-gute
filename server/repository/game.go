@@ -7,6 +7,7 @@ import (
 	"github.com/Jaeger2305/du-meine-gute/storage"
 	models "github.com/Jaeger2305/du-meine-gute/storage/models"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func GetGameStore(client storage.Client) storage.Collection {
@@ -50,7 +51,7 @@ func InsertOne(store storage.Collection, ctx context.Context, game *models.Game)
 	return insertedGame.(*models.Game), insertError
 }
 
-func Update(store storage.Collection, ctx context.Context, filter interface{}, update interface{}) (*mongo.UpdateResult, error) {
-	updateResult, updateError := store.UpdateOne(ctx, filter, update)
+func Update(store storage.Collection, ctx context.Context, filter interface{}, update interface{}, options *options.UpdateOptions) (*mongo.UpdateResult, error) {
+	updateResult, updateError := store.UpdateOne(ctx, filter, update, options)
 	return updateResult.(*mongo.UpdateResult), updateError
 }

@@ -30,7 +30,7 @@ type Database interface {
 
 type Collection interface {
 	FindOne(context.Context, interface{}) SingleResult
-	UpdateOne(context.Context, interface{}, interface{}) (interface{}, error)
+	UpdateOne(context.Context, interface{}, interface{}, *options.UpdateOptions) (interface{}, error)
 	InsertOne(context.Context, interface{}) (interface{}, error)
 	Find(context.Context, interface{}) (Cursor, error)
 }
@@ -89,8 +89,8 @@ func (mc *mongoCollection) InsertOne(ctx context.Context, document interface{}) 
 	return res, err
 }
 
-func (mc *mongoCollection) UpdateOne(ctx context.Context, filter interface{}, update interface{}) (interface{}, error) {
-	res, err := mc.coll.UpdateOne(ctx, filter, update)
+func (mc *mongoCollection) UpdateOne(ctx context.Context, filter interface{}, update interface{}, options *options.UpdateOptions) (interface{}, error) {
+	res, err := mc.coll.UpdateOne(ctx, filter, update, options)
 	return res, err
 }
 

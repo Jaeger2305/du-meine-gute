@@ -20,6 +20,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // Error represents a handler error. It provides methods for a HTTP status
@@ -152,6 +153,17 @@ func GetLive(client storage.Client, sessionManager storage.SessionManager) http.
 			return
 		}
 
+		activeUsername, isUsernameSet := session.Get("username").(string)
+		if !isUsernameSet {
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusBadRequest,
+				Description: fmt.Sprintf("User not in a session - %", activeUsername),
+				IsError:     true,
+			})
+			return
+		}
+
 		activeGame, isActiveGameSet := session.Get("activegame").(string)
 		if !isActiveGameSet {
 			// Currently difficult to set this session var when using websockets.
@@ -198,7 +210,7 @@ func GetLive(client storage.Client, sessionManager storage.SessionManager) http.
 				log.Println(err)
 				return
 			}
-			response, err := RouteIncomingMessage(string(p), gameStore, idToFetch)
+			response, err := RouteIncomingMessage(string(p), gameStore, idToFetch, activeUsername)
 			if err != nil {
 				log.Println(err)
 			}
@@ -342,11 +354,13 @@ func JoinGame(client storage.Client, sessionManager storage.SessionManager) http
 		// Add player to game object
 		updateResult, updateError := gameRepository.Update(gameStore, shortTimeoutContext, bson.M{"_id": idToFetch}, bson.M{
 			"$push": &bson.M{
-				"State.Players": &models.Player{
-					Name: usernameJoiningGame,
+				"state.players": &models.Player{
+					Name:        usernameJoiningGame,
+					CardsInHand: make([]models.Card, 0),
+					CardsInPlay: make([]models.Card, 0),
 				},
 			},
-		})
+		}, &options.UpdateOptions{})
 		switch updateError {
 		case nil:
 			log.Println("Updated game successfully", joinGameObject.GameID, "with count", updateResult.ModifiedCount)
@@ -437,13 +451,13 @@ func LeaveGame(client storage.Client, sessionManager storage.SessionManager) htt
 		// Remove player from the game object
 		updateResult, updateError := gameRepository.Update(gameStore, shortTimeoutContext, bson.M{"_id": idToFetch}, bson.M{
 			"$pull": &bson.M{
-				"State.Players": &bson.M{
+				"state.players": &bson.M{
 					"name": &bson.M{
 						"$eq": usernameLeavingGame,
 					},
 				},
 			},
-		})
+		}, &options.UpdateOptions{})
 		switch updateError {
 		case nil:
 			log.Println("Updated game successfully", activeGame, "with count", updateResult.ModifiedCount)
@@ -557,6 +571,8 @@ func CreateGame(client storage.Client) http.HandlerFunc {
 		// Decode the game from the request body.
 		var game models.Game
 		decodeInputError := dec.Decode(&game)
+		game.State.CardsInDeck = make([]models.Card, 0)
+		game.State.Players = make([]models.Player, 0)
 		if decodeInputError != nil {
 			buf := new(strings.Builder)
 			numberOfBytes, copyBodyToBufferError := io.Copy(buf, r.Body)
