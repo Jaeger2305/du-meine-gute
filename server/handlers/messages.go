@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"time"
@@ -150,6 +151,25 @@ func ready(gameStore storage.Collection, idToFetch primitive.ObjectID) string {
 	return "readied game"
 }
 
+func endRound(gameStore storage.Collection, gameID primitive.ObjectID) (bool, string, error) {
+	shortTimeoutContext, cancelUpdateGame := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancelUpdateGame()
+	activeGame, getGameErr := gameRepository.FindOne(gameStore, shortTimeoutContext, bson.M{"_id": gameID}) // Should have a projection too.
+	if getGameErr != nil {
+		log.Println("Couldn't get game", gameID.Hex(), getGameErr)
+		return false, "", errors.New("error")
+	}
+	var isGameOver bool
+	var winningPlayer string
+	for _, player := range activeGame.State.Players {
+		if len(player.CardsInPlay) >= 8 {
+			isGameOver = true
+			winningPlayer = player.Name
+		}
+	}
+	return isGameOver, winningPlayer, nil
+}
+
 func status() string {
 	return "status fine"
 }
@@ -184,6 +204,13 @@ func RouteIncomingMessage(message string, gameStore storage.Collection, idToFetc
 		json.Unmarshal(jsonbody, &playCardBody)
 		playCard(gameStore, idToFetch, playerUsername, playCardBody.CardName)
 		return "success", nil
+	case "endRound":
+		isGameOver, winningPlayer, endRoundError := endRound(gameStore, idToFetch) // Only single player mode for MVP.
+		if isGameOver {
+			log.Println(winningPlayer, "won the game")
+			return "gameOver", nil
+		}
+		return "success", endRoundError
 	case "ready":
 		ready(gameStore, idToFetch)
 		return "drawCard", nil
@@ -202,6 +229,8 @@ func RouteOutgoingMessage(message string) (int, string, error) {
 		return 2, "success", nil
 	case "drawCard":
 		return 3, "drawCard", nil
+	case "gameOver":
+		return 4, "gameOver", nil
 	}
 	return 1, "error", nil
 }
