@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"time"
@@ -153,14 +154,35 @@ func status() string {
 	return "status fine"
 }
 
+type IncomingMessage struct {
+	Message string                 `json:"message" bson:"message"`
+	Body    map[string]interface{} `json:"body" bson:"body"`
+	GameID  primitive.ObjectID     `json:"gameId" bson:"gameId"`
+	UserID  string                 `json:"userId" bson:"userId"`
+}
+
+type PlayCardBody struct {
+	CardName string `json:"cardName" bson:"cardName"`
+}
+
 // RouteIncomingMessage handles incoming websocket messages, and calls the appropriate function handlers.
 func RouteIncomingMessage(message string, gameStore storage.Collection, idToFetch primitive.ObjectID, playerUsername string) (string, error) {
-	switch message {
+	var incomingMessage IncomingMessage
+	json.Unmarshal([]byte(message), &incomingMessage)
+	// Marshall the message specific payload, if any
+	// This is simple, but not performant.
+	// https://stackoverflow.com/a/54741880
+	// The individual messages can unmarshall to the right type
+	jsonbody, _ := json.Marshal(incomingMessage.Body)
+
+	switch incomingMessage.Message {
 	case "drawCard":
 		drawCard(gameStore, idToFetch, playerUsername)
 		return "success", nil
 	case "playCard":
-		playCard(gameStore, idToFetch, playerUsername, "test1")
+		var playCardBody PlayCardBody
+		json.Unmarshal(jsonbody, &playCardBody)
+		playCard(gameStore, idToFetch, playerUsername, playCardBody.CardName)
 		return "success", nil
 	case "ready":
 		ready(gameStore, idToFetch)
