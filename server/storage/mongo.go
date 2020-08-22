@@ -171,9 +171,9 @@ func NewSessionManager() SessionManager {
 	sessionConfig := &session.ManagerConfig{
 		CookieName:      "gosessionid",
 		EnableSetCookie: false,
-		ProviderConfig:  fmt.Sprintf("{\"cookieName\":\"gosessionid\",\"securityKey\":\"%s\"}", viper.GetString("DMG_SESSION_SECRET")),
+		ProviderConfig:  fmt.Sprintf("{\"cookieName\":\"gosessionid\",\"securityKey\":\"%s\"}", viper.GetString("SESSION_SECRET")),
 		Gclifetime:      3600,
-		Secure:          viper.GetString("DMG_ENV") != "development",
+		Secure:          viper.GetString("ENV") != "development",
 	}
 	sessionManager, newManagerError := session.NewManager("cookie", sessionConfig)
 

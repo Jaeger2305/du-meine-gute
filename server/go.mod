@@ -7,6 +7,7 @@ require (
 	github.com/go-chi/chi v4.1.0+incompatible
 	github.com/gorilla/sessions v1.2.0
 	github.com/gorilla/websocket v1.4.2
+	github.com/segmentio/kafka-go v0.4.2
 	github.com/spf13/viper v1.7.0
 	github.com/stretchr/testify v1.5.1
 	go.mongodb.org/mongo-driver v1.3.1

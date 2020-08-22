@@ -133,7 +133,7 @@ var upgrader = websocket.Upgrader{
 // GetLive websocket connection
 func GetLive(client storage.Client, sessionManager storage.SessionManager) http.HandlerFunc {
 	// Whitelist all origins if in local development
-	if viper.GetString("DMG_ENV") == "development" {
+	if viper.GetString("ENV") == "development" {
 		upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 	}
 

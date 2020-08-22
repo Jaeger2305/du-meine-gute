@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -9,19 +8,32 @@ import (
 	"github.com/Jaeger2305/du-meine-gute/storage"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/segmentio/kafka-go"
+	"github.com/segmentio/kafka-go/snappy"
 	"github.com/spf13/viper"
 )
 
 func setupConfig() {
-	viper.SetConfigName("default")
-	viper.SetConfigType("env")
 	viper.SetEnvPrefix("dmg")
-	viper.AddConfigPath(".")
-	err := viper.ReadInConfig() // Find and read the config file
-	if err != nil {             // Handle errors reading the config file
-		panic(fmt.Errorf("Fatal error config file: %s", err))
-	}
 	viper.AutomaticEnv()
+}
+
+func setupMessageQueue(brokerUrls []string, clientID string, topic string) *kafka.Writer {
+	dialer := &kafka.Dialer{
+		Timeout:  10 * time.Second,
+		ClientID: clientID,
+	}
+
+	config := kafka.WriterConfig{
+		Brokers:          brokerUrls,
+		Topic:            topic,
+		Balancer:         &kafka.LeastBytes{},
+		Dialer:           dialer,
+		WriteTimeout:     10 * time.Second,
+		ReadTimeout:      10 * time.Second,
+		CompressionCodec: snappy.NewCompressionCodec(),
+	}
+	return kafka.NewWriter(config)
 }
 
 func setupRoutes(client storage.Client, sessionManager storage.SessionManager) *chi.Mux {
@@ -53,7 +65,7 @@ func authorised(client storage.Client, sessionManager storage.SessionManager) fu
 			defer session.SessionRelease(w)
 
 			// If in development, skip authentication.
-			if viper.GetString("DMG_ENV") == "development" {
+			if viper.GetString("ENV") == "development" {
 				session.Set("username", "testuser")
 				session.SessionRelease(w)
 				next.ServeHTTP(w, r)
