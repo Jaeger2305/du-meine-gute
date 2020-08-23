@@ -16,6 +16,7 @@ type Player struct {
 	Name        string `json:"name" bson:"name"`
 	Age         int    `json:"age" bson:"age"`
 	City        string `json:"city" bson:"city"`
+	IsReady     bool   `json:"isReady" bson:"isReady"`
 	CardsInHand []Card `json:"cardsInHand" bson:"cardsInHand"`
 	CardsInPlay []Card `json:"cardsInPlay" bson:"cardsInPlay"`
 }

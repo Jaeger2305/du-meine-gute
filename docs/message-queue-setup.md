@@ -19,9 +19,11 @@ Create the game topic
 
 `docker run --net=host --rm confluentinc/cp-kafka:5.0.0 kafka-topics --create --topic game --partitions 4 --replication-factor 2 --if-not-exists --zookeeper localhost:32181`
 
-Test with kafkacat
+Test with kafkacat. The replication factor here is important - starting with fewer kafka instances will cause issues. There should be a way to configure this, but I haven't looked into this.
 
-`kafkacat -C -b localhost:19092,localhost:29092 -t game -p 0`
+`kafkacat -C -b localhost:19092,localhost:29092,localhost:39092 -t game -p 0`
+
+There is no volume mapping of the config or the logs, and in my experience the containers trip over themselves unless restarting from scratch. If having issues, `docker-compose down --volumes` can be your friend.
 
 ## Server integration
 

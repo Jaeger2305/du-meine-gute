@@ -13,6 +13,14 @@ services:
       - "DMG_PORT=4444"
       - "DMG_SESSION_SECRET=local-session-secret"
       - "DMG_ENV=development"
+    depends_on:
+      - zk1
+      - zk2
+      - zk3
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - db
 
   db:
     image: mongo
@@ -22,7 +30,7 @@ services:
       - "~/personal/du-meine-gute/ignore:/data/db"
 
   zk1:
-    image: confluentinc/cp-zookeeper:3.0.1
+    image: confluentinc/cp-zookeeper:5.5.1
     ports:
       - "22181:22181"
     environment:
@@ -31,10 +39,10 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
-      ZOOKEEPER_SERVERS: zk1:22888:23888;zk2:32888:33888
+      ZOOKEEPER_SERVERS: zk1:22888:23888;zk2:32888:33888;zk3:42888:43888
 
   zk2:
-    image: confluentinc/cp-zookeeper:3.0.1
+    image: confluentinc/cp-zookeeper:5.5.1
     ports:
       - "32181:32181"
     environment:
@@ -43,28 +51,55 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
-      ZOOKEEPER_SERVERS: zk1:22888:23888;zk2:32888:33888
+      ZOOKEEPER_SERVERS: zk1:22888:23888;zk2:32888:33888;zk3:42888:43888
+
+  zk3:
+    image: confluentinc/cp-zookeeper:5.5.1
+    ports:
+      - "42181:42181"
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 42181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zk1:22888:23888;zk2:32888:33888;zk3:42888:43888
 
   kafka-1:
-    image: confluentinc/cp-kafka:3.0.1
+    image: confluentinc/cp-kafka:5.5.1
     ports:
       - "19092:19092"
     depends_on:
       - zk1
       - zk2
+      - zk3
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: ${MY_IP}:22181,${MY_IP}:32181
+      KAFKA_ZOOKEEPER_CONNECT: ${MY_IP}:22181,${MY_IP}:32181,${MY_IP}:42181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${MY_IP}:19092
 
   kafka-2:
-    image: confluentinc/cp-kafka:3.0.1
+    image: confluentinc/cp-kafka:5.5.1
     ports:
       - "29092:29092"
     depends_on:
       - zk1
       - zk2
+      - zk3
     environment:
       KAFKA_BROKER_ID: 2
-      KAFKA_ZOOKEEPER_CONNECT: ${MY_IP}:22181,${MY_IP}:32181
+      KAFKA_ZOOKEEPER_CONNECT: ${MY_IP}:22181,${MY_IP}:32181,${MY_IP}:42181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${MY_IP}:29092
+
+  kafka-3:
+    image: confluentinc/cp-kafka:5.5.1
+    ports:
+      - "39092:39092"
+    depends_on:
+      - zk1
+      - zk2
+      - zk3
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: ${MY_IP}:22181,${MY_IP}:32181,${MY_IP}:42181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${MY_IP}:39092

@@ -16,6 +16,7 @@ import (
 	models "github.com/Jaeger2305/du-meine-gute/storage/models"
 	"github.com/go-chi/chi"
 	"github.com/gorilla/websocket"
+	"github.com/segmentio/kafka-go"
 	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -131,7 +132,7 @@ var upgrader = websocket.Upgrader{
 }
 
 // GetLive websocket connection
-func GetLive(client storage.Client, sessionManager storage.SessionManager) http.HandlerFunc {
+func GetLive(client storage.Client, sessionManager storage.SessionManager, queueProducer *kafka.Writer, queueConsumer *kafka.Reader) http.HandlerFunc {
 	// Whitelist all origins if in local development
 	if viper.GetString("ENV") == "development" {
 		upgrader.CheckOrigin = func(r *http.Request) bool { return true }
@@ -179,7 +180,7 @@ func GetLive(client storage.Client, sessionManager storage.SessionManager) http.
 			return
 		}
 
-		idToFetch, activeGameParseError := primitive.ObjectIDFromHex(activeGame)
+		gameID, activeGameParseError := primitive.ObjectIDFromHex(activeGame)
 		if activeGameParseError != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(&responses.HTTPBasic{
@@ -203,31 +204,73 @@ func GetLive(client storage.Client, sessionManager storage.SessionManager) http.
 			return
 		}
 
+		// Setup the outgoing messages
+		// Copy from below, just push the message into the kafka queue
+		// We should pass in a channel that terminates after the below for loop.
+		go monitorServerMessageQueue(queueConsumer, connection, gameStore)
+
 		// Start the websocket loop
-		for {
-			_, p, err := connection.ReadMessage()
-			if err != nil {
-				log.Println(err)
+		monitorClientMessageQueue(gameStore, connection, queueProducer, gameID, activeUsername)
+
+	}
+	return http.HandlerFunc(fn)
+}
+
+func monitorClientMessageQueue(gameStore storage.Collection, connection *websocket.Conn, queueProducer *kafka.Writer, idToFetch primitive.ObjectID, playerUsername string) {
+	for {
+		_, clientMessage, readClientMessageErr := connection.ReadMessage()
+		if readClientMessageErr != nil {
+			log.Printf("Couldn't read client message when monitoring the websocket connection: %v", readClientMessageErr)
+			return
+		}
+		log.Println(string(clientMessage))
+
+		routeIncomingMessageErr := RouteIncomingMessage(string(clientMessage), gameStore, idToFetch, playerUsername, queueProducer)
+		if routeIncomingMessageErr != nil {
+			log.Printf("Failed to work out what to do with the incoming message: %v", routeIncomingMessageErr)
+		}
+	}
+}
+
+func monitorServerMessageQueue(queueConsumer *kafka.Reader, connection *websocket.Conn, gameStore storage.Collection) {
+	for {
+		// Get the raw message
+		// This is done in every go routine, and is therefore probably a good area for optimisation.
+		m, messageQueueReadErr := queueConsumer.ReadMessage(context.Background())
+		if messageQueueReadErr != nil {
+			log.Printf("error while receiving message: %v", messageQueueReadErr)
+			continue
+		}
+		log.Printf("message at topic/partition/offset %v/%v/%v: %s", m.Topic, m.Partition, m.Offset, string(m.Value))
+
+		// Unmarshal to a JSON message
+		var parsedServerMessage ServiceMessage
+		if parseServerMessageErr := json.Unmarshal(m.Value, &parsedServerMessage); parseServerMessageErr != nil {
+			log.Printf("Couldn't parse server message from kafka %v", parseServerMessageErr)
+		}
+
+		outgoingMessages, routeOutgoingMessageErr := RouteOutgoingMessage(parsedServerMessage, gameStore)
+		if routeOutgoingMessageErr != nil {
+			log.Printf("Couldn't handle the outgoing message router: %v", routeOutgoingMessageErr)
+		}
+		for _, outgoingMessage := range outgoingMessages {
+			// If the message isn't relevant for this connection, skip it.
+			log.Println("Currently, all messages are sent to the connection, regardless of origin! TODO.")
+
+			// Serialise the message for transport over websocket
+			serialisedOutgoingMessage, serialiseErr := json.Marshal(outgoingMessage)
+			if serialiseErr != nil {
+				log.Printf("Couldn't serialise message: %v.", serialiseErr)
 				return
 			}
-			response, err := RouteIncomingMessage(string(p), gameStore, idToFetch, activeUsername)
-			if err != nil {
-				log.Println(err)
-			}
-			log.Println(response)
-			_, outgoingMessage, err := RouteOutgoingMessage(string(response))
-			if err != nil {
-				log.Println(err)
-			}
-			if outgoingMessage != "" {
-				if err := connection.WriteMessage(websocket.TextMessage, []byte(outgoingMessage)); err != nil {
-					log.Println(err)
-					return
-				}
+
+			// Send the message through the websocket
+			if writeWebsocketMessageErr := connection.WriteMessage(websocket.TextMessage, serialisedOutgoingMessage); writeWebsocketMessageErr != nil {
+				log.Printf("Couldn't write to the websocket - it might be have dropped from the client or server side: %v", writeWebsocketMessageErr)
+				return
 			}
 		}
 	}
-	return http.HandlerFunc(fn)
 }
 
 // JoinGame sets up a session and saves the user into the game

@@ -18,13 +18,13 @@ func setupConfig() {
 	viper.AutomaticEnv()
 }
 
-func setupMessageQueue(brokerUrls []string, clientID string, topic string) *kafka.Writer {
+func setupMessageQueue(brokerUrls []string, clientID string, topic string) (*kafka.Writer, *kafka.Reader) {
 	dialer := &kafka.Dialer{
 		Timeout:  10 * time.Second,
 		ClientID: clientID,
 	}
 
-	config := kafka.WriterConfig{
+	writeConfig := kafka.WriterConfig{
 		Brokers:          brokerUrls,
 		Topic:            topic,
 		Balancer:         &kafka.LeastBytes{},
@@ -33,10 +33,20 @@ func setupMessageQueue(brokerUrls []string, clientID string, topic string) *kafk
 		ReadTimeout:      10 * time.Second,
 		CompressionCodec: snappy.NewCompressionCodec(),
 	}
-	return kafka.NewWriter(config)
+
+	readConfig := kafka.ReaderConfig{
+		Brokers:         brokerUrls,
+		GroupID:         clientID,
+		Topic:           topic,
+		MinBytes:        10e3,            // 10KB
+		MaxBytes:        10e6,            // 10MB
+		MaxWait:         1 * time.Second, // Maximum amount of time to wait for new data to come when fetching batches of messages from kafka.
+		ReadLagInterval: -1,
+	}
+	return kafka.NewWriter(writeConfig), kafka.NewReader(readConfig)
 }
 
-func setupRoutes(client storage.Client, sessionManager storage.SessionManager) *chi.Mux {
+func setupRoutes(client storage.Client, sessionManager storage.SessionManager, queueProducer *kafka.Writer, queueConsumer *kafka.Reader) *chi.Mux {
 	router := chi.NewRouter()
 
 	// Middleware setup
@@ -54,7 +64,7 @@ func setupRoutes(client storage.Client, sessionManager storage.SessionManager) *
 	router.With(authorised(client, sessionManager)).Post("/game/leave", handlers.LeaveGame(client, sessionManager))
 	router.Post("/login", handlers.Login(client, sessionManager))
 	// router.Get("/status", handlers.GetStatus)
-	router.With(authorised(client, sessionManager)).Get("/game/live", handlers.GetLive(client, sessionManager))
+	router.With(authorised(client, sessionManager)).Get("/game/live", handlers.GetLive(client, sessionManager, queueProducer, queueConsumer))
 	return router
 }
 

@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"strings"
 
-	kafka "github.com/Jaeger2305/du-meine-gute/message-queue"
 	"github.com/Jaeger2305/du-meine-gute/storage"
 	"github.com/spf13/viper"
 )
@@ -25,14 +24,12 @@ func main() {
 	brokerUrls := strings.Split(viper.GetString("MESSAGE_QUEUE_BROKER_URLS"), ",")
 	messageQueueClientID := viper.GetString("MESSAGE_QUEUE_CLIENT_ID")
 	messageQueueTopic := viper.GetString("MESSAGE_QUEUE_TOPIC")
-	queueProducer := setupMessageQueue(brokerUrls, messageQueueClientID, messageQueueTopic)
+	queueProducer, queueConsumer := setupMessageQueue(brokerUrls, messageQueueClientID, messageQueueTopic)
 	defer queueProducer.Close()
+	defer queueConsumer.Close()
 	log.Printf("set up message queue")
 
-	kafka.Push(context.Background(), queueProducer, nil, []byte("test message"))
-	log.Printf("sent test message")
-
-	router := setupRoutes(client, sessionManager)
+	router := setupRoutes(client, sessionManager, queueProducer, queueConsumer)
 	log.Printf("set up routes")
 
 	httpHost := viper.GetString("HOST")
