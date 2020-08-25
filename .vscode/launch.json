@@ -14,6 +14,17 @@
       "env": {},
       "envFile": "${workspaceFolder}/server/default.env",
       "args": []
+    },
+    {
+      "name": "Debug Server in Docker",
+      "type": "go",
+      "request": "attach",
+      "mode": "remote",
+      "remotePath": "/go/src/app",
+      "host": "127.0.0.1",
+      "port": 44000,
+      "showLog": true,
+      "trace": "verbose"
     }
   ]
 }

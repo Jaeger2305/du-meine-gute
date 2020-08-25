@@ -1,6 +1,11 @@
-FROM golang:1.14
+FROM golang:1.14 AS builder
 
-WORKDIR /go/src/app
+ENV GO111MODULE=on \
+    CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64
+
+WORKDIR /build
 
 # Copy go mod and sum files
 COPY go.mod go.sum ./
@@ -13,4 +18,14 @@ COPY . .
 
 RUN go build -o main ./cmd
 
-ENTRYPOINT ["./main"]
+WORKDIR /dist
+
+RUN cp /build/main .
+
+# Build a small image
+FROM scratch
+
+COPY --from=builder /dist/main /
+
+# Command to run
+ENTRYPOINT ["/main"]

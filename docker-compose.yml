@@ -2,8 +2,10 @@ version: "3"
 services:
   server:
     build: ./server
+    image: dmg-server:latest
     ports:
-      - "4444:4444"
+      - "4445:4444"
+    restart: on-failure:3
     environment:
       - "DMG_MESSAGE_QUEUE_BROKER_URLS=kafka-1:19092,kafka-2:29092"
       - "DMG_MESSAGE_QUEUE_CLIENT_ID=du-meine-gute-server-local"
@@ -13,6 +15,36 @@ services:
       - "DMG_PORT=4444"
       - "DMG_SESSION_SECRET=local-session-secret"
       - "DMG_ENV=development"
+      - "DMG_JWT_SIGNING_KEY=thisissupersecret"
+    depends_on:
+      - zk1
+      - zk2
+      - zk3
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - db
+
+  server-debug:
+    build:
+      context: ./server
+      dockerfile: ./debug.Dockerfile
+    image: dmg-server-files
+    ports:
+      - "4444:4444"
+      - "44000:44000"
+    restart: on-failure:3
+    command: dlv debug --listen=:44000 --headless=true --api-version=2 --accept-multiclient ./cmd
+    environment:
+      - "DMG_MESSAGE_QUEUE_BROKER_URLS=kafka-1:19092,kafka-2:29092"
+      - "DMG_MESSAGE_QUEUE_CLIENT_ID=du-meine-gute-server-local"
+      - "DMG_MESSAGE_QUEUE_TOPIC=game"
+      - "DMG_CONNECTION_STRING=mongodb://db/du-meine-gute"
+      - "DMG_HOST=0.0.0.0"
+      - "DMG_PORT=4444"
+      - "DMG_SESSION_SECRET=local-session-secret"
+      - "DMG_ENV=development"
+      - "DMG_JWT_SIGNING_KEY=thisissupersecret"
     depends_on:
       - zk1
       - zk2
@@ -26,6 +58,7 @@ services:
     image: mongo
     ports:
       - "27017:27017"
+    restart: on-failure:3
     volumes:
       - "~/personal/du-meine-gute/ignore:/data/db"
 
@@ -33,6 +66,7 @@ services:
     image: confluentinc/cp-zookeeper:5.5.1
     ports:
       - "22181:22181"
+    restart: on-failure:3
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_CLIENT_PORT: 22181
@@ -45,6 +79,7 @@ services:
     image: confluentinc/cp-zookeeper:5.5.1
     ports:
       - "32181:32181"
+    restart: on-failure:3
     environment:
       ZOOKEEPER_SERVER_ID: 2
       ZOOKEEPER_CLIENT_PORT: 32181
@@ -57,6 +92,7 @@ services:
     image: confluentinc/cp-zookeeper:5.5.1
     ports:
       - "42181:42181"
+    restart: on-failure:3
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_CLIENT_PORT: 42181
@@ -69,6 +105,7 @@ services:
     image: confluentinc/cp-kafka:5.5.1
     ports:
       - "19092:19092"
+    restart: on-failure:3
     depends_on:
       - zk1
       - zk2
@@ -82,6 +119,7 @@ services:
     image: confluentinc/cp-kafka:5.5.1
     ports:
       - "29092:29092"
+    restart: on-failure:3
     depends_on:
       - zk1
       - zk2
@@ -95,6 +133,7 @@ services:
     image: confluentinc/cp-kafka:5.5.1
     ports:
       - "39092:39092"
+    restart: on-failure:3
     depends_on:
       - zk1
       - zk2
