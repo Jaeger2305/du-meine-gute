@@ -16,6 +16,7 @@ services:
       - "DMG_SESSION_SECRET=local-session-secret"
       - "DMG_ENV=development"
       - "DMG_JWT_SIGNING_KEY=thisissupersecret"
+      - "DMG_ENCRYPTION_KEY=thisisanothersupersecret"
     depends_on:
       - zk1
       - zk2
@@ -45,6 +46,7 @@ services:
       - "DMG_SESSION_SECRET=local-session-secret"
       - "DMG_ENV=development"
       - "DMG_JWT_SIGNING_KEY=thisissupersecret"
+      - "DMG_ENCRYPTION_KEY=thisisanothersupersecret"
     depends_on:
       - zk1
       - zk2

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,6 +11,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/dgrijalva/jwt-go"
+
+	"github.com/Jaeger2305/du-meine-gute/authmiddleware"
 	gameRepository "github.com/Jaeger2305/du-meine-gute/repository"
 	"github.com/Jaeger2305/du-meine-gute/responses"
 	"github.com/Jaeger2305/du-meine-gute/storage"
@@ -75,8 +79,12 @@ func ServeFiles(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, p)
 }
 
-// Login sets up a user's session. Currently no auth or anything.
-func Login(client storage.Client, sessionManager storage.SessionManager) http.HandlerFunc {
+// Login gives a signed token to authenticate a user.
+// This is used because Android has poor support for cookies, so a session cookie isn't easy.
+// We shouldn't store stateful information in this, only information to reference the actual user.
+// But there's no auth login yet, so just trust this.
+// This might have the advantage of speedier websocket reconnects.
+func Login(jwtSigningKey []byte, encryptionKey []byte) http.HandlerFunc {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		// Parse input
 		dec := json.NewDecoder(r.Body)
@@ -105,57 +113,82 @@ func Login(client storage.Client, sessionManager storage.SessionManager) http.Ha
 		}
 
 		// Verify login
-		log.Println("attempting to log in", loginObject.Username)
+		log.Println("attempting to log in with JWT", loginObject.Username)
 
-		// Update the session
-		sess, _ := sessionManager.SessionStart(w, r)
-		defer sess.SessionRelease(w)
-		sess.Set("username", loginObject.Username)
+		// Generate the JWT
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+			"username": loginObject.Username,
+		})
+
+		// Sign and get the complete encoded token as a string using the secret
+		jwtString, signStringErr := token.SignedString(jwtSigningKey)
+		if signStringErr != nil {
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusInternalServerError,
+				Description: fmt.Sprintf("Couldn't sign the string: %s %v", []byte(viper.GetString("JWT_SIGNING_KEY")), signStringErr),
+				IsError:     true,
+			})
+			return
+		}
+		encryptedJwt := authmiddleware.Encrypt([]byte(jwtString), encryptionKey)
 
 		// Communicate success
 		log.Println("logged in", loginObject.Username)
-
-		sess.SessionRelease(w)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(&responses.HTTPBasic{
 			Status:      200,
 			Description: "Logged in",
 			IsError:     false,
+			Body:        hex.EncodeToString(encryptedJwt),
 		})
 	}
 	return http.HandlerFunc(fn)
 }
 
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-}
-
 // GetLive websocket connection
-func GetLive(client storage.Client, sessionManager storage.SessionManager, queueProducer *kafka.Writer, queueConsumer *kafka.Reader) http.HandlerFunc {
-	// Whitelist all origins if in local development
-	if viper.GetString("ENV") == "development" {
-		upgrader.CheckOrigin = func(r *http.Request) bool { return true }
-	}
+func GetLive(client storage.Client, queueProducer *kafka.Writer, queueConsumer *kafka.Reader) http.HandlerFunc {
+	var protocols []string
 
 	gameStore := gameRepository.GetGameStore(client)
 
-	fn := func(w http.ResponseWriter, r *http.Request) {
-		session, sessionStartErr := sessionManager.SessionStart(w, r)
-		defer session.SessionRelease(w)
+	// Better to have a pool of connections here
+	// On a call to GetLive, we add to the connection pool
+	// Then, we can goroutine the message queue here
+	// and filter down the connections that are affected before writing to them
+	// This should scale too, because multiple servers only have one connection to the reader, and manage their own websockets.
 
-		if sessionStartErr != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+	// Reconnecting and picking up is another big question :(
+
+	// Also, limiting number of connections is another nice to have :)
+
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		authToken, isAuthTokenSet := ctx.Value(authmiddleware.AuthTokenContextKey).(string)
+		if !isAuthTokenSet {
+			log.Printf("Couldn't get auth token from context - could be missing from the sec-websocket-protocol header - %v", isAuthTokenSet)
+			w.WriteHeader(http.StatusForbidden)
 			json.NewEncoder(w).Encode(&responses.HTTPBasic{
-				Status:      http.StatusInternalServerError,
-				Description: fmt.Sprintf("Couldn't start a session"),
+				Status:      http.StatusForbidden,
+				Description: fmt.Sprintf("Couldn't upgrade connection"),
 				IsError:     true,
 			})
 			return
 		}
+		timeout, _ := time.ParseDuration("10s")
+		upgrader := websocket.Upgrader{
+			ReadBufferSize:   1024,
+			WriteBufferSize:  1024,
+			Subprotocols:     append(protocols, authToken), // We need to manage this on a dropped connection too.
+			HandshakeTimeout: timeout,
+		}
+		// Whitelist all origins if in local development
+		if viper.GetString("ENV") == "development" {
+			upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+		}
 
-		activeUsername, isUsernameSet := session.Get("username").(string)
+		activeUsername, isUsernameSet := ctx.Value(authmiddleware.UsernameContextKey).(string)
 		if !isUsernameSet {
+			log.Printf("Username isn't set in the session")
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(&responses.HTTPBasic{
 				Status:      http.StatusBadRequest,
@@ -165,12 +198,13 @@ func GetLive(client storage.Client, sessionManager storage.SessionManager, queue
 			return
 		}
 
-		activeGame, isActiveGameSet := session.Get("activegame").(string)
+		activeGame, isActiveGameSet := ctx.Value(authmiddleware.ActiveGameContextKey).(string)
 		if !isActiveGameSet {
 			// Currently difficult to set this session var when using websockets.
 			// I've been instead hardcoding this block directly to the game I'm trying to join.
 			// Not sustainable. When it comes to testing within the app instead of via postman requests, I can re-evaluate.
 			// Could also create a specific test environment if need be.
+			log.Printf("Game isn't set in the session")
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(&responses.HTTPBasic{
 				Status:      http.StatusBadRequest,
@@ -182,6 +216,7 @@ func GetLive(client storage.Client, sessionManager storage.SessionManager, queue
 
 		gameID, activeGameParseError := primitive.ObjectIDFromHex(activeGame)
 		if activeGameParseError != nil {
+			log.Printf("Game %s in session isn't valid: %v", activeGame, activeGameParseError)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(&responses.HTTPBasic{
 				Status:      http.StatusBadRequest,
@@ -191,14 +226,25 @@ func GetLive(client storage.Client, sessionManager storage.SessionManager, queue
 			return
 		}
 
-		connection, upgradeErr := upgrader.Upgrade(w, r, nil)
+		// Set the headers to match the client
+		h := http.Header{}
+		for _, sub := range websocket.Subprotocols(r) {
+			if sub == authToken {
+				h.Set("Sec-Websocket-Protocol", authToken)
+				break
+			}
+		}
+
+		// Upgrade the connection to a websocket
+		connection, upgradeErr := upgrader.Upgrade(w, r, h)
 		defer connection.Close()
 
 		if upgradeErr != nil {
+			log.Printf("Couldn't upgrade connection - %s", upgradeErr)
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(&responses.HTTPBasic{
 				Status:      http.StatusInternalServerError,
-				Description: fmt.Sprintf("Couldn't upgrade connection - %s", upgradeErr),
+				Description: fmt.Sprintf("Couldn't upgrade connection"),
 				IsError:     true,
 			})
 			return
@@ -266,7 +312,7 @@ func monitorServerMessageQueue(queueConsumer *kafka.Reader, connection *websocke
 
 			// Send the message through the websocket
 			if writeWebsocketMessageErr := connection.WriteMessage(websocket.TextMessage, serialisedOutgoingMessage); writeWebsocketMessageErr != nil {
-				log.Printf("Couldn't write to the websocket - it might be have dropped from the client or server side: %v", writeWebsocketMessageErr)
+				log.Printf("Couldn't write to the websocket - it might be have dropped from the client or server side. Intended message: %s error: %v", serialisedOutgoingMessage, writeWebsocketMessageErr)
 				return
 			}
 		}
@@ -274,7 +320,7 @@ func monitorServerMessageQueue(queueConsumer *kafka.Reader, connection *websocke
 }
 
 // JoinGame sets up a session and saves the user into the game
-func JoinGame(client storage.Client, sessionManager storage.SessionManager) http.HandlerFunc {
+func JoinGame(client storage.Client, jwtSigningKey []byte, encryptionKey []byte) http.HandlerFunc {
 	gameStore := gameRepository.GetGameStore(client)
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		// Parse input
@@ -303,37 +349,15 @@ func JoinGame(client storage.Client, sessionManager storage.SessionManager) http
 			})
 		}
 
-		sess, sessionStartErr := sessionManager.SessionStart(w, r)
-		defer sess.SessionRelease(w)
-		if sessionStartErr != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(&responses.HTTPBasic{
-				Status:      http.StatusInternalServerError,
-				Description: fmt.Sprintf("Couldn't start a session"),
-				IsError:     true,
-			})
-			return
-		}
-
 		// Validate operation
-		activeGame := sess.Get("activegame") // check that not already in a game
+		ctx := r.Context()
+		usernameJoiningGame := ctx.Value(authmiddleware.UsernameContextKey).(string) // check that not already in a game
+		activeGame := ctx.Value(authmiddleware.ActiveGameContextKey)                 // check that not already in a game
 		if activeGame != nil {
 			w.WriteHeader(http.StatusConflict)
 			json.NewEncoder(w).Encode(&responses.HTTPBasic{
 				Status:      http.StatusConflict,
 				Description: fmt.Sprintf("already in a game - %s", activeGame),
-				IsError:     true,
-			})
-			return
-		}
-
-		usernameJoiningGame, isUsernameSet := sess.Get("username").(string)
-
-		if !isUsernameSet {
-			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode(&responses.HTTPBasic{
-				Status:      http.StatusUnauthorized,
-				Description: fmt.Sprintf("no username set when trying to join game - %s", activeGame),
 				IsError:     true,
 			})
 			return
@@ -423,25 +447,31 @@ func JoinGame(client storage.Client, sessionManager storage.SessionManager) http
 			})
 		}
 
-		// Update session
-		setActiveGameSessionErr := sess.Set("activegame", joinGameObject.GameID)
-		if setActiveGameSessionErr != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+		// Generate the new JWT with the active game field
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+			"username":   usernameJoiningGame,
+			"activegame": joinGameObject.GameID,
+		})
+
+		// Sign and get the complete encoded token as a string using the secret
+		jwtString, signStringErr := token.SignedString([]byte(viper.GetString("JWT_SIGNING_KEY")))
+		if signStringErr != nil {
 			json.NewEncoder(w).Encode(&responses.HTTPBasic{
 				Status:      http.StatusInternalServerError,
-				Description: fmt.Sprintf("Couldn't update active game in user's session - %s", joinGameObject.GameID),
+				Description: fmt.Sprintf("Couldn't sign the string when joining the game", signStringErr),
 				IsError:     true,
 			})
 			return
 		}
+		encryptedJwt := authmiddleware.Encrypt([]byte(jwtString), encryptionKey)
 
 		// Communicate
-		sess.SessionRelease(w) // commits updates to provider, and must be before writing to header, so we can't defer this.
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(&responses.HTTPBasic{
 			Status:      200,
 			Description: "Updated successfully",
 			IsError:     false,
+			Body:        hex.EncodeToString(encryptedJwt),
 		})
 	}
 	return http.HandlerFunc(fn)

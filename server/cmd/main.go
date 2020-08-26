@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/Jaeger2305/du-meine-gute/authmiddleware"
 	"github.com/Jaeger2305/du-meine-gute/storage"
 	"github.com/spf13/viper"
 )
@@ -29,7 +30,8 @@ func main() {
 	defer queueConsumer.Close()
 	log.Printf("set up message queue")
 
-	router := setupRoutes(client, sessionManager, queueProducer, queueConsumer)
+	encryptionKey := authmiddleware.CreateHash(viper.GetString("ENCRYPTION_KEY"))
+	router := setupRoutes(client, sessionManager, queueProducer, queueConsumer, []byte(viper.GetString("JWT_SIGNING_KEY")), encryptionKey)
 	log.Printf("set up routes")
 
 	httpHost := viper.GetString("HOST")

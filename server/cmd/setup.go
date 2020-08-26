@@ -1,9 +1,9 @@
 package main
 
 import (
-	"net/http"
 	"time"
 
+	"github.com/Jaeger2305/du-meine-gute/authmiddleware"
 	"github.com/Jaeger2305/du-meine-gute/handlers"
 	"github.com/Jaeger2305/du-meine-gute/storage"
 	"github.com/go-chi/chi"
@@ -46,7 +46,7 @@ func setupMessageQueue(brokerUrls []string, clientID string, topic string) (*kaf
 	return kafka.NewWriter(writeConfig), kafka.NewReader(readConfig)
 }
 
-func setupRoutes(client storage.Client, sessionManager storage.SessionManager, queueProducer *kafka.Writer, queueConsumer *kafka.Reader) *chi.Mux {
+func setupRoutes(client storage.Client, sessionManager storage.SessionManager, queueProducer *kafka.Writer, queueConsumer *kafka.Reader, jwtSigningKey []byte, encryptionKey []byte) *chi.Mux {
 	router := chi.NewRouter()
 
 	// Middleware setup
@@ -60,35 +60,10 @@ func setupRoutes(client storage.Client, sessionManager storage.SessionManager, q
 	router.Get("/game", handlers.GetGames(client))
 	router.Get("/game/{gameID}", handlers.GetGame(client))
 	router.Post("/game", handlers.CreateGame(client))
-	router.With(authorised(client, sessionManager)).Post("/game/join", handlers.JoinGame(client, sessionManager))
-	router.With(authorised(client, sessionManager)).Post("/game/leave", handlers.LeaveGame(client, sessionManager))
-	router.Post("/login", handlers.Login(client, sessionManager))
+	router.With(authmiddleware.Authorised(jwtSigningKey, encryptionKey)).Post("/game/join", handlers.JoinGame(client, jwtSigningKey, encryptionKey))
+	router.With(authmiddleware.Authorised(jwtSigningKey, encryptionKey)).Post("/game/leave", handlers.LeaveGame(client, sessionManager))
+	router.Post("/login", handlers.Login(jwtSigningKey, encryptionKey))
 	// router.Get("/status", handlers.GetStatus)
-	router.With(authorised(client, sessionManager)).Get("/game/live", handlers.GetLive(client, sessionManager, queueProducer, queueConsumer))
+	router.With(authmiddleware.Authorised(jwtSigningKey, encryptionKey)).Get("/game/live", handlers.GetLive(client, queueProducer, queueConsumer))
 	return router
-}
-
-func authorised(client storage.Client, sessionManager storage.SessionManager) func(http.Handler) http.Handler {
-	fn := func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			session, _ := sessionManager.SessionStart(w, r)
-			defer session.SessionRelease(w)
-
-			// If in development, skip authentication.
-			if viper.GetString("ENV") == "development" {
-				session.Set("username", "testuser")
-				session.SessionRelease(w)
-				next.ServeHTTP(w, r)
-				return
-			}
-
-			username := session.Get("username")
-			if username == nil {
-				http.Error(w, http.StatusText(403), 403)
-				return
-			}
-			next.ServeHTTP(w, r)
-		})
-	}
-	return fn
 }

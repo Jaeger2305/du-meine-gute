@@ -36,4 +36,4 @@ There are some READMEs in the folders, as well as a docs folder for more general
 
 Locally, a lot is configured in the docker-compose file. This does need your IP address to set up the Kafka instance though.
 
-`MY_IP=192.168.178.55 docker-compose up -d`
+`MY_IP=192.168.###.## docker-compose up -d`
