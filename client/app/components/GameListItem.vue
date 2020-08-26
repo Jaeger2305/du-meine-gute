@@ -1,8 +1,8 @@
 <template>
   <FlexboxLayout backgroundColor="#3c495e">
-    <Label :text="game.Name" width="70" backgroundColor="#43b883" />
+    <Label :text="game.name" width="70" backgroundColor="#43b883" />
     <Label
-      :text="game.State.Players.length"
+      :text="game.state.players.length"
       width="70"
       backgroundColor="#1c6b48"
     />
@@ -11,7 +11,9 @@
 </template>
 
 <script lang="ts">
+import { getString, setString } from "@nativescript/core/application-settings";
 import Game from "./Game.vue";
+
 export default {
   props: {
     game: {
@@ -21,16 +23,28 @@ export default {
   },
   methods: {
     async joinGame() {
-      const response = await fetch(`${dmgAppConfig.apiUrl}/game/join`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          GameID: this.game._id,
-        }),
-      });
-      const data = await response.json();
+      if (!getString("activegame")) {
+        try {
+          const response = await fetch(`${dmgAppConfig.apiUrl}/game/join`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${getString("authtoken")}`,
+            },
+            body: JSON.stringify({
+              GameID: this.game._id,
+            }),
+          });
+          const data = await response.json();
+          setString("authtoken", data.Body);
+        } catch (error) {
+          console.error("api req failed to join game", JSON.stringify(error));
+        }
+      } else {
+        console.warn(
+          "already in a game, so haven't joined another one according to local storage"
+        );
+      }
 
       this.$navigateTo(Game, {
         props: {

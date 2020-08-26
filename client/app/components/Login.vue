@@ -18,6 +18,9 @@ export default {
       savedUsername: getString("username"),
     };
   },
+  created() {
+    if (getString("authtoken")) return this.$navigateTo(Lobby); // this appears buggy - it goes to the right place, but then gets sent back again
+  },
   methods: {
     async login() {
       try {
@@ -36,6 +39,7 @@ export default {
           throw new Error("response returned error");
         }
         setString("username", username);
+        setString("authtoken", data.Body);
         this.$navigateTo(Lobby);
       } catch (error) {
         console.error("couldn't login", error);

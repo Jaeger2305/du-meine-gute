@@ -10,7 +10,9 @@ import store from "./store";
 // Prints Vue logs when --env.production is *NOT* set while building
 Vue.config.silent = TNS_ENV === "production";
 import GameListItem from "./components/GameListItem.vue";
+import Card from "./components/Card.vue";
 Vue.component("GameListItem", GameListItem); // Locally registering inside of the Lobby didn't seem to work. Maybe it needs a different frame.
+Vue.component("Card", Card);
 
 new Vue({
   store,
