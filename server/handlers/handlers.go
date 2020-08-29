@@ -148,8 +148,14 @@ func Login(jwtSigningKey []byte, encryptionKey []byte) http.HandlerFunc {
 // GetLive websocket connection
 func GetLive(client storage.Client, queueProducer *kafka.Writer, queueConsumer *kafka.Reader) http.HandlerFunc {
 	var protocols []string
+	connections := make(map[primitive.ObjectID]*websocket.Conn)
 
 	gameStore := gameRepository.GetGameStore(client)
+
+	// Setup the outgoing messages
+	// Copy from below, just push the message into the kafka queue
+	// We should pass in a channel that terminates after the below for loop.
+	go monitorServerMessageQueue(queueConsumer, &connections, gameStore)
 
 	// Better to have a pool of connections here
 	// On a call to GetLive, we add to the connection pool
@@ -178,7 +184,7 @@ func GetLive(client storage.Client, queueProducer *kafka.Writer, queueConsumer *
 		upgrader := websocket.Upgrader{
 			ReadBufferSize:   1024,
 			WriteBufferSize:  1024,
-			Subprotocols:     append(protocols, authToken), // We need to manage this on a dropped connection too.
+			Subprotocols:     append(protocols, authToken), // If we reused the upgrader, we need a way of managing the protocols, like we are with the socket connections.
 			HandshakeTimeout: timeout,
 		}
 		// Whitelist all origins if in local development
@@ -249,11 +255,9 @@ func GetLive(client storage.Client, queueProducer *kafka.Writer, queueConsumer *
 			})
 			return
 		}
-
-		// Setup the outgoing messages
-		// Copy from below, just push the message into the kafka queue
-		// We should pass in a channel that terminates after the below for loop.
-		go monitorServerMessageQueue(queueConsumer, connection, gameStore)
+		connectionID := primitive.NewObjectID()
+		connections[connectionID] = connection
+		defer delete(connections, connectionID)
 
 		// Start the websocket loop
 		monitorClientMessageQueue(gameStore, connection, queueProducer, gameID, activeUsername)
@@ -278,10 +282,11 @@ func monitorClientMessageQueue(gameStore storage.Collection, connection *websock
 	}
 }
 
-func monitorServerMessageQueue(queueConsumer *kafka.Reader, connection *websocket.Conn, gameStore storage.Collection) {
+func monitorServerMessageQueue(queueConsumer *kafka.Reader, websocketConnections *map[primitive.ObjectID]*websocket.Conn, gameStore storage.Collection) {
 	for {
 		// Get the raw message
-		// This is done in every go routine, and is therefore probably a good area for optimisation.
+		// Could probably be better as a Fetch and Commit message, but it's not clear if this takes a lock to prevent other servers from picking it up.
+		// https://github.com/segmentio/kafka-go#explicit-commits
 		m, messageQueueReadErr := queueConsumer.ReadMessage(context.Background())
 		if messageQueueReadErr != nil {
 			log.Printf("error while receiving message: %v", messageQueueReadErr)
@@ -310,10 +315,13 @@ func monitorServerMessageQueue(queueConsumer *kafka.Reader, connection *websocke
 				return
 			}
 
-			// Send the message through the websocket
-			if writeWebsocketMessageErr := connection.WriteMessage(websocket.TextMessage, serialisedOutgoingMessage); writeWebsocketMessageErr != nil {
-				log.Printf("Couldn't write to the websocket - it might be have dropped from the client or server side. Intended message: %s error: %v", serialisedOutgoingMessage, writeWebsocketMessageErr)
-				return
+			// Send the message through all the websocket connections for this server instance
+			// This should be filtered according to some criteria (probs in the message), but send to all for now. This will cause concurrency bugs.
+			// Could attach channels to subscribe to inside the websocketClient. And default to the current game.
+			for _, connection := range *websocketConnections {
+				if writeWebsocketMessageErr := connection.WriteMessage(websocket.TextMessage, serialisedOutgoingMessage); writeWebsocketMessageErr != nil {
+					log.Printf("Couldn't write to the websocket - it might be have dropped from the client or server side. Intended message: %s error: %v", serialisedOutgoingMessage, writeWebsocketMessageErr)
+				}
 			}
 		}
 	}
