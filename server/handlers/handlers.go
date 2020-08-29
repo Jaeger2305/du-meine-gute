@@ -380,6 +380,7 @@ func JoinGame(client storage.Client, jwtSigningKey []byte, encryptionKey []byte)
 
 		// Get the game, and validate we can add to it.
 		isPlayerInGame := false
+		isGameOver := false
 		gameToJoin, getGameErr := gameRepository.FindOne(gameStore, shortTimeoutContext, bson.M{"_id": idToFetch})
 		switch getGameErr {
 		case nil:
@@ -388,6 +389,9 @@ func JoinGame(client storage.Client, jwtSigningKey []byte, encryptionKey []byte)
 				if player.Name == usernameJoiningGame {
 					isPlayerInGame = true
 				}
+			}
+			if gameToJoin.State.Winner != "" {
+				isGameOver = true
 			}
 		case mongo.ErrNoDocuments:
 			w.WriteHeader(http.StatusNotFound)
@@ -412,6 +416,17 @@ func JoinGame(client storage.Client, jwtSigningKey []byte, encryptionKey []byte)
 			json.NewEncoder(w).Encode(&responses.HTTPBasic{
 				Status:      http.StatusConflict,
 				Description: "already in the game",
+				IsError:     true,
+			})
+			return
+		}
+
+		if isGameOver {
+			log.Printf("%s tried to join a game which was already finished, with winner %s", usernameJoiningGame, gameToJoin.State.Winner)
+			w.WriteHeader(http.StatusGone)
+			json.NewEncoder(w).Encode(&responses.HTTPBasic{
+				Status:      http.StatusGone,
+				Description: "Game already finished",
 				IsError:     true,
 			})
 			return
@@ -454,11 +469,12 @@ func JoinGame(client storage.Client, jwtSigningKey []byte, encryptionKey []byte)
 		})
 
 		// Sign and get the complete encoded token as a string using the secret
-		jwtString, signStringErr := token.SignedString([]byte(viper.GetString("JWT_SIGNING_KEY")))
+		jwtString, signStringErr := token.SignedString(jwtSigningKey)
 		if signStringErr != nil {
+			log.Printf("Couldn't sign the string when joining the game for user %s: %v", usernameJoiningGame, signStringErr)
 			json.NewEncoder(w).Encode(&responses.HTTPBasic{
 				Status:      http.StatusInternalServerError,
-				Description: fmt.Sprintf("Couldn't sign the string when joining the game", signStringErr),
+				Description: fmt.Sprintf("Couldn't sign the string when joining the game"),
 				IsError:     true,
 			})
 			return
@@ -478,26 +494,25 @@ func JoinGame(client storage.Client, jwtSigningKey []byte, encryptionKey []byte)
 }
 
 // LeaveGame removes a user from their current game
-func LeaveGame(client storage.Client, sessionManager storage.SessionManager) http.HandlerFunc {
+func LeaveGame(client storage.Client, jwtSigningKey []byte, encryptionKey []byte) http.HandlerFunc {
 	gameStore := gameRepository.GetGameStore(client)
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		// Parse input
-		sess, sessionStartErr := sessionManager.SessionStart(w, r)
-		defer sess.SessionRelease(w)
-		if sessionStartErr != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+		ctx := r.Context()
+		usernameLeavingGame, isUsernameSet := ctx.Value(authmiddleware.UsernameContextKey).(string)
+		activeGame, isActiveGameSet := ctx.Value(authmiddleware.ActiveGameContextKey).(string)
+
+		// Validate operation
+		if !isUsernameSet {
+			w.WriteHeader(http.StatusForbidden)
 			json.NewEncoder(w).Encode(&responses.HTTPBasic{
-				Status:      http.StatusInternalServerError,
-				Description: fmt.Sprintf("Couldn't start a session"),
+				Status:      http.StatusForbidden,
+				Description: fmt.Sprintf("no user set - %s", usernameLeavingGame),
 				IsError:     true,
 			})
 			return
 		}
-		usernameLeavingGame := sess.Get("username").(string)
-
-		// Validate operation
-		activeGame := sess.Get("activegame") // check that not already in a game
-		if activeGame == nil {
+		if !isActiveGameSet {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(&responses.HTTPBasic{
 				Status:      http.StatusBadRequest,
@@ -505,8 +520,9 @@ func LeaveGame(client storage.Client, sessionManager storage.SessionManager) htt
 				IsError:     true,
 			})
 			return
-		} // Extract the object ID from the encoded hex passed over HTTP.
-		idToFetch, inputErr := primitive.ObjectIDFromHex(activeGame.(string))
+		}
+		// Extract the object ID from the encoded hex passed over HTTP.
+		idToFetch, inputErr := primitive.ObjectIDFromHex(activeGame)
 		if inputErr != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(&responses.HTTPBasic{
@@ -552,18 +568,23 @@ func LeaveGame(client storage.Client, sessionManager storage.SessionManager) htt
 			return
 		}
 
-		// Update session
-		setActiveGameSessionErr := sess.Delete("activegame")
-		if setActiveGameSessionErr != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+		// Generate the new JWT without the active game field
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+			"username": usernameLeavingGame,
+		})
+
+		// Sign and get the complete encoded token as a string using the secret
+		jwtString, signStringErr := token.SignedString(jwtSigningKey)
+		if signStringErr != nil {
+			log.Printf("Couldn't sign the string when leaving the game for user %s: %v", usernameLeavingGame, signStringErr)
 			json.NewEncoder(w).Encode(&responses.HTTPBasic{
 				Status:      http.StatusInternalServerError,
-				Description: fmt.Sprintf("Couldn't update active game in user's session - %s", usernameLeavingGame),
+				Description: fmt.Sprintf("Couldn't sign the string when leaving the game", signStringErr),
 				IsError:     true,
 			})
 			return
 		}
-		sess.SessionRelease(w) // commits updates to provider, and must be before writing to header, so we can't defer this.
+		encryptedJwt := authmiddleware.Encrypt([]byte(jwtString), encryptionKey)
 
 		// Communicate
 		w.Header().Set("Content-Type", "application/json")
@@ -571,6 +592,7 @@ func LeaveGame(client storage.Client, sessionManager storage.SessionManager) htt
 			Status:      200,
 			Description: "Updated successfully",
 			IsError:     false,
+			Body:        hex.EncodeToString(encryptedJwt),
 		})
 	}
 	return http.HandlerFunc(fn)

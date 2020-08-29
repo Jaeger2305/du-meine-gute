@@ -29,6 +29,7 @@ type Card struct {
 
 // State of the game
 type State struct {
+	Winner      string   `json:"winner" bson:"winner"`
 	CardsInDeck []Card   `json:"cardsInDeck" bson:"cardsInDeck"`
 	Players     []Player `json:"players" bson:"players"`
 }

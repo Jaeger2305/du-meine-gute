@@ -421,6 +421,24 @@ func endRound(gameStore storage.Collection, gameID string) (bool, string, error)
 			winningPlayer = player.Name
 		}
 	}
+
+	if winningPlayer != "" {
+		// Update game state
+		updateResult, updateError := gameRepository.Update(gameStore, shortTimeoutContext, bson.M{"_id": gameObjectID}, bson.M{
+			"$set": &bson.M{
+				"state.winner": winningPlayer,
+			},
+		}, &options.UpdateOptions{})
+		switch updateError {
+		case nil:
+			log.Printf("Updated game %s winner %s with count %d", gameID, winningPlayer, updateResult.ModifiedCount)
+		default:
+			log.Printf("Error when updating game %s winner %s: %v", gameID, winningPlayer, updateError)
+			return isGameOver, winningPlayer, updateError
+		}
+
+	}
+
 	return isGameOver, winningPlayer, nil
 }
 
