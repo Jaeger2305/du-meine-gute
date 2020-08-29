@@ -28,46 +28,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// Error represents a handler error. It provides methods for a HTTP status
-// code and embeds the built-in error interface.
-type Error interface {
-	error
-	Status() int
-}
-
-// StatusError represents an error with an associated HTTP status code.
-type StatusError struct {
-	Code int
-	Err  error
-}
-
-// Error adapted to satisfy the status error interface.
-func (se StatusError) Error() string {
-	return se.Err.Error()
-}
-
-// Status adapted for the HTTP status code.
-func (se StatusError) Status() int {
-	return se.Code
-}
-
-// Env the application-wide configuration
-type Env struct {
-	DB   storage.Client
-	Port string
-	Host string
-}
-
-// HandlerFunc is the struct that takes a configured Env and a function matching
-// our useful signature.
-type HandlerFunc struct {
-	*Env
-	H func(e *Env, w http.ResponseWriter, r *http.Request) error
-}
-
-// Game - represents the state of an individual game.
-type Game struct {
-	Name string `json:"name"`
+// We can marshal to a known type after initially marshalling the message type
+// This is a custom implementation to help route the messages from kafka, applying to all messages from the "game" topic
+type ServiceMessage struct {
+	MessageType string      `json:"messageType" bson:"messageType"`
+	Body        interface{} `json:"body" bson:"body"`
 }
 
 // ServeFiles from the static/views directory - useful for sending plain HTML to visualize content.
@@ -156,12 +121,6 @@ func GetLive(client storage.Client, queueProducer *kafka.Writer, queueConsumer *
 	// Copy from below, just push the message into the kafka queue
 	// We should pass in a channel that terminates after the below for loop.
 	go monitorServerMessageQueue(queueConsumer, &connections, gameStore)
-
-	// Better to have a pool of connections here
-	// On a call to GetLive, we add to the connection pool
-	// Then, we can goroutine the message queue here
-	// and filter down the connections that are affected before writing to them
-	// This should scale too, because multiple servers only have one connection to the reader, and manage their own websockets.
 
 	// Reconnecting and picking up is another big question :(
 
@@ -264,67 +223,6 @@ func GetLive(client storage.Client, queueProducer *kafka.Writer, queueConsumer *
 
 	}
 	return http.HandlerFunc(fn)
-}
-
-func monitorClientMessageQueue(gameStore storage.Collection, connection *websocket.Conn, queueProducer *kafka.Writer, idToFetch primitive.ObjectID, playerUsername string) {
-	for {
-		_, clientMessage, readClientMessageErr := connection.ReadMessage()
-		if readClientMessageErr != nil {
-			log.Printf("Couldn't read client message when monitoring the websocket connection: %v", readClientMessageErr)
-			return
-		}
-		log.Println(string(clientMessage))
-
-		routeIncomingMessageErr := RouteIncomingMessage(string(clientMessage), gameStore, idToFetch, playerUsername, queueProducer)
-		if routeIncomingMessageErr != nil {
-			log.Printf("Failed to work out what to do with the incoming message: %v", routeIncomingMessageErr)
-		}
-	}
-}
-
-func monitorServerMessageQueue(queueConsumer *kafka.Reader, websocketConnections *map[primitive.ObjectID]*websocket.Conn, gameStore storage.Collection) {
-	for {
-		// Get the raw message
-		// Could probably be better as a Fetch and Commit message, but it's not clear if this takes a lock to prevent other servers from picking it up.
-		// https://github.com/segmentio/kafka-go#explicit-commits
-		m, messageQueueReadErr := queueConsumer.ReadMessage(context.Background())
-		if messageQueueReadErr != nil {
-			log.Printf("error while receiving message: %v", messageQueueReadErr)
-			continue
-		}
-		log.Printf("message at topic/partition/offset %v/%v/%v: %s", m.Topic, m.Partition, m.Offset, string(m.Value))
-
-		// Unmarshal to a JSON message
-		var parsedServerMessage ServiceMessage
-		if parseServerMessageErr := json.Unmarshal(m.Value, &parsedServerMessage); parseServerMessageErr != nil {
-			log.Printf("Couldn't parse server message from kafka %v", parseServerMessageErr)
-		}
-
-		outgoingMessages, routeOutgoingMessageErr := RouteOutgoingMessage(parsedServerMessage, gameStore)
-		if routeOutgoingMessageErr != nil {
-			log.Printf("Couldn't handle the outgoing message router: %v", routeOutgoingMessageErr)
-		}
-		for _, outgoingMessage := range outgoingMessages {
-			// If the message isn't relevant for this connection, skip it.
-			log.Println("Currently, all messages are sent to the connection, regardless of origin! TODO.")
-
-			// Serialise the message for transport over websocket
-			serialisedOutgoingMessage, serialiseErr := json.Marshal(outgoingMessage)
-			if serialiseErr != nil {
-				log.Printf("Couldn't serialise message: %v.", serialiseErr)
-				return
-			}
-
-			// Send the message through all the websocket connections for this server instance
-			// This should be filtered according to some criteria (probs in the message), but send to all for now. This will cause concurrency bugs.
-			// Could attach channels to subscribe to inside the websocketClient. And default to the current game.
-			for _, connection := range *websocketConnections {
-				if writeWebsocketMessageErr := connection.WriteMessage(websocket.TextMessage, serialisedOutgoingMessage); writeWebsocketMessageErr != nil {
-					log.Printf("Couldn't write to the websocket - it might be have dropped from the client or server side. Intended message: %s error: %v", serialisedOutgoingMessage, writeWebsocketMessageErr)
-				}
-			}
-		}
-	}
 }
 
 // JoinGame sets up a session and saves the user into the game
