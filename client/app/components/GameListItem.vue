@@ -39,11 +39,13 @@ export default {
           setString("authtoken", data.Body);
         } catch (error) {
           console.error("api req failed to join game", JSON.stringify(error));
+          return;
         }
       } else {
         console.warn(
           "already in a game, so haven't joined another one according to local storage"
         );
+        return;
       }
 
       this.$navigateTo(Game, {

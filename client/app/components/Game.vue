@@ -57,11 +57,14 @@
 <script lang="ts">
 import { getString, setString } from "@nativescript/core/application-settings";
 import Lobby from "./Lobby.vue";
+import { setTimeout, clearTimeout } from "tns-core-modules/timer";
 
 const WS = require("nativescript-websockets");
 
 const socketRetryLimit = 3;
-const socketRetryDelaySeconds = 5;
+const socketRetryDelay = 5 * 1000; // 5 seconds
+const NORMAL_CLOSURE_CODE = 1000;
+const GOING_AWAY_CODE = 1001;
 
 export default {
   props: {
@@ -79,6 +82,12 @@ export default {
   },
   created() {
     this.setUpWebsocket();
+  },
+  async destroyed() {
+    if (![WS.CLOSED, WS.CLOSING].includes(this.socket.readyState)) {
+      console.log("component being destroyed, will leave the game.");
+      return this.leaveGame();
+    }
   },
   computed: {
     playerState() {
@@ -119,7 +128,11 @@ export default {
     closedSocket(evt) {
       this.messages.unshift("closed websocket");
       console.log("The Socket was Closed:", evt.code, evt.reason);
-      this.setUpWebsocket();
+      if (
+        this.socketRetryCount <= socketRetryLimit &&
+        evt.code !== GOING_AWAY_CODE
+      )
+        setTimeout(() => this.setUpWebsocket(), socketRetryDelay);
     },
     receiveMessage(evt) {
       this.messages.unshift(evt.data);
@@ -170,6 +183,7 @@ export default {
       this.socket.send(JSON.stringify(message));
     },
     async leaveGame() {
+      this.socket.close(GOING_AWAY_CODE, "user left game");
       const response = await fetch(`${dmgAppConfig.apiUrl}/game/leave`, {
         method: "POST",
         headers: {
@@ -181,6 +195,7 @@ export default {
         }),
       });
       const data = await response.json();
+      setString("authtoken", data.Body);
 
       this.$navigateTo(Lobby);
     },
