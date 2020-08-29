@@ -110,7 +110,7 @@ func playerReady(gameStore storage.Collection, gameID primitive.ObjectID, player
 		Time:  time.Now(),
 	})
 	if writeKafkaMessageErr != nil {
-		return fmt.Errorf("couldn't write to kafka for message: , error: %v", messageForQueue, writeKafkaMessageErr)
+		return fmt.Errorf("couldn't write to kafka for message: %s, error: %v", string(messageForQueue), writeKafkaMessageErr)
 	}
 
 	// If all players are ready, send another message which starts the game.

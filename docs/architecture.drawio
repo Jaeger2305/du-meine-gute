@@ -1,6 +1,6 @@
-<mxfile host="bdbf36b5-e034-44be-8b7b-10857022415a" modified="2020-08-26T22:32:40.065Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.48.1 Chrome/78.0.3904.130 Electron/7.3.2 Safari/537.36" etag="lP4MGZxZ7fw7fyIbHVVW" version="13.1.3" pages="7">
+<mxfile host="714e61f0-e909-49fa-81e7-50e01e3eaf54" modified="2020-08-29T22:33:06.913Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.48.2 Chrome/78.0.3904.130 Electron/7.3.2 Safari/537.36" etag="YVjjotc88kotKZF1pgXw" version="13.1.3" pages="7">
     <diagram id="t5TRQX5Z3VBf5TyONs-P" name="Overall">
-        <mxGraphModel dx="1207" dy="776" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="796" dy="448" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -50,7 +50,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="b7XohXjriokM-VPOduE-" name="Server">
-        <mxGraphModel dx="2057" dy="776" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="2654" dy="861" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="szEOy66pBkZrkhZwQ--L-0"/>
                 <mxCell id="szEOy66pBkZrkhZwQ--L-1" parent="szEOy66pBkZrkhZwQ--L-0"/>
@@ -97,7 +97,7 @@
                 <mxCell id="FEWubRUmujnENEizJN2--9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.195;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitPerimeter=0;" parent="szEOy66pBkZrkhZwQ--L-1" source="FEWubRUmujnENEizJN2--8" target="FEWubRUmujnENEizJN2--1" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="2PPW-trGKCu6SboeWAC_-0" value="encrypted&lt;br&gt;JWT auth" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="FEWubRUmujnENEizJN2--9">
+                <mxCell id="2PPW-trGKCu6SboeWAC_-0" value="encrypted&lt;br&gt;JWT auth" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="FEWubRUmujnENEizJN2--9" vertex="1" connectable="0">
                     <mxGeometry x="0.55" relative="1" as="geometry">
                         <mxPoint as="offset"/>
                     </mxGeometry>
@@ -223,7 +223,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="oYeKHdS16J8QvTDcxXBS" name="Client">
-        <mxGraphModel dx="1207" dy="776" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1804" dy="861" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="zvVy1xKI3TRMSSFl_5aG-0"/>
                 <mxCell id="zvVy1xKI3TRMSSFl_5aG-1" parent="zvVy1xKI3TRMSSFl_5aG-0"/>
@@ -297,7 +297,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="X_kP-GHaAI-8B1IxB99I" name="DB">
-        <mxGraphModel dx="1207" dy="776" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1804" dy="861" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="npHxpoH00FJjF9OLrciY-0"/>
                 <mxCell id="npHxpoH00FJjF9OLrciY-1" parent="npHxpoH00FJjF9OLrciY-0"/>
@@ -308,7 +308,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="9bC6iOa2_9VTv_X6KP7L" name="Objects and Types">
-        <mxGraphModel dx="1207" dy="776" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1804" dy="861" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="RbjxRwYMocMSSQ0USpyT-0"/>
                 <mxCell id="RbjxRwYMocMSSQ0USpyT-1" parent="RbjxRwYMocMSSQ0USpyT-0"/>
@@ -346,7 +346,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="91Ui8TjKVRtfTHFIiB8l" name="Rules">
-        <mxGraphModel dx="1207" dy="776" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="1804" dy="861" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="CWslE0k0FWoV5PHi9mCk-0"/>
                 <mxCell id="CWslE0k0FWoV5PHi9mCk-1" parent="CWslE0k0FWoV5PHi9mCk-0"/>
@@ -441,7 +441,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="FBWcaqzlepwpz88IQeOD" name="iteration 1">
-        <mxGraphModel dx="1207" dy="776" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="535" dy="861" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="oJHT8QBYDgeMfb1miu7y-0"/>
                 <mxCell id="oJHT8QBYDgeMfb1miu7y-1" parent="oJHT8QBYDgeMfb1miu7y-0"/>
@@ -451,7 +451,7 @@
                 <mxCell id="qyzt61-dugoMwW685Td_-1" value="&lt;ol&gt;&lt;li&gt;100 cards added to deck&lt;/li&gt;&lt;/ol&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="oJHT8QBYDgeMfb1miu7y-1" vertex="1">
                     <mxGeometry x="350" y="460" width="166" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="qyzt61-dugoMwW685Td_-2" value="&lt;ol&gt;&lt;li&gt;player starts with 5 cards&lt;/li&gt;&lt;/ol&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" parent="oJHT8QBYDgeMfb1miu7y-1" vertex="1">
+                <mxCell id="qyzt61-dugoMwW685Td_-2" value="&lt;ol&gt;&lt;li&gt;player starts with 5 cards&lt;/li&gt;&lt;/ol&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="oJHT8QBYDgeMfb1miu7y-1" vertex="1">
                     <mxGeometry x="310" y="580" width="166" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="qyzt61-dugoMwW685Td_-3" value="&lt;ol&gt;&lt;li&gt;player plays a card&lt;/li&gt;&lt;/ol&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="oJHT8QBYDgeMfb1miu7y-1" vertex="1">
@@ -493,7 +493,7 @@
                 <mxCell id="tj094hIox6jGjXU37A2x-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.16;exitY=0.55;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.721;entryY=0.207;entryDx=0;entryDy=0;entryPerimeter=0;" parent="oJHT8QBYDgeMfb1miu7y-1" source="tj094hIox6jGjXU37A2x-7" target="qyzt61-dugoMwW685Td_-9" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="tj094hIox6jGjXU37A2x-7" value="drawCards" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;align=center;" parent="oJHT8QBYDgeMfb1miu7y-1" vertex="1">
+                <mxCell id="tj094hIox6jGjXU37A2x-7" value="drawCards" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;align=center;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="oJHT8QBYDgeMfb1miu7y-1" vertex="1">
                     <mxGeometry x="1020" y="500" width="80" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="tj094hIox6jGjXU37A2x-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.875;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="oJHT8QBYDgeMfb1miu7y-1" source="tj094hIox6jGjXU37A2x-9" target="tj094hIox6jGjXU37A2x-12" edge="1">
@@ -564,7 +564,7 @@
                 <mxCell id="Oj1oI0-AX1pDTXRndK4_-0" value="addCardsToDeck" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;align=center;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="oJHT8QBYDgeMfb1miu7y-1" vertex="1">
                     <mxGeometry x="990" y="460" width="130" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="pBAL1ynHq26jNUG6BJD2-0" value="sending multiple messages needs a queue with a blocked release system... 2nd iteration!" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;position2=0;base=10;size=70;position=0.17;" parent="oJHT8QBYDgeMfb1miu7y-1" vertex="1">
+                <mxCell id="pBAL1ynHq26jNUG6BJD2-0" value="sending multiple messages needs a queue with a blocked release system... 2nd iteration!" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;position2=0;base=10;size=70;position=0.17;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="oJHT8QBYDgeMfb1miu7y-1" vertex="1">
                     <mxGeometry x="1070" y="310" width="120" height="160" as="geometry"/>
                 </mxCell>
                 <mxCell id="mgEoaawirF3X0k6_HOTp-0" value="Next up:&lt;br&gt;&lt;strike&gt;1. multiple messages queued&lt;br&gt;&lt;/strike&gt;2. Specific permitted actions&lt;br&gt;3. Types of cards&lt;br&gt;&lt;strike&gt;4. FE integration&lt;/strike&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" parent="oJHT8QBYDgeMfb1miu7y-1" vertex="1">
@@ -573,7 +573,7 @@
                 <mxCell id="mgEoaawirF3X0k6_HOTp-1" value="Also needs:&lt;br&gt;IDs for players&lt;br&gt;IDs for cards&lt;br&gt;Multiple players/queues/turns&lt;br&gt;Payload routing and code abstraction&lt;br&gt;Clientside refactoring components and permissions" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" parent="oJHT8QBYDgeMfb1miu7y-1" vertex="1">
                     <mxGeometry x="1450" y="353" width="290" height="90" as="geometry"/>
                 </mxCell>
-                <mxCell id="7vy4ZTFbiZwgLwVAUrmg-0" value="Purple = done, or nearly done.&lt;br&gt;After this, bug fixing round and polish up to make it robust&lt;br&gt;&lt;br&gt;Then it's iteration 2!!" style="rounded=0;whiteSpace=wrap;html=1;align=left;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="oJHT8QBYDgeMfb1miu7y-1">
+                <mxCell id="7vy4ZTFbiZwgLwVAUrmg-0" value="Purple = done, or nearly done.&lt;br&gt;After this, bug fixing round and polish up to make it robust&lt;br&gt;&lt;br&gt;Then it's iteration 2!!" style="rounded=0;whiteSpace=wrap;html=1;align=left;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="oJHT8QBYDgeMfb1miu7y-1" vertex="1">
                     <mxGeometry x="170" y="210" width="166" height="80" as="geometry"/>
                 </mxCell>
             </root>

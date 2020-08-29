@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"math/rand"
 	"time"
 
 	gameRepository "github.com/Jaeger2305/du-meine-gute/repository"
@@ -27,20 +28,29 @@ type EndRoundBody struct {
 }
 
 type GameReadyPayload struct {
-	GameID  string `json:"gameId" bson:"gameId"`
-	IsReady bool   `json:"isReady" bson:"isReady"`
+	GameID        string         `json:"gameId" bson:"gameId"`
+	IsReady       bool           `json:"isReady" bson:"isReady"`
+	StartingCards []*models.Card `json:"startingCards" bson:"startingCards"`
+	CardsInDeck   []*models.Card `json:"cardsInDeck" bson:"cardsInDeck"`
 }
 
 func gameStart(gameStore storage.Collection, gameID primitive.ObjectID, queueProducer *kafka.Writer) error {
 	log.Println("Initialising", gameID.Hex(), "because all players are ready")
 	// Initialise the game
 	// Populate with the starting cards
+	const startingCardCount = 5
+	const playerCount = 1
 	initialCards := cards.GetCards()
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(initialCards), func(i, j int) { initialCards[i], initialCards[j] = initialCards[j], initialCards[i] })
+	originalDeckCards := initialCards[startingCardCount:]
+
 	shortTimeoutContext, cancelUpdateGame := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancelUpdateGame()
 	updateResult, updateError := gameRepository.Update(gameStore, shortTimeoutContext, bson.M{"_id": gameID}, bson.M{
 		"$set": &bson.M{
-			"state.cardsInDeck": initialCards,
+			"state.cardsInDeck":           originalDeckCards,
+			"state.players.0.cardsInHand": initialCards[:startingCardCount],
 		},
 	}, &options.UpdateOptions{})
 	switch updateError {
@@ -48,12 +58,23 @@ func gameStart(gameStore storage.Collection, gameID primitive.ObjectID, queuePro
 		log.Println("Updated game start status successfully", gameID.Hex(), "with count", updateResult.ModifiedCount)
 	}
 
+	var anonymisedDeckCards []*models.Card
+	for _, card := range originalDeckCards {
+		anonymisedCard := &models.Card{
+			Name: "anonymous",
+			Type: fmt.Sprintf("anonymous (%s)", card.Type),
+		}
+		anonymisedDeckCards = append(anonymisedDeckCards, anonymisedCard)
+	}
+
 	// Send message to communicate sucess
 	payload := ServiceMessage{
 		MessageType: "gameReady",
 		Body: GameReadyPayload{
-			GameID:  gameID.Hex(),
-			IsReady: true,
+			GameID:        gameID.Hex(),
+			IsReady:       true,
+			StartingCards: initialCards[:startingCardCount],
+			CardsInDeck:   anonymisedDeckCards,
 		},
 	}
 	messageForQueue, stringifyErr := json.Marshal(payload)
@@ -258,6 +279,10 @@ func RouteQueueRequest(message ServiceMessage, gameStore storage.Collection) ([]
 		}
 		return append(outgoingMessages, outgoingClientMessage), nil
 	case "gameReady":
+		var gameReadyParams GameReadyPayload
+		if parseGameReadyErr := json.Unmarshal(jsonbody, &gameReadyParams); parseGameReadyErr != nil {
+			log.Printf("Couldn't parse payload for game ready from message body %v", parseGameReadyErr)
+		}
 		outgoingClientMessage := ServiceMessage{
 			MessageType: message.MessageType,
 			Body:        message.Body,
@@ -268,6 +293,7 @@ func RouteQueueRequest(message ServiceMessage, gameStore storage.Collection) ([]
 		var drawCardParams RequestDrawCardPayload
 		if parseDrawCardErr := json.Unmarshal(jsonbody, &drawCardParams); parseDrawCardErr != nil {
 			log.Printf("Couldn't parse payload for draw card from message body %v", parseDrawCardErr)
+			return outgoingMessages, fmt.Errorf("Couldn't parse payload for draw card from message body %v", parseDrawCardErr)
 		}
 		card, drawCardErr := drawCard(gameStore, drawCardParams.GameID, drawCardParams.UserID)
 
