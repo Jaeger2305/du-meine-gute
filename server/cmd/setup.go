@@ -61,7 +61,7 @@ func setupRoutes(client storage.Client, sessionManager storage.SessionManager, q
 	router.Get("/game/{gameID}", handlers.GetGame(client))
 	router.Post("/game", handlers.CreateGame(client))
 	router.With(authmiddleware.Authorised(jwtSigningKey, encryptionKey)).Post("/game/join", handlers.JoinGame(client, jwtSigningKey, encryptionKey))
-	router.With(authmiddleware.Authorised(jwtSigningKey, encryptionKey)).Post("/game/leave", handlers.LeaveGame(client, sessionManager))
+	router.With(authmiddleware.Authorised(jwtSigningKey, encryptionKey)).Post("/game/leave", handlers.LeaveGame(client, jwtSigningKey, encryptionKey))
 	router.Post("/login", handlers.Login(jwtSigningKey, encryptionKey))
 	// router.Get("/status", handlers.GetStatus)
 	router.With(authmiddleware.Authorised(jwtSigningKey, encryptionKey)).Get("/game/live", handlers.GetLive(client, queueProducer, queueConsumer))
