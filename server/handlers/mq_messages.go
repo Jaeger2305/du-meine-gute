@@ -76,6 +76,7 @@ func gameStart(gameStore storage.Collection, gameID primitive.ObjectID, queuePro
 			StartingCards: initialCards[:startingCardCount],
 			CardsInDeck:   anonymisedDeckCards,
 		},
+		Channel: gameID.Hex(),
 	}
 	messageForQueue, stringifyErr := json.Marshal(payload)
 	if stringifyErr != nil {
@@ -276,6 +277,7 @@ func RouteQueueRequest(message ServiceMessage, gameStore storage.Collection) ([]
 		outgoingClientMessage := ServiceMessage{
 			MessageType: message.MessageType,
 			Body:        message.Body,
+			Channel:     message.Channel,
 		}
 		return append(outgoingMessages, outgoingClientMessage), nil
 	case "gameReady":
@@ -286,6 +288,7 @@ func RouteQueueRequest(message ServiceMessage, gameStore storage.Collection) ([]
 		outgoingClientMessage := ServiceMessage{
 			MessageType: message.MessageType,
 			Body:        message.Body,
+			Channel:     message.Channel,
 		}
 
 		return append(outgoingMessages, outgoingClientMessage), nil
@@ -304,6 +307,7 @@ func RouteQueueRequest(message ServiceMessage, gameStore storage.Collection) ([]
 		outgoingClientMessage := ServiceMessage{
 			MessageType: message.MessageType,
 			Body:        card,
+			Channel:     message.Channel,
 		}
 
 		return append(outgoingMessages, outgoingClientMessage), nil
@@ -321,6 +325,7 @@ func RouteQueueRequest(message ServiceMessage, gameStore storage.Collection) ([]
 		outgoingClientMessage := ServiceMessage{
 			MessageType: message.MessageType,
 			Body:        card,
+			Channel:     message.Channel,
 		}
 
 		return append(outgoingMessages, outgoingClientMessage), nil
@@ -342,6 +347,7 @@ func RouteQueueRequest(message ServiceMessage, gameStore storage.Collection) ([]
 				WinnerName:  winnerName,
 				ReadyPlayer: playerEndRoundParams.UserID,
 			},
+			Channel: message.Channel,
 		}
 
 		return append(outgoingMessages, outgoingClientMessage), nil
@@ -349,7 +355,7 @@ func RouteQueueRequest(message ServiceMessage, gameStore storage.Collection) ([]
 	return outgoingMessages, fmt.Errorf("Unrecognised message type for outgoing message %s", message.MessageType)
 }
 
-func monitorServerMessageQueue(queueConsumer *kafka.Reader, websocketConnections *map[primitive.ObjectID]*websocket.Conn, gameStore storage.Collection) {
+func monitorServerMessageQueue(queueConsumer *kafka.Reader, channelClients *map[string](map[primitive.ObjectID]websocketClient), gameStore storage.Collection) {
 	for {
 		// Get the raw message
 		// Could probably be better as a Fetch and Commit message, but it's not clear if this takes a lock to prevent other servers from picking it up.
@@ -382,12 +388,11 @@ func monitorServerMessageQueue(queueConsumer *kafka.Reader, websocketConnections
 				return
 			}
 
-			// Send the message through all the websocket connections for this server instance
-			// This should be filtered according to some criteria (probs in the message), but send to all for now. This will cause concurrency bugs.
-			// Could attach channels to subscribe to inside the websocketClient. And default to the current game.
-			for _, connection := range *websocketConnections {
-				if writeWebsocketMessageErr := connection.WriteMessage(websocket.TextMessage, serialisedOutgoingMessage); writeWebsocketMessageErr != nil {
-					log.Printf("Couldn't write to the websocket - it might be have dropped from the client or server side. Intended message: %s error: %v", serialisedOutgoingMessage, writeWebsocketMessageErr)
+			// Send the message through all the websocket connections connected to this channel on this server instance
+			clientsForChannel := (*channelClients)[outgoingMessage.Channel]
+			for connectionID, client := range clientsForChannel {
+				if writeWebsocketMessageErr := client.connection.WriteMessage(websocket.TextMessage, serialisedOutgoingMessage); writeWebsocketMessageErr != nil {
+					log.Printf("Couldn't write to the websocket %s - it might be have dropped from the client or server side. Intended message: %s error: %v", connectionID.Hex(), serialisedOutgoingMessage, writeWebsocketMessageErr)
 				}
 			}
 		}

@@ -97,6 +97,7 @@ func playerReady(gameStore storage.Collection, gameID primitive.ObjectID, player
 			UserID:  playerUsername,
 			IsReady: true,
 		},
+		Channel: gameID.Hex(),
 	}
 	messageForQueue, stringifyErr := json.Marshal(payload)
 	if stringifyErr != nil {
@@ -143,6 +144,7 @@ func playerEndRound(gameStore storage.Collection, gameID primitive.ObjectID, pla
 			GameID: gameID.Hex(),
 			UserID: playerUsername,
 		},
+		Channel: gameID.Hex(),
 	}
 	messageForQueue, stringifyErr := json.Marshal(payload)
 	if stringifyErr != nil {
@@ -206,6 +208,7 @@ func requestPlayCard(gameStore storage.Collection, gameID primitive.ObjectID, pl
 			UserID: playerUsername,
 			CardID: cardToPlay.Name,
 		},
+		Channel: gameID.Hex(),
 	}
 	messageForQueue, stringifyErr := json.Marshal(payload)
 	if stringifyErr != nil {
@@ -239,6 +242,7 @@ func requestDrawCard(gameStore storage.Collection, gameID primitive.ObjectID, pl
 			GameID: gameID.Hex(),
 			UserID: playerUsername,
 		},
+		Channel: gameID.Hex(),
 	}
 	messageForQueue, stringifyErr := json.Marshal(payload)
 	if stringifyErr != nil {

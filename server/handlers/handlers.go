@@ -32,6 +32,7 @@ import (
 // This is a custom implementation to help route the messages from kafka, applying to all messages from the "game" topic
 type ServiceMessage struct {
 	MessageType string      `json:"messageType" bson:"messageType"`
+	Channel     string      `json:"channel" bson:"channel"`
 	Body        interface{} `json:"body" bson:"body"`
 }
 
@@ -110,17 +111,23 @@ func Login(jwtSigningKey []byte, encryptionKey []byte) http.HandlerFunc {
 	return http.HandlerFunc(fn)
 }
 
+type websocketClient struct {
+	connection *websocket.Conn
+	channels   map[string]bool
+	username   string
+}
+
 // GetLive websocket connection
 func GetLive(client storage.Client, queueProducer *kafka.Writer, queueConsumer *kafka.Reader) http.HandlerFunc {
 	var protocols []string
-	connections := make(map[primitive.ObjectID]*websocket.Conn)
+	channelClients := make(map[string]map[primitive.ObjectID]websocketClient)
 
 	gameStore := gameRepository.GetGameStore(client)
 
 	// Setup the outgoing messages
 	// Copy from below, just push the message into the kafka queue
 	// We should pass in a channel that terminates after the below for loop.
-	go monitorServerMessageQueue(queueConsumer, &connections, gameStore)
+	go monitorServerMessageQueue(queueConsumer, &channelClients, gameStore)
 
 	// Reconnecting and picking up is another big question :(
 
@@ -215,8 +222,18 @@ func GetLive(client storage.Client, queueProducer *kafka.Writer, queueConsumer *
 			return
 		}
 		connectionID := primitive.NewObjectID()
-		connections[connectionID] = connection
-		defer delete(connections, connectionID)
+		// If this gets more complicated, better to use a struct key.
+		// https://blog.golang.org/maps
+		var connectionClients = make(map[primitive.ObjectID]websocketClient)
+		var channels = make(map[string]bool)
+		channels[activeGame] = true
+		connectionClients[connectionID] = websocketClient{
+			connection: connection,
+			channels:   channels,
+			username:   activeUsername,
+		}
+		channelClients[activeGame] = connectionClients
+		defer delete(channelClients[activeGame], connectionID)
 
 		// Start the websocket loop
 		monitorClientMessageQueue(gameStore, connection, queueProducer, gameID, activeUsername)
