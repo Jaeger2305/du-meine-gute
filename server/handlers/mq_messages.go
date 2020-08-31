@@ -120,21 +120,29 @@ func endRound(gameStore storage.Collection, gameID string) (bool, string, error)
 		}
 	}
 
+	var updateGameState = bson.M{}
 	if winningPlayer != "" {
-		// Update game state
-		updateResult, updateError := gameRepository.Update(gameStore, shortTimeoutContext, bson.M{"_id": gameObjectID}, bson.M{
-			"$set": &bson.M{
-				"state.winner": winningPlayer,
-			},
-		}, &options.UpdateOptions{})
-		switch updateError {
-		case nil:
-			log.Printf("Updated game %s winner %s with count %d", gameID, winningPlayer, updateResult.ModifiedCount)
-		default:
-			log.Printf("Error when updating game %s winner %s: %v", gameID, winningPlayer, updateError)
-			return isGameOver, winningPlayer, updateError
+		updateGameState["$set"] = bson.M{
+			"state.winner": winningPlayer,
 		}
+	}
 
+	newRound := make([][]models.ServiceMessage, 1)
+	newRound[0] = make([]models.ServiceMessage, 0)
+	updateGameState["$push"] = bson.M{
+		"history": bson.M{
+			"$each":     newRound,
+			"$position": 0,
+		},
+	}
+	// Update game state
+	updateResult, updateError := gameRepository.Update(gameStore, shortTimeoutContext, bson.M{"_id": gameObjectID}, updateGameState, &options.UpdateOptions{})
+	switch updateError {
+	case nil:
+		log.Printf("Updated game %s winner %s with count %d and progressed to next round.", gameID, winningPlayer, updateResult.ModifiedCount)
+	default:
+		log.Printf("Error when updating game %s winner %s and moving to next round: %v", gameID, winningPlayer, updateError)
+		return isGameOver, winningPlayer, updateError
 	}
 
 	return isGameOver, winningPlayer, nil
@@ -150,6 +158,17 @@ func drawCard(gameStore storage.Collection, gameID string, playerUsername string
 	activeGame, getGameErr := gameRepository.FindOne(gameStore, shortTimeoutContext, bson.M{"_id": gameObjectID}) // Should have a projection too.
 	if getGameErr != nil {
 		return models.Card{}, fmt.Errorf("Couldn't get game %s: %v", gameID, getGameErr)
+	}
+
+	// Check we haven't overdrawn cards this round
+	drawnCardCount := 0
+	for _, messageInRound := range activeGame.History[0] {
+		if messageInRound.MessageType == "drawCard" {
+			drawnCardCount++
+		}
+	}
+	if drawnCardCount >= 2 {
+		return models.Card{}, fmt.Errorf("already drawn %d card limit this round, end the round first", drawnCardCount)
 	}
 
 	// Get the card
@@ -258,6 +277,25 @@ func playCard(gameStore storage.Collection, gameID string, playerUsername string
 	return cardToPlay, nil
 }
 
+func updateGameHistory(gameStore storage.Collection, gameID string, messages []ServiceMessage) error {
+	gameObjectID, objectIDConversionErr := primitive.ObjectIDFromHex(gameID)
+	if objectIDConversionErr != nil {
+		return fmt.Errorf("Couldn't convert %s game ID to a valid object ID: %v", gameID, objectIDConversionErr)
+	}
+	shortTimeoutContext, cancelUpdateGame := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancelUpdateGame()
+	updateResult, updateError := gameRepository.Update(gameStore, shortTimeoutContext, bson.M{"_id": gameObjectID}, bson.M{
+		"$push": &bson.M{
+			"history.0": bson.M{
+				"$each": messages,
+			},
+		},
+	}, &options.UpdateOptions{})
+	log.Printf("Updated game history %s with messages %v and count %d", gameID, messages, updateResult.ModifiedCount)
+
+	return updateError
+}
+
 // RouteQueueRequest handles outgoing websocket messages made by Kafka, and calls the appropriate function handlers.
 func RouteQueueRequest(message ServiceMessage, gameStore storage.Collection) ([]ServiceMessage, error) {
 	outgoingMessages := make([]ServiceMessage, 0)
@@ -352,6 +390,7 @@ func RouteQueueRequest(message ServiceMessage, gameStore storage.Collection) ([]
 
 		return append(outgoingMessages, outgoingClientMessage), nil
 	}
+
 	return outgoingMessages, fmt.Errorf("Unrecognised message type for outgoing message %s", message.MessageType)
 }
 
@@ -376,6 +415,9 @@ func monitorServerMessageQueue(queueConsumer *kafka.Reader, channelClients *map[
 		outgoingMessages, routeOutgoingMessageErr := RouteQueueRequest(parsedServerMessage, gameStore)
 		if routeOutgoingMessageErr != nil {
 			log.Printf("Couldn't handle the outgoing message router: %v", routeOutgoingMessageErr)
+		}
+		if updateGameHistoryError := updateGameHistory(gameStore, parsedServerMessage.Channel, outgoingMessages); updateGameHistoryError != nil {
+			log.Printf("Couldn't update the game history: %s, %v", parsedServerMessage, updateGameHistoryError)
 		}
 		for _, outgoingMessage := range outgoingMessages {
 			// If the message isn't relevant for this connection, skip it.

@@ -589,6 +589,7 @@ func CreateGame(client storage.Client) http.HandlerFunc {
 		// Decode the game from the request body.
 		var game models.Game
 		decodeInputError := dec.Decode(&game)
+		game.History = make([][]models.ServiceMessage, 0)
 		game.State.CardsInDeck = make([]models.Card, 0)
 		game.State.Players = make([]models.Player, 0)
 		if decodeInputError != nil {

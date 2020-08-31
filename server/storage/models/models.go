@@ -2,11 +2,17 @@ package storage
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
+type ServiceMessage struct {
+	MessageType string      `json:"messageType" bson:"messageType"`
+	Channel     string      `json:"channel" bson:"channel"`
+	Body        interface{} `json:"body" bson:"body"`
+}
+
 // Game representation in mongo collection
 type Game struct {
 	ID      primitive.ObjectID `json:"_id" bson:"_id"`
 	Name    string             `json:"name" bson:"name"`
-	History []struct{}         `json:"history" bson:"history"`
+	History [][]ServiceMessage `json:"history" bson:"history"`
 	Config  struct{}           `json:"config" bson:"config"`
 	State   State              `json:"state" bson:"state"`
 }
@@ -32,6 +38,7 @@ type State struct {
 	Winner      string   `json:"winner" bson:"winner"`
 	CardsInDeck []Card   `json:"cardsInDeck" bson:"cardsInDeck"`
 	Players     []Player `json:"players" bson:"players"`
+	GameRound   int      `json:"gameRound" bson:"gameRound"`
 }
 
 type Simple struct {
