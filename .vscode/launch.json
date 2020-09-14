@@ -25,6 +25,15 @@
       "port": 44000,
       "showLog": true,
       "trace": "verbose"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch CLI game",
+      "program": "${workspaceFolder}/cli/index.ts",
+      "preLaunchTask": "tsc: build - cli/tsconfig.json",
+      "outFiles": ["${workspaceFolder}/cli/dist/**/*.js"],
+      "console": "externalTerminal"
     }
   ]
 }
