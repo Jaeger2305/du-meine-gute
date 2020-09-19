@@ -1,4 +1,6 @@
+import { GameState, Card, Employee, Resource } from "../types";
 import { playerActions } from "../game";
+import { coalMine, bakery, tannery } from "../game/cards";
 
 type ServerResponse = {
   response: any;
@@ -12,7 +14,7 @@ function gameReady() {}
 export const roundSteps: Array<(gameState: GameState) => ServerResponse> = [
   startRound,
   revealMarket,
-  assignWorkers,
+  assignEmployees,
   revealMarket,
   produce,
   purchase,
@@ -26,10 +28,22 @@ export const roundSteps: Array<(gameState: GameState) => ServerResponse> = [
  * This is normally just an acknowledgement, as the players can't choose anything here.
  */
 function revealMarket(gameState: GameState): ServerResponse {
+  // should be connected to deck, and stop drawing after picking 3 suns.
   gameState.availableActions = [playerActions.endStep];
+  const baseResources = [
+    Resource.brick,
+    Resource.stone,
+    Resource.wheat,
+    Resource.wood,
+  ];
+  const marketResources = [...new Array(10)].map(
+    (v) => baseResources[Math.floor(Math.random() * baseResources.length)]
+  );
+  gameState.marketResources.push(...marketResources);
   return {
     response: {
       availableActions: gameState.availableActions,
+      marketResources: gameState.marketResources,
     },
   };
 }
@@ -39,12 +53,23 @@ function revealMarket(gameState: GameState): ServerResponse {
  * Returns the function to update the client game state
  */
 export function drawCard(gameState: GameState): ServerResponse {
+  // If there are no cards to draw from, shuffle the discard.
   if (!gameState.cardsInDeck.length) {
     gameState.cardsInDeck = gameState.cardsInDiscard.slice().reverse();
     gameState.cardsInDiscard = [];
   }
+
+  // Draw the card
   const drawnCard = gameState.cardsInDeck.splice(0, 1);
   gameState.cardsInHand.splice(0, 0, ...drawnCard);
+
+  // Find the event and delete it
+  const drawCardActionIndex = gameState.availableActions.findIndex(
+    (a) => a.type === "drawCard"
+  );
+  gameState.availableActions.splice(drawCardActionIndex, 1);
+
+  // Send the response back
   const response = {
     drawnCard,
     cardsInDiscard: gameState.cardsInDiscard,
@@ -70,7 +95,13 @@ export function playCard(gameState: GameState, card: Card): ServerResponse {
   );
   const playedCard = gameState.cardsInHand.splice(cardIndex, 1);
   gameState.cardsInPlay.splice(0, 0, ...playedCard);
-  gameState.availableActions = []; // end step after single card played
+
+  // Find the event and delete it
+  const drawCardActionIndex = gameState.availableActions.findIndex(
+    (a) => a.type === "buildFactory"
+  );
+  gameState.availableActions.splice(drawCardActionIndex, 1);
+
   const response = {
     playedCard,
     cardsInPlay: gameState.cardsInPlay,
@@ -86,16 +117,7 @@ export function playCard(gameState: GameState, card: Card): ServerResponse {
  *
  */
 function generateTestCards(): Array<Card> {
-  return [
-    { type: "test", name: "test1" },
-    { type: "test", name: "test2" },
-    { type: "test", name: "test3" },
-    { type: "test", name: "test4" },
-    { type: "test", name: "test5" },
-    { type: "test", name: "test6" },
-    { type: "test", name: "test7" },
-    { type: "test", name: "test8" },
-  ];
+  return [bakery, tannery];
 }
 
 /**
@@ -103,10 +125,22 @@ function generateTestCards(): Array<Card> {
  * Returns valid actions that can be performed, which is just acknowledgements
  */
 export function setupGame(game: GameState): void {
+  game.cardsInPlay.push(coalMine);
   game.cardsInDeck.push(...generateTestCards());
   game.players.push({
     name: "test-player",
   });
+  game.employees = [
+    {
+      name: "test-employee-1",
+      modes: [
+        {
+          productionCount: 1,
+          resourceSparingCount: 0,
+        },
+      ],
+    },
+  ];
   game.availableActions = [playerActions.endStep];
   return;
 }
@@ -117,6 +151,7 @@ export function setupGame(game: GameState): void {
  */
 function startRound(gameState: GameState): ServerResponse {
   gameState.availableActions = [playerActions.drawCard, playerActions.endStep];
+  gameState.marketResources = [];
   return {
     response: {
       availableActions: gameState.availableActions,
@@ -128,11 +163,39 @@ function startRound(gameState: GameState): ServerResponse {
  * Initiate the assignment step in the round
  * The returns valid actions that can be performed specific for this round.
  */
-function assignWorkers(gameState: GameState): ServerResponse {
-  gameState.availableActions = [playerActions.endStep];
+function assignEmployees(gameState: GameState): ServerResponse {
+  gameState.availableActions = [
+    playerActions.assignEmployee,
+    playerActions.endStep,
+  ];
   return {
     response: {
       availableActions: gameState.availableActions,
+    },
+  };
+}
+
+/**
+ * Initiate the assignment step in the round
+ * The returns valid actions that can be performed specific for this round.
+ */
+export function assignEmployee(
+  gameState: GameState,
+  employee: Employee,
+  factory: Card
+): ServerResponse {
+  gameState.availableActions = [];
+  gameState.assignedEmployees = [
+    {
+      assignment: factory,
+      name: employee.name,
+      mode: { productionCount: 1, resourceSparingCount: 0 },
+    },
+  ];
+  return {
+    response: {
+      availableActions: gameState.availableActions,
+      assignedEmployees: gameState.assignedEmployees,
     },
   };
 }
@@ -150,8 +213,6 @@ function assignWorkers(gameState: GameState): ServerResponse {
  */
 function produce(gameState: GameState): ServerResponse {
   gameState.availableActions = [
-    playerActions.useMarketCard,
-    playerActions.useResource,
     playerActions.produceAtFactory,
     playerActions.endStep,
   ];
@@ -191,7 +252,7 @@ function purchase(gameState: GameState): ServerResponse {
  * Either acknowledge and a return to the startRound action, or nothing, meaning the game has ended and all they can do is leave.
  */
 function endRound(gameState: GameState): ServerResponse {
-  const isGameEnd = gameState.cardsInPlay.length >= 1;
+  const isGameEnd = gameState.cardsInPlay.length >= 3;
   gameState.availableActions = isGameEnd ? [] : [playerActions.endStep];
   gameState.winner = isGameEnd ? gameState.players[0] : null;
 

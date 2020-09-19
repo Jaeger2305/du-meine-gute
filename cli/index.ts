@@ -1,6 +1,7 @@
 import * as prompts from "prompts";
 import { newGame } from "./game";
 import { setupGame, roundSteps } from "./local-server";
+import { RoundSteps } from "./types";
 async function main() {
   // Setup the game
   const game = newGame();
@@ -17,8 +18,15 @@ async function main() {
   // While there is an available action, wait for that input.
   // This is to mock the asynchronous operations available to the user.
   while (game.availableActions.length) {
+    // console.clear();
+    console.log("starting step", RoundSteps[(step - 1) % roundSteps.length]);
     console.log(
-      `Cards in play: ${game.cardsInPlay.length}, Cards in hand: ${game.cardsInHand}`
+      `Cards in play: `,
+      game.cardsInPlay,
+      "Cards in hand: ",
+      game.cardsInHand,
+      "Resources:",
+      game.resources
     );
     // Wait for user input
     const chosenAction = await prompts({
