@@ -75,7 +75,9 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
         hasProduced
           ? 1
           : factoryChoice.factoryWorker.factoryWorker.mode.productionCount
-      ).fill(factoryChoice.factoryWorker.factoryWorker.assignment.resource);
+      )
+        .fill(factoryChoice.factoryWorker.factoryWorker.assignment.output)
+        .flat();
       gameState.resources.push(...producedResources);
 
       // If the assignment allows only one production and no chaining, production can no longer happen.

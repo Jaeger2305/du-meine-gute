@@ -23,7 +23,7 @@ export async function buildFactory(gameState: GameState) {
     type: "select",
     message: `pick an card to play`,
     name: "card",
-    choices: gameState.cardsInHand.map((card) => ({
+    choices: affordableCards.map((card) => ({
       title: card.name,
       value: card,
     })),

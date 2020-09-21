@@ -4,7 +4,7 @@ const mockActions = {
 };
 jest.doMock("./production-utils", () => mockActions);
 import * as prompts from "prompts";
-import { wood, wheat } from "../../resources";
+import { wood, wheat, bread } from "../../resources";
 import { playerActions } from "../index";
 import { bakery, bakeryWithChain } from "../cards";
 import { produceAtFactory } from "./index";
@@ -48,7 +48,7 @@ describe("produce at factory", () => {
       requiredExtraResources: [],
     });
     await produceAtFactory(game);
-    expect(game.resources).toEqual([wheat]);
+    expect(game.resources).toEqual([bread]);
   });
   it("should produce a resource when the discount + market is sufficient", async () => {
     const game = {
@@ -84,7 +84,7 @@ describe("produce at factory", () => {
     });
     prompts.inject([factoryWorker]);
     await produceAtFactory(game);
-    expect(game.resources).toEqual([wheat]);
+    expect(game.resources).toEqual([bread]);
   });
   it("should produce a resource when the user is prompted for discard", async () => {
     const game = {
@@ -127,7 +127,7 @@ describe("produce at factory", () => {
     });
 
     await produceAtFactory(game);
-    expect(game.resources).toEqual([wheat]);
+    expect(game.resources).toEqual([bread]);
     expect(game.cardsInHand).toEqual([]);
     expect(game.cardsInDiscard).toEqual([bakery]);
   });
@@ -189,7 +189,7 @@ describe("produce at factory", () => {
 
     await produceAtFactory(game);
     console.log(game.resources);
-    expect(game.resources).toEqual([wheat, wheat, wheat]);
+    expect(game.resources).toEqual([bread, bread, bread]);
   });
   it("produces extra with an efficient worker, relying only on the market", async () => {
     const game = {
@@ -254,7 +254,7 @@ describe("produce at factory", () => {
 
     await produceAtFactory(game);
     console.log(game.resources);
-    expect(game.resources).toEqual([wheat, wheat, wheat, wheat, wheat]);
+    expect(game.resources).toEqual([bread, bread, bread, bread, bread]);
   });
   it("should produce several resources if can chain production, allowing player discard", async () => {
     const game = {
@@ -314,6 +314,6 @@ describe("produce at factory", () => {
 
     await produceAtFactory(game);
     console.log(game.resources);
-    expect(game.resources).toEqual([wheat, wheat]);
+    expect(game.resources).toEqual([bread, bread]);
   });
 });
