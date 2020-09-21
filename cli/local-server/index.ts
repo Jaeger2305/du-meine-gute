@@ -1,4 +1,5 @@
-import { GameState, Card, Employee, Resource } from "../types";
+import { GameState, Card, Employee } from "../types";
+import { wood, brick, wheat, stone } from "../resources";
 import { playerActions } from "../game";
 import { coalMine, bakery, tannery } from "../game/cards";
 
@@ -30,12 +31,7 @@ export const roundSteps: Array<(gameState: GameState) => ServerResponse> = [
 function revealMarket(gameState: GameState): ServerResponse {
   // should be connected to deck, and stop drawing after picking 3 suns.
   gameState.availableActions = [playerActions.endStep];
-  const baseResources = [
-    Resource.brick,
-    Resource.stone,
-    Resource.wheat,
-    Resource.wood,
-  ];
+  const baseResources = [brick, stone, wheat, wood];
   const marketResources = [...new Array(10)].map(
     (v) => baseResources[Math.floor(Math.random() * baseResources.length)]
   );
@@ -139,6 +135,7 @@ export function setupGame(game: GameState): void {
           resourceSparingCount: 0,
         },
       ],
+      cost: 0,
     },
   ];
   game.availableActions = [playerActions.endStep];

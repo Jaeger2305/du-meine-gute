@@ -9,6 +9,7 @@ export type Card = {
   resource: Resource;
   output: Array<Resource>;
   input: Array<Resource>;
+  cost: number;
   chainInput?: Array<Resource>;
 };
 
@@ -25,6 +26,7 @@ export type Employee = {
   name: string;
   modes: Array<ProductionEfficiency>;
   resourceSpecialty?: Resource; // not sure what this is intended for
+  cost: number;
 };
 
 export type AssignedEmployee = {
@@ -47,17 +49,23 @@ export type GameState = {
   marketResources: Array<Resource>;
 };
 
-export enum Resource {
-  wood,
-  brick,
-  wheat,
-  stone,
-  cattle,
+export enum ResourceType {
+  wood = "wood",
+  brick = "brick",
+  wheat = "wheat",
+  stone = "stone",
+  cattle = "cattle",
 
-  coal,
-  bread,
-  leather,
+  coal = "coal",
+  bread = "bread",
+  leather = "leather",
 }
+
+export type Resource = {
+  type: ResourceType;
+  value: number;
+  baseResource: boolean;
+};
 
 enum Steps {
   startRound = "start",

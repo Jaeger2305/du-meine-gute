@@ -4,7 +4,7 @@ const mockActions = {
 };
 jest.doMock("./production-utils", () => mockActions);
 import * as prompts from "prompts";
-import { Resource } from "../../types";
+import { wood, wheat } from "../../resources";
 import { playerActions } from "../index";
 import { bakery, bakeryWithChain } from "../cards";
 import { produceAtFactory } from "./index";
@@ -35,7 +35,7 @@ describe("produce at factory", () => {
         },
       ],
       resources: [],
-      marketResources: [Resource.wood, Resource.wheat],
+      marketResources: [wood, wheat],
     };
     const factoryWorker = {
       factoryWorker: game.assignedEmployees[0],
@@ -48,7 +48,7 @@ describe("produce at factory", () => {
       requiredExtraResources: [],
     });
     await produceAtFactory(game);
-    expect(game.resources).toEqual([Resource.wheat]);
+    expect(game.resources).toEqual([wheat]);
   });
   it("should produce a resource when the discount + market is sufficient", async () => {
     const game = {
@@ -71,7 +71,7 @@ describe("produce at factory", () => {
         },
       ],
       resources: [],
-      marketResources: [Resource.wood],
+      marketResources: [wood],
     };
     const factoryWorker = {
       factoryWorker: game.assignedEmployees[0],
@@ -80,11 +80,11 @@ describe("produce at factory", () => {
     mockActions.checkOutstandingResources.mockReturnValueOnce({
       isEnoughToProduce: true,
       isExactToProduce: true,
-      requiredExtraResources: [Resource.wheat],
+      requiredExtraResources: [wheat],
     });
     prompts.inject([factoryWorker]);
     await produceAtFactory(game);
-    expect(game.resources).toEqual([Resource.wheat]);
+    expect(game.resources).toEqual([wheat]);
   });
   it("should produce a resource when the user is prompted for discard", async () => {
     const game = {
@@ -107,7 +107,7 @@ describe("produce at factory", () => {
         },
       ],
       resources: [],
-      marketResources: [Resource.wood],
+      marketResources: [wood],
     };
     const factoryWorker = {
       factoryWorker: game.assignedEmployees[0],
@@ -118,7 +118,7 @@ describe("produce at factory", () => {
     mockActions.checkOutstandingResources.mockReturnValueOnce({
       isEnoughToProduce: false,
       isExactToProduce: false,
-      requiredExtraResources: [Resource.wheat],
+      requiredExtraResources: [wheat],
     });
 
     mockActions.fallbackProduction.mockResolvedValueOnce({
@@ -127,7 +127,7 @@ describe("produce at factory", () => {
     });
 
     await produceAtFactory(game);
-    expect(game.resources).toEqual([Resource.wheat]);
+    expect(game.resources).toEqual([wheat]);
     expect(game.cardsInHand).toEqual([]);
     expect(game.cardsInDiscard).toEqual([bakery]);
   });
@@ -152,12 +152,7 @@ describe("produce at factory", () => {
         },
       ],
       resources: [],
-      marketResources: [
-        Resource.wood,
-        Resource.wheat,
-        Resource.wheat,
-        Resource.wheat,
-      ],
+      marketResources: [wood, wheat, wheat, wheat],
     };
     const factoryWorker = {
       factoryWorker: game.assignedEmployees[0],
@@ -184,7 +179,7 @@ describe("produce at factory", () => {
       .mockReturnValueOnce({
         isEnoughToProduce: false,
         isExactToProduce: false,
-        requiredExtraResources: [Resource.wheat],
+        requiredExtraResources: [wheat],
       });
 
     mockActions.fallbackProduction.mockResolvedValueOnce({
@@ -194,11 +189,7 @@ describe("produce at factory", () => {
 
     await produceAtFactory(game);
     console.log(game.resources);
-    expect(game.resources).toEqual([
-      Resource.wheat,
-      Resource.wheat,
-      Resource.wheat,
-    ]);
+    expect(game.resources).toEqual([wheat, wheat, wheat]);
   });
   it("produces extra with an efficient worker, relying only on the market", async () => {
     const game = {
@@ -221,12 +212,7 @@ describe("produce at factory", () => {
         },
       ],
       resources: [],
-      marketResources: [
-        Resource.wood,
-        Resource.wheat,
-        Resource.wheat,
-        Resource.wheat,
-      ],
+      marketResources: [wood, wheat, wheat, wheat],
     };
     const factoryWorker = {
       factoryWorker: game.assignedEmployees[0],
@@ -253,12 +239,12 @@ describe("produce at factory", () => {
       .mockReturnValueOnce({
         isEnoughToProduce: true,
         isExactToProduce: true,
-        requiredExtraResources: [Resource.wheat],
+        requiredExtraResources: [wheat],
       })
       .mockReturnValueOnce({
         isEnoughToProduce: false,
         isExactToProduce: false,
-        requiredExtraResources: [Resource.wheat],
+        requiredExtraResources: [wheat],
       });
 
     mockActions.fallbackProduction.mockResolvedValueOnce({
@@ -268,13 +254,7 @@ describe("produce at factory", () => {
 
     await produceAtFactory(game);
     console.log(game.resources);
-    expect(game.resources).toEqual([
-      Resource.wheat,
-      Resource.wheat,
-      Resource.wheat,
-      Resource.wheat,
-      Resource.wheat,
-    ]);
+    expect(game.resources).toEqual([wheat, wheat, wheat, wheat, wheat]);
   });
   it("should produce several resources if can chain production, allowing player discard", async () => {
     const game = {
@@ -297,7 +277,7 @@ describe("produce at factory", () => {
         },
       ],
       resources: [],
-      marketResources: [Resource.wood, Resource.wheat],
+      marketResources: [wood, wheat],
     };
     const factoryWorker = {
       factoryWorker: game.assignedEmployees[0],
@@ -314,12 +294,12 @@ describe("produce at factory", () => {
       .mockReturnValueOnce({
         isEnoughToProduce: false,
         isExactToProduce: false,
-        requiredExtraResources: [Resource.wheat],
+        requiredExtraResources: [wheat],
       })
       .mockReturnValueOnce({
         isEnoughToProduce: false,
         isExactToProduce: false,
-        requiredExtraResources: [Resource.wheat],
+        requiredExtraResources: [wheat],
       });
 
     mockActions.fallbackProduction
@@ -334,6 +314,6 @@ describe("produce at factory", () => {
 
     await produceAtFactory(game);
     console.log(game.resources);
-    expect(game.resources).toEqual([Resource.wheat, Resource.wheat]);
+    expect(game.resources).toEqual([wheat, wheat]);
   });
 });
