@@ -1,4 +1,4 @@
-import { GameState, Card, Employee } from "../types";
+import { GameState, Card, Employee, Resource } from "../types";
 import { wood, brick, wheat, stone } from "../resources";
 import { playerActions } from "../game";
 import { coalMine, bakery, tannery } from "../game/cards";
@@ -81,7 +81,11 @@ export function drawCard(gameState: GameState): ServerResponse {
  * Puts a card from a players hand into play.
  * Returns the function to update the client game state
  */
-export function playCard(gameState: GameState, card: Card): ServerResponse {
+export function playCard(
+  gameState: GameState,
+  card: Card,
+  resources: Array<Resource>
+): ServerResponse {
   if (!gameState.cardsInDeck.length) {
     gameState.cardsInDeck = gameState.cardsInDiscard.slice().reverse();
     gameState.cardsInDiscard = [];
@@ -92,17 +96,25 @@ export function playCard(gameState: GameState, card: Card): ServerResponse {
   const playedCard = gameState.cardsInHand.splice(cardIndex, 1);
   gameState.cardsInPlay.splice(0, 0, ...playedCard);
 
-  // Find the event and delete it
-  const drawCardActionIndex = gameState.availableActions.findIndex(
-    (a) => a.type === "buildFactory"
-  );
-  gameState.availableActions.splice(drawCardActionIndex, 1);
+  // Find the resources and delete them.
+  // Not efficient. But I'm not sure the server is responsible for this anyway.
+  while (resources.length) {
+    const resourceBeingDeleted = resources.pop();
+    const indexOfResourceToDelete = gameState.resources.findIndex(
+      (gameResource) => gameResource.type === resourceBeingDeleted.type
+    );
+    gameState.resources.splice(indexOfResourceToDelete, 1);
+  }
+
+  // Delete all events other than the end step
+  gameState.availableActions = [playerActions.endStep];
 
   const response = {
     playedCard,
     cardsInPlay: gameState.cardsInPlay,
     cardsInHand: gameState.cardsInHand,
     availableActions: gameState.availableActions,
+    resources: gameState.resources,
   };
   return {
     response,

@@ -1,3 +1,13 @@
+export enum PlayerActionEnum {
+  endStep = "endStep",
+  drawCard = "drawCard",
+  discardCard = "discardCard",
+  assignEmployee = "assignEmployee",
+  produceAtFactory = "produceAtFactory",
+  buildFactory = "buildFactory",
+  hireWorker = "hireWorker",
+}
+
 export type PlayerAction = {
   type: string;
   handler: (...rest: any) => any;
@@ -57,6 +67,7 @@ export enum ResourceType {
   cattle = "cattle",
 
   coal = "coal",
+  butter = "butter",
   bread = "bread",
   leather = "leather",
 }

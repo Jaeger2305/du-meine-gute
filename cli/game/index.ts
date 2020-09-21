@@ -1,19 +1,19 @@
 import * as prompts from "prompts";
-import { buildFactory } from "./buildFactory";
-import { assignEmployee } from "./assignEmployee";
+import { buildFactory } from "./build-factory";
+import { assignEmployee } from "./assign-employee";
 import { produceAtFactory } from "./production";
-import { GameState } from "../types";
-import { drawCard, playCard } from "../local-server";
+import { GameState, PlayerActionEnum } from "../types";
+import { drawCard } from "../local-server";
 
 export const playerActions = {
   endStep: {
-    type: "endStep",
+    type: PlayerActionEnum.endStep,
     handler: (gameState: GameState) => {
       gameState.availableActions = [];
     },
   },
   drawCard: {
-    type: "drawCard",
+    type: PlayerActionEnum.drawCard,
     handler: (gameState: GameState) => {
       const {
         response: { cardsInDeck, cardsInHand, cardsInDiscard },
@@ -24,7 +24,7 @@ export const playerActions = {
     },
   },
   discardCard: {
-    type: "discardCard",
+    type: PlayerActionEnum.discardCard,
     handler: async (gameState: GameState) => {
       const cardChoice = await prompts({
         type: "select",
@@ -41,19 +41,19 @@ export const playerActions = {
     },
   },
   assignEmployee: {
-    type: "assignEmployee",
+    type: PlayerActionEnum.assignEmployee,
     handler: assignEmployee,
   },
   produceAtFactory: {
-    type: "produceAtFactory",
+    type: PlayerActionEnum.produceAtFactory,
     handler: produceAtFactory,
   },
   hireWorker: {
-    type: "hireWorker",
+    type: PlayerActionEnum.hireWorker,
     handler: async (gameState: GameState) => {},
   },
   buildFactory: {
-    type: "buildFactory",
+    type: PlayerActionEnum.buildFactory,
     handler: buildFactory,
   },
 };

@@ -42,8 +42,14 @@ export const bread: Resource = {
   baseResource: false,
 };
 
+export const butter: Resource = {
+  type: ResourceType.butter,
+  value: 2,
+  baseResource: false,
+};
+
 export const leather: Resource = {
   type: ResourceType.leather,
-  value: 1,
+  value: 5,
   baseResource: false,
 };
