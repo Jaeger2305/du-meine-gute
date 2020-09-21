@@ -1,4 +1,5 @@
 import * as prompts from "prompts";
+import { buildFactory } from "./buildFactory";
 import { assignEmployee } from "./assignEmployee";
 import { produceAtFactory } from "./production";
 import { GameState } from "../types";
@@ -53,22 +54,7 @@ export const playerActions = {
   },
   buildFactory: {
     type: "buildFactory",
-    handler: async (gameState: GameState) => {
-      const cardChoice = await prompts({
-        type: "select",
-        message: `pick an card to play`,
-        name: "card",
-        choices: gameState.cardsInHand.map((card) => ({
-          title: card.name,
-          value: card,
-        })),
-      });
-      const {
-        response: { cardsInPlay, cardsInHand },
-      } = playCard(gameState, cardChoice.card);
-      gameState.cardsInPlay = cardsInPlay;
-      gameState.cardsInHand = cardsInHand;
-    },
+    handler: buildFactory,
   },
 };
 
