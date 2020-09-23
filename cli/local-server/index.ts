@@ -77,6 +77,31 @@ export function drawCard(gameState: GameState): ServerResponse {
   };
 }
 
+export function produceGood(
+  gameState: GameState,
+  resource: Resource
+): ServerResponse {
+  // If there are no cards to draw from, shuffle the discard.
+  if (!gameState.cardsInDeck.length) {
+    gameState.cardsInDeck = gameState.cardsInDiscard.slice().reverse();
+    gameState.cardsInDiscard = [];
+  }
+
+  // Draw the card into the reserved card space
+  const drawnCard = gameState.cardsInDeck.splice(0, 1);
+  gameState.reservedCards.push(...drawnCard);
+
+  // Send the response back
+  const response = {
+    cardsInDiscard: gameState.cardsInDiscard,
+    cardsInDeck: gameState.cardsInDeck,
+    resources: gameState.resources.push(resource),
+  };
+  return {
+    response,
+  };
+}
+
 /**
  * Puts a card from a players hand into play.
  * Returns the function to update the client game state

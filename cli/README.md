@@ -34,11 +34,15 @@ Check the actions fulfill the game logic. Missing parts include:
 
 - [ ] Costing of buildings
 - [ ] Scoring at end of game
-- [ ] Implementing workers
+- [ ] Implementing hiring workers
 - [ ] Discarding cards at the beginning of the round
 - [ ] Connecting the market to the deck
+  - [ ] Connecting resources to the deck
+- [ ] produce for each advanced resource input
 - [ ] Multiple assignments of workers
 - [ ] initial random allocation of coal mines
+- [ ] chaining is only possible when using from the hand
+- [ ] add an extra round after the game has ended, and allow producing at all factories.
 
 Also, there are some quality of life tasks:
 
@@ -57,4 +61,4 @@ And laborious tasks:
 
 And the final TODO:
 
-- [ ] translate the CLI into the real client, with a websocket architecture
+- [ ] translate the CLI into the real client, with a websocket architecture and multiple players

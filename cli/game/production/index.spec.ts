@@ -2,11 +2,15 @@ const mockActions = {
   checkOutstandingResources: jest.fn(),
   fallbackProduction: jest.fn().mockResolvedValue({}),
 };
+const mockServerActions = {
+  produceGood: jest.fn(),
+};
 jest.doMock("./production-utils", () => mockActions);
+jest.doMock("../../local-server", () => mockServerActions);
 import * as prompts from "prompts";
 import { wood, wheat, bread } from "../../resources";
 import { playerActions } from "../index";
-import { bakery, bakeryWithChain } from "../cards";
+import { bakery, bakeryWithChain, tannery } from "../cards";
 import { produceAtFactory } from "./index";
 
 beforeEach(() => {
@@ -17,7 +21,7 @@ describe("produce at factory", () => {
   it("should produce a resource when everything is present in the market", async () => {
     const game = {
       cardsInHand: [],
-      cardsInDeck: [],
+      cardsInDeck: [bakery],
       cardsInDiscard: [],
       cardsInPlay: [],
       winner: null,
@@ -35,6 +39,7 @@ describe("produce at factory", () => {
         },
       ],
       resources: [],
+      reservedCards: [],
       marketResources: [wood, wheat],
     };
     const factoryWorker = {
@@ -46,6 +51,13 @@ describe("produce at factory", () => {
       isEnoughToProduce: true,
       isExactToProduce: true,
       requiredExtraResources: [],
+    });
+    mockServerActions.produceGood.mockReturnValue({
+      response: {
+        cardsInDiscard: [],
+        cardsInDeck: [],
+        resources: [bread],
+      },
     });
     await produceAtFactory(game);
     expect(game.resources).toEqual([bread]);
@@ -71,6 +83,7 @@ describe("produce at factory", () => {
         },
       ],
       resources: [],
+      reservedCards: [],
       marketResources: [wood],
     };
     const factoryWorker = {
@@ -89,7 +102,7 @@ describe("produce at factory", () => {
   it("should produce a resource when the user is prompted for discard", async () => {
     const game = {
       cardsInHand: [bakery],
-      cardsInDeck: [],
+      cardsInDeck: [tannery],
       cardsInDiscard: [],
       cardsInPlay: [],
       winner: null,
@@ -107,6 +120,7 @@ describe("produce at factory", () => {
         },
       ],
       resources: [],
+      reservedCards: [],
       marketResources: [wood],
     };
     const factoryWorker = {
@@ -125,13 +139,20 @@ describe("produce at factory", () => {
       fallbackSuccess: true,
       cardIndexesToDelete: [0],
     });
-
+    mockServerActions.produceGood.mockReturnValue({
+      response: {
+        cardsInDiscard: [bakery],
+        cardsInDeck: [],
+        resources: [bread],
+      },
+    });
     await produceAtFactory(game);
     expect(game.resources).toEqual([bread]);
     expect(game.cardsInHand).toEqual([]);
     expect(game.cardsInDiscard).toEqual([bakery]);
   });
   it("should produce several resources if can chain production, relying only on the market", async () => {
+    // This isn't actually in the official rules! Surprisingly, players can only chain using cards from their hand.
     const game = {
       cardsInHand: [],
       cardsInDeck: [],
@@ -152,6 +173,7 @@ describe("produce at factory", () => {
         },
       ],
       resources: [],
+      reservedCards: [],
       marketResources: [wood, wheat, wheat, wheat],
     };
     const factoryWorker = {
@@ -186,7 +208,13 @@ describe("produce at factory", () => {
       fallbackSuccess: false,
       cardIndexesToDelete: [],
     });
-
+    mockServerActions.produceGood.mockReturnValue({
+      response: {
+        cardsInDiscard: [],
+        cardsInDeck: [],
+        resources: [bread, bread, bread],
+      },
+    });
     await produceAtFactory(game);
     console.log(game.resources);
     expect(game.resources).toEqual([bread, bread, bread]);
@@ -212,6 +240,7 @@ describe("produce at factory", () => {
         },
       ],
       resources: [],
+      reservedCards: [],
       marketResources: [wood, wheat, wheat, wheat],
     };
     const factoryWorker = {
@@ -251,9 +280,14 @@ describe("produce at factory", () => {
       fallbackSuccess: false,
       cardIndexesToDelete: [],
     });
-
+    mockServerActions.produceGood.mockReturnValue({
+      response: {
+        cardsInDiscard: [],
+        cardsInDeck: [],
+        resources: [bread, bread, bread, bread, bread],
+      },
+    });
     await produceAtFactory(game);
-    console.log(game.resources);
     expect(game.resources).toEqual([bread, bread, bread, bread, bread]);
   });
   it("should produce several resources if can chain production, allowing player discard", async () => {
@@ -277,6 +311,7 @@ describe("produce at factory", () => {
         },
       ],
       resources: [],
+      reservedCards: [],
       marketResources: [wood, wheat],
     };
     const factoryWorker = {
@@ -312,8 +347,14 @@ describe("produce at factory", () => {
         cardIndexesToDelete: [],
       });
 
+    mockServerActions.produceGood.mockReturnValue({
+      response: {
+        cardsInDiscard: [bakery],
+        cardsInDeck: [],
+        resources: [bread, bread],
+      },
+    });
     await produceAtFactory(game);
-    console.log(game.resources);
     expect(game.resources).toEqual([bread, bread]);
   });
 });

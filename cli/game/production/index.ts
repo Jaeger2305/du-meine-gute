@@ -1,5 +1,6 @@
 import * as prompts from "prompts";
-import { GameState } from "../../types";
+import { produceGood } from "../../local-server";
+import { GameState, Resource } from "../../types";
 import { playerActions } from "../index";
 import {
   checkOutstandingResources,
@@ -71,14 +72,23 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
 
       // Add the resources to the game state
       // First production depends on the worker, but chains do not.
-      const producedResources = new Array(
+      const producedResources: Array<Resource> = new Array(
         hasProduced
           ? 1
           : factoryChoice.factoryWorker.factoryWorker.mode.productionCount
       )
         .fill(factoryChoice.factoryWorker.factoryWorker.assignment.output)
         .flat();
-      gameState.resources.push(...producedResources);
+      // Draw card from deck to represent the resource
+      producedResources.forEach((resource) => {
+        ({
+          response: {
+            resources: gameState.resources,
+            cardsInDiscard: gameState.cardsInDiscard,
+            cardsInDeck: gameState.cardsInDeck,
+          },
+        } = produceGood(gameState, resource));
+      });
 
       // If the assignment allows only one production and no chaining, production can no longer happen.
       if (!factoryChoice.factoryWorker.factoryWorker.assignment.chainInput)

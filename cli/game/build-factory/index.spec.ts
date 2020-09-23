@@ -12,7 +12,7 @@ jest.doMock("../../local-server", () => mockServerActions);
 import * as prompts from "prompts";
 import { buildFactory } from "./index";
 import { playerActions } from "../index";
-import { bakery } from "../cards";
+import { bakery, tannery } from "../cards";
 import { bread, coal } from "../../resources";
 
 beforeEach(() => {
@@ -26,7 +26,7 @@ describe("build factory", () => {
     // Arrange
     const game = {
       cardsInHand: [bakery],
-      cardsInDeck: [],
+      cardsInDeck: [tannery],
       cardsInDiscard: [],
       cardsInPlay: [],
       winner: null,
@@ -35,6 +35,7 @@ describe("build factory", () => {
       employees: [],
       assignedEmployees: [],
       resources: [coal, coal, bread, coal],
+      reservedCards: [],
       marketResources: [],
     };
     prompts.inject([bakery, [coal, bread]]);
@@ -66,7 +67,7 @@ describe("build factory", () => {
     // Arrange
     const game = {
       cardsInHand: [bakery],
-      cardsInDeck: [],
+      cardsInDeck: [tannery],
       cardsInDiscard: [],
       cardsInPlay: [],
       winner: null,
@@ -75,6 +76,7 @@ describe("build factory", () => {
       employees: [],
       assignedEmployees: [],
       resources: [coal, coal, bread, coal],
+      reservedCards: [],
       marketResources: [],
     };
     prompts.inject([bakery, [coal, coal]]);
@@ -103,7 +105,7 @@ describe("build factory", () => {
     // Arrange
     const game = {
       cardsInHand: [bakery],
-      cardsInDeck: [],
+      cardsInDeck: [tannery],
       cardsInDiscard: [],
       cardsInPlay: [],
       winner: null,
@@ -112,6 +114,7 @@ describe("build factory", () => {
       employees: [],
       assignedEmployees: [],
       resources: [coal, coal, bread, coal],
+      reservedCards: [],
       marketResources: [],
     };
     prompts.inject([bakery, [coal, bread]]);
@@ -137,13 +140,13 @@ describe("build factory", () => {
     expect(game.cardsInPlay).toEqual([bakery]);
   });
 
-  xit("should re-ask if failing validation", async () => {}); // not implemented yet
+  xit("should re-ask if failing validation", async () => {}); // probably not needed, because the action won't be run and can be re-done anyway
   xit("should do nothing if action was aborted", async () => {}); // not implemented
   it("should remove the action if there is no building to choose", async () => {
     // Arrange
     const game = {
       cardsInHand: [],
-      cardsInDeck: [],
+      cardsInDeck: [tannery],
       cardsInDiscard: [],
       cardsInPlay: [],
       winner: null,
@@ -156,6 +159,7 @@ describe("build factory", () => {
       employees: [],
       assignedEmployees: [],
       resources: [],
+      reservedCards: [],
       marketResources: [],
     };
     mockActions.filterCardsToAffordable.mockReturnValue([]);
@@ -188,7 +192,7 @@ describe("build factory", () => {
   it("should remove all actions except endStep if it completed", async () => {
     const game = {
       cardsInHand: [bakery],
-      cardsInDeck: [],
+      cardsInDeck: [tannery],
       cardsInDiscard: [],
       cardsInPlay: [],
       winner: null,
@@ -201,6 +205,7 @@ describe("build factory", () => {
       employees: [],
       assignedEmployees: [],
       resources: [coal, coal, bread, coal],
+      reservedCards: [],
       marketResources: [],
     };
     prompts.inject([bakery, [coal, bread]]);

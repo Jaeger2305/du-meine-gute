@@ -49,6 +49,7 @@ describe("remove build action from available actions", () => {
       employees: [],
       assignedEmployees: [],
       resources: [],
+      reservedCards: [],
       marketResources: [],
     };
     removeBuildActionFromAvailableActions(game);
@@ -66,6 +67,7 @@ describe("remove build action from available actions", () => {
       employees: [],
       assignedEmployees: [],
       resources: [],
+      reservedCards: [],
       marketResources: [],
     };
 

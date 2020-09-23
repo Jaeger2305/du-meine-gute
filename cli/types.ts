@@ -56,6 +56,7 @@ export type GameState = {
   employees: Array<Employee>;
   assignedEmployees: Array<AssignedEmployee>;
   resources: Array<Resource>;
+  reservedCards: Array<Card>; // cards which have been removed from the normal draw/discard loop. This is limited to cards which are used to represent resources.
   marketResources: Array<Resource>;
 };
 
@@ -72,6 +73,7 @@ export enum ResourceType {
   leather = "leather",
 }
 
+// We can couple the card to the resource, or we can keep track of the cards reserved as goods separately. that's probably better too.
 export type Resource = {
   type: ResourceType;
   value: number;
