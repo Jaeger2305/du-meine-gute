@@ -90,12 +90,13 @@ export function produceGood(
   // Draw the card into the reserved card space
   const drawnCard = gameState.cardsInDeck.splice(0, 1);
   gameState.reservedCards.push(...drawnCard);
+  gameState.resources.push(resource);
 
   // Send the response back
   const response = {
     cardsInDiscard: gameState.cardsInDiscard,
     cardsInDeck: gameState.cardsInDeck,
-    resources: gameState.resources.push(resource),
+    resources: gameState.resources,
   };
   return {
     response,
@@ -120,6 +121,11 @@ export function playCard(
   );
   const playedCard = gameState.cardsInHand.splice(cardIndex, 1);
   gameState.cardsInPlay.splice(0, 0, ...playedCard);
+
+  // Unreserve cards and put them in the discard
+  // The order shouldn't matter - they're unknown to all.
+  const usedGoods = gameState.reservedCards.splice(0, resources.length);
+  gameState.cardsInDiscard.push(...usedGoods);
 
   // Find the resources and delete them.
   // Not efficient. But I'm not sure the server is responsible for this anyway.
