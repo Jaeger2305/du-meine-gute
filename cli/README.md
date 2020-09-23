@@ -37,7 +37,7 @@ Check the actions fulfill the game logic. Missing parts include:
 - [ ] Implementing hiring workers
 - [ ] Discarding cards at the beginning of the round
 - [ ] Connecting the market to the deck
-  - [ ] Connecting resources to the deck
+- [x] Connecting resources to the deck
 - [ ] produce for each advanced resource input
 - [ ] Multiple assignments of workers
 - [ ] initial random allocation of coal mines
