@@ -32,7 +32,7 @@ The server can restore the client in case the connection is dropped.
 Refactor the actions in to separate files
 Check the actions fulfill the game logic. Missing parts include:
 
-- [ ] Costing of buildings
+- [x] Costing of buildings
 - [ ] Scoring at end of game
 - [ ] Implementing hiring workers
 - [ ] Discarding cards at the beginning of the round
