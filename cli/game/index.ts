@@ -72,6 +72,7 @@ export function newGame(): GameState {
     resources: [],
     reservedCards: [],
     marketResources: [],
+    score: 0,
   };
   return gameState;
 }

@@ -37,6 +37,7 @@ describe("build factory", () => {
       resources: [coal, coal, bread, coal],
       reservedCards: [],
       marketResources: [],
+      score: 0,
     };
     prompts.inject([bakery, [coal, bread]]);
     mockActions.verifyResources.mockReturnValue(true);
@@ -78,6 +79,7 @@ describe("build factory", () => {
       resources: [coal, coal, bread, coal],
       reservedCards: [],
       marketResources: [],
+      score: 0,
     };
     prompts.inject([bakery, [coal, coal]]);
     mockActions.verifyResources.mockReturnValue(true);
@@ -116,6 +118,7 @@ describe("build factory", () => {
       resources: [coal, coal, bread, coal],
       reservedCards: [],
       marketResources: [],
+      score: 0,
     };
     prompts.inject([bakery, [coal, bread]]);
     mockActions.verifyResources.mockReturnValue(true);
@@ -161,6 +164,7 @@ describe("build factory", () => {
       resources: [],
       reservedCards: [],
       marketResources: [],
+      score: 0,
     };
     mockActions.filterCardsToAffordable.mockReturnValue([]);
     mockActions.removeBuildActionFromAvailableActions.mockImplementation(
@@ -207,6 +211,7 @@ describe("build factory", () => {
       resources: [coal, coal, bread, coal],
       reservedCards: [],
       marketResources: [],
+      score: 0,
     };
     prompts.inject([bakery, [coal, bread]]);
     mockActions.verifyResources.mockReturnValue(true);

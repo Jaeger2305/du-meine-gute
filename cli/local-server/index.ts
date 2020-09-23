@@ -1,3 +1,4 @@
+import { sum } from "lodash";
 import { GameState, Card, Employee, Resource } from "../types";
 import { wood, brick, wheat, stone } from "../resources";
 import { playerActions } from "../game";
@@ -295,6 +296,12 @@ function endRound(gameState: GameState): ServerResponse {
   const isGameEnd = gameState.cardsInPlay.length >= 3;
   gameState.availableActions = isGameEnd ? [] : [playerActions.endStep];
   gameState.winner = isGameEnd ? gameState.players[0] : null;
+  gameState.score = sum([
+    ...gameState.resources.map((resource) => resource.value),
+    ...gameState.cardsInPlay.map((card) => card.cost),
+  ]);
+
+  console.log("current score: ", gameState.score);
 
   return {
     response: {

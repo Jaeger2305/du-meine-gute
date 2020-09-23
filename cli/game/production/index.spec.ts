@@ -41,6 +41,7 @@ describe("produce at factory", () => {
       resources: [],
       reservedCards: [],
       marketResources: [wood, wheat],
+      score: 0,
     };
     const factoryWorker = {
       factoryWorker: game.assignedEmployees[0],
@@ -85,6 +86,7 @@ describe("produce at factory", () => {
       resources: [],
       reservedCards: [],
       marketResources: [wood],
+      score: 0,
     };
     const factoryWorker = {
       factoryWorker: game.assignedEmployees[0],
@@ -122,6 +124,7 @@ describe("produce at factory", () => {
       resources: [],
       reservedCards: [],
       marketResources: [wood],
+      score: 0,
     };
     const factoryWorker = {
       factoryWorker: game.assignedEmployees[0],
@@ -175,6 +178,7 @@ describe("produce at factory", () => {
       resources: [],
       reservedCards: [],
       marketResources: [wood, wheat, wheat, wheat],
+      score: 0,
     };
     const factoryWorker = {
       factoryWorker: game.assignedEmployees[0],
@@ -242,6 +246,7 @@ describe("produce at factory", () => {
       resources: [],
       reservedCards: [],
       marketResources: [wood, wheat, wheat, wheat],
+      score: 0,
     };
     const factoryWorker = {
       factoryWorker: game.assignedEmployees[0],
@@ -313,6 +318,7 @@ describe("produce at factory", () => {
       resources: [],
       reservedCards: [],
       marketResources: [wood, wheat],
+      score: 0,
     };
     const factoryWorker = {
       factoryWorker: game.assignedEmployees[0],

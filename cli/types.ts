@@ -58,6 +58,7 @@ export type GameState = {
   resources: Array<Resource>;
   reservedCards: Array<Card>; // cards which have been removed from the normal draw/discard loop. This is limited to cards which are used to represent resources.
   marketResources: Array<Resource>;
+  score: number;
 };
 
 export enum ResourceType {
