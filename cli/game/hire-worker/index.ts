@@ -5,12 +5,12 @@ import {
   removeActionFromAvailableActions,
   verifyResources,
 } from "../utils";
-import { playCard as serverPlayCard } from "../../local-server";
+import { hireWorker as serverHireWorker } from "../../local-server";
 
-export async function buildFactory(gameState: GameState) {
+export async function hireWorker(gameState: GameState): Promise<void> {
   // Filter cards to those that can be afforded
   const affordableCards = filterCardsToAffordable(
-    gameState.cardsInHand,
+    gameState.availableEmployees,
     gameState.resources
   );
 
@@ -18,7 +18,7 @@ export async function buildFactory(gameState: GameState) {
   if (!affordableCards.length)
     return removeActionFromAvailableActions(
       gameState,
-      PlayerActionEnum.buildFactory
+      PlayerActionEnum.hireWorker
     );
 
   // Pick a card to build
@@ -53,13 +53,13 @@ export async function buildFactory(gameState: GameState) {
 
   // Submit to server
   const {
-    response: { cardsInPlay, cardsInHand, availableActions, resources },
-  } = serverPlayCard(gameState, cardChoice.card, resourcesChoice.resources);
+    response: { employees, availableEmployees, availableActions, resources },
+  } = serverHireWorker(gameState, cardChoice.card, resourcesChoice.resources);
 
   // Update state with results
   // We should probably optimistically update, and if the response doesn't match, throw an error and restore from state.
-  gameState.cardsInPlay = cardsInPlay;
-  gameState.cardsInHand = cardsInHand;
+  gameState.employees = employees;
+  gameState.availableEmployees = availableEmployees;
   gameState.availableActions = availableActions;
   gameState.resources = resources;
   return;

@@ -2,6 +2,7 @@ import * as prompts from "prompts";
 import { buildFactory } from "./build-factory";
 import { assignEmployee } from "./assign-employee";
 import { produceAtFactory } from "./production";
+import { hireWorker } from "./hire-worker";
 import { GameState, PlayerActionEnum } from "../types";
 import { drawCard } from "../local-server";
 
@@ -50,7 +51,7 @@ export const playerActions = {
   },
   hireWorker: {
     type: PlayerActionEnum.hireWorker,
-    handler: async (gameState: GameState) => {},
+    handler: hireWorker,
   },
   buildFactory: {
     type: PlayerActionEnum.buildFactory,
@@ -67,6 +68,7 @@ export function newGame(): GameState {
     winner: null,
     players: [],
     availableActions: [],
+    availableEmployees: [],
     employees: [],
     assignedEmployees: [],
     resources: [],

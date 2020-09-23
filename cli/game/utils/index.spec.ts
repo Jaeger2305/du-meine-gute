@@ -1,11 +1,12 @@
 import {
   filterCardsToAffordable,
   verifyResources,
-  removeBuildActionFromAvailableActions,
-} from "./build-factory-utils";
+  removeActionFromAvailableActions,
+} from "./index";
 import { playerActions } from "../index";
 import { bakery, bakeryWithChain } from "../cards";
 import { bread, coal, wheat, leather, butter } from "../../resources";
+import { PlayerActionEnum } from "../../types";
 
 describe("filter to affordable cards", () => {
   it("should limit the options to only those affordable", () => {
@@ -14,6 +15,10 @@ describe("filter to affordable cards", () => {
       [coal, bread]
     );
     expect(affordableCards).toEqual([bakery]);
+  });
+  xit("should work for worker cards as well factories", () => {
+    const affordableCards = filterCardsToAffordable([], [coal, bread]);
+    expect(affordableCards).toEqual([]);
   });
 });
 
@@ -46,13 +51,15 @@ describe("remove build action from available actions", () => {
       winner: null,
       players: [],
       availableActions: [playerActions.buildFactory, playerActions.endStep],
+      availableEmployees: [],
       employees: [],
       assignedEmployees: [],
       resources: [],
       reservedCards: [],
       marketResources: [],
+      score: 0,
     };
-    removeBuildActionFromAvailableActions(game);
+    removeActionFromAvailableActions(game, PlayerActionEnum.buildFactory);
     expect(game.availableActions).toEqual([playerActions.endStep]);
   });
   it("should throw if there is no action found", () => {
@@ -64,13 +71,17 @@ describe("remove build action from available actions", () => {
       winner: null,
       players: [],
       availableActions: [playerActions.endStep],
+      availableEmployees: [],
       employees: [],
       assignedEmployees: [],
       resources: [],
       reservedCards: [],
       marketResources: [],
+      score: 0,
     };
 
-    expect(() => removeBuildActionFromAvailableActions(game)).toThrow();
+    expect(() =>
+      removeActionFromAvailableActions(game, PlayerActionEnum.buildFactory)
+    ).toThrow();
   });
 });

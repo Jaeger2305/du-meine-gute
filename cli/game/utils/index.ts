@@ -1,10 +1,16 @@
-import { GameState, Card, Resource, PlayerActionEnum } from "../../types";
+import {
+  GameState,
+  Card,
+  Resource,
+  PlayerActionEnum,
+  Employee,
+} from "../../types";
 import { sortBy, sumBy } from "lodash";
 
 export function filterCardsToAffordable(
-  cards: Array<Card>,
+  cards: Array<Card | Employee>,
   resources: Array<Resource>
-): Array<Card> {
+): Array<Card | Employee> {
   // tot up resources
   const money = sumBy(resources, "value");
 
@@ -12,11 +18,12 @@ export function filterCardsToAffordable(
   return cards.filter((card) => card.cost <= money);
 }
 
-export function removeBuildActionFromAvailableActions({
-  availableActions,
-}: GameState): void {
+export function removeActionFromAvailableActions(
+  { availableActions }: GameState,
+  actionToRemove: PlayerActionEnum
+): void {
   const index = availableActions.findIndex(
-    (action) => action.type === PlayerActionEnum.buildFactory
+    (action) => action.type === actionToRemove
   );
   if (index === -1)
     throw new Error(
@@ -29,16 +36,16 @@ export function removeBuildActionFromAvailableActions({
 
 export function verifyResources(
   resources: Array<Resource>,
-  costOfBuilding: number
+  costOfPurchase: number
 ): boolean {
   if (!resources.length) return false;
   if (resources.find((resource) => resource.value === 0)) return false;
 
   const selectionValue = sumBy(resources, "value");
-  const isAffordable = selectionValue >= costOfBuilding;
+  const isAffordable = selectionValue >= costOfPurchase;
 
   const cheapestResource = sortBy(resources, "value")[0];
-  const isExcessive = selectionValue - cheapestResource.value >= costOfBuilding;
+  const isExcessive = selectionValue - cheapestResource.value >= costOfPurchase;
 
   return isAffordable && !isExcessive;
 }

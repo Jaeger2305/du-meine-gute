@@ -9,7 +9,7 @@ export enum PlayerActionEnum {
 }
 
 export type PlayerAction = {
-  type: string;
+  type: PlayerActionEnum;
   handler: (...rest: any) => any;
 };
 
@@ -35,7 +35,7 @@ type ProductionEfficiency = {
 export type Employee = {
   name: string;
   modes: Array<ProductionEfficiency>;
-  resourceSpecialty?: Resource; // not sure what this is intended for
+  resourceSpecialty?: Resource; // workers can be hired only if meeting the requirement of a certain number of builds. E.g. an apprentice might need 2 wheat based factories to be hired.
   cost: number;
 };
 
@@ -53,6 +53,7 @@ export type GameState = {
   winner: Player | null;
   players: Array<Player>;
   availableActions: Array<PlayerAction>;
+  availableEmployees: Array<Employee>;
   employees: Array<Employee>;
   assignedEmployees: Array<AssignedEmployee>;
   resources: Array<Resource>;

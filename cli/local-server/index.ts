@@ -2,7 +2,14 @@ import { sum } from "lodash";
 import { GameState, Card, Employee, Resource } from "../types";
 import { wood, brick, wheat, stone } from "../resources";
 import { playerActions } from "../game";
-import { coalMine, bakery, tannery } from "../game/cards";
+import {
+  coalMine,
+  bakery,
+  tannery,
+  skilledApprentice,
+  apprentice,
+  master,
+} from "../game/cards";
 
 type ServerResponse = {
   response: any;
@@ -154,6 +161,51 @@ export function playCard(
 }
 
 /**
+ * Puts a card from the available worker pool into the employees of a user.
+ * Returns the function to update the client game state
+ */
+export function hireWorker(
+  gameState: GameState,
+  worker: Employee,
+  resources: Array<Resource>
+): ServerResponse {
+  const employeeIndex = gameState.availableEmployees.findIndex(
+    (availableWorker) => availableWorker.name === worker.name
+  );
+  const hiredEmployee = gameState.availableEmployees.splice(employeeIndex, 1);
+  gameState.employees.push(...hiredEmployee);
+
+  // Unreserve cards and put them in the discard
+  // The order shouldn't matter - they're unknown to all.
+  const usedGoods = gameState.reservedCards.splice(0, resources.length);
+  gameState.cardsInDiscard.push(...usedGoods);
+
+  // Find the resources and delete them.
+  // Not efficient. But I'm not sure the server is responsible for this anyway.
+  while (resources.length) {
+    const resourceBeingDeleted = resources.pop();
+    const indexOfResourceToDelete = gameState.resources.findIndex(
+      (gameResource) => gameResource.type === resourceBeingDeleted.type
+    );
+    gameState.resources.splice(indexOfResourceToDelete, 1);
+  }
+
+  // Delete all events other than the end step
+  gameState.availableActions = [playerActions.endStep];
+
+  const response = {
+    playedCard: hiredEmployee,
+    employees: gameState.employees,
+    availableActions: gameState.availableActions,
+    availableEmployees: gameState.availableEmployees,
+    resources: gameState.resources,
+  };
+  return {
+    response,
+  };
+}
+
+/**
  *
  */
 function generateTestCards(): Array<Card> {
@@ -170,6 +222,7 @@ export function setupGame(game: GameState): void {
   game.players.push({
     name: "test-player",
   });
+  game.availableEmployees = [skilledApprentice, apprentice, master];
   game.employees = [
     {
       name: "test-employee-1",

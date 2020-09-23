@@ -52,6 +52,20 @@ export const apprentice: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "apprentice-1",
   resourceSpecialty: wood,
+  cost: 3,
+};
+
+export const skilledApprentice: Employee = {
+  modes: [{ productionCount: 3, resourceSparingCount: 0 }],
+  name: "skilled-apprentice-1",
+  resourceSpecialty: wheat,
+  cost: 4,
+};
+
+export const master: Employee = {
+  modes: [{ productionCount: 1, resourceSparingCount: 0 }],
+  name: "master-1",
+  resourceSpecialty: wheat,
   cost: 5,
 };
 

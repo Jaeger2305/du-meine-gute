@@ -27,6 +27,7 @@ describe("produce at factory", () => {
       winner: null,
       players: [],
       availableActions: [playerActions.produceAtFactory],
+      availableEmployees: [],
       employees: [],
       assignedEmployees: [
         {
@@ -73,6 +74,7 @@ describe("produce at factory", () => {
       players: [],
       availableActions: [playerActions.produceAtFactory],
       employees: [],
+      availableEmployees: [],
       assignedEmployees: [
         {
           name: "assigned",
@@ -111,6 +113,7 @@ describe("produce at factory", () => {
       players: [],
       availableActions: [playerActions.produceAtFactory],
       employees: [],
+      availableEmployees: [],
       assignedEmployees: [
         {
           name: "assigned",
@@ -165,6 +168,7 @@ describe("produce at factory", () => {
       players: [],
       availableActions: [playerActions.produceAtFactory],
       employees: [],
+      availableEmployees: [],
       assignedEmployees: [
         {
           name: "assigned",
@@ -233,6 +237,7 @@ describe("produce at factory", () => {
       players: [],
       availableActions: [playerActions.produceAtFactory],
       employees: [],
+      availableEmployees: [],
       assignedEmployees: [
         {
           name: "assigned",
@@ -305,6 +310,7 @@ describe("produce at factory", () => {
       players: [],
       availableActions: [playerActions.produceAtFactory],
       employees: [],
+      availableEmployees: [],
       assignedEmployees: [
         {
           name: "assigned",
