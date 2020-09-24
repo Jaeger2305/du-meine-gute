@@ -8,13 +8,18 @@ import {
 } from "./production-utils";
 
 export async function produceAtFactory(gameState: GameState): Promise<void> {
+  // Filter to fresh workers
+  const readyWorkers = gameState.assignedEmployees
+    .map((factoryWorker, index) => ({ ...factoryWorker, index }))
+    .filter((employee) => !employee.hasProduced);
+
   const factoryChoice = await prompts({
     type: "select",
     message: `pick an assigned worker`,
     name: "factoryWorker",
-    choices: gameState.assignedEmployees.map((factoryWorker, index) => ({
+    choices: readyWorkers.map((factoryWorker) => ({
       title: factoryWorker.name,
-      value: { factoryWorker, index },
+      value: factoryWorker,
     })),
   });
 
@@ -26,10 +31,9 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
   let hasProduced = false;
   while (canProduce) {
     const inputResources =
-      hasProduced &&
-      factoryChoice.factoryWorker.factoryWorker.assignment.chainInput
-        ? [...factoryChoice.factoryWorker.factoryWorker.assignment.chainInput]
-        : [...factoryChoice.factoryWorker.factoryWorker.assignment.input];
+      hasProduced && factoryChoice.factoryWorker.assignment.chainInput
+        ? [...factoryChoice.factoryWorker.assignment.chainInput]
+        : [...factoryChoice.factoryWorker.assignment.input];
     // Check if can use the market resources
     const {
       isEnoughToProduce,
@@ -39,7 +43,7 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
       marketResources,
       hasProduced
         ? 0 // the discount applies only to the first production
-        : factoryChoice.factoryWorker.factoryWorker.mode.resourceSparingCount
+        : factoryChoice.factoryWorker.mode.resourceSparingCount
     );
 
     if (isEnoughToProduce) {
@@ -49,7 +53,7 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
         requiredExtraResources,
         gameState.cardsInHand,
         marketResources,
-        factoryChoice.factoryWorker.factoryWorker
+        factoryChoice.factoryWorker
       );
       cardIndexesToDelete.forEach((cardIndexToDelete) => {
         gameState.cardsInDiscard.push(gameState.cardsInHand[cardIndexToDelete]);
@@ -73,11 +77,9 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
       // Add the resources to the game state
       // First production depends on the worker, but chains do not.
       const producedResources: Array<Resource> = new Array(
-        hasProduced
-          ? 1
-          : factoryChoice.factoryWorker.factoryWorker.mode.productionCount
+        hasProduced ? 1 : factoryChoice.factoryWorker.mode.productionCount
       )
-        .fill(factoryChoice.factoryWorker.factoryWorker.assignment.output)
+        .fill(factoryChoice.factoryWorker.assignment.output)
         .flat();
       // Draw card from deck to represent the resource
       producedResources.forEach((resource) => {
@@ -91,18 +93,27 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
       });
 
       // If the assignment allows only one production and no chaining, production can no longer happen.
-      if (!factoryChoice.factoryWorker.factoryWorker.assignment.chainInput)
+      if (!factoryChoice.factoryWorker.assignment.chainInput)
         canProduce = false;
 
       hasProduced = true;
     }
   }
 
-  // Remove the assigned worker
-  gameState.assignedEmployees.splice(factoryChoice.factoryWorker.index, 1);
+  // Indicate the worker has produced this round.
+  gameState.assignedEmployees[
+    factoryChoice.factoryWorker.index
+  ].hasProduced = true;
+  // Remove the assigned worker if free to do so
+  if (factoryChoice.factoryWorker.unassignmentCost === 0) {
+    gameState.assignedEmployees.splice(factoryChoice.factoryWorker.index, 1);
+  }
 
   // if there are no more workers to produce at, remove the available step
-  if (!gameState.assignedEmployees.length) {
+  if (
+    !gameState.assignedEmployees.filter((employee) => !employee.hasProduced)
+      .length
+  ) {
     const indexOfProductionAction = gameState.availableActions.findIndex(
       (action) => action.type === playerActions.produceAtFactory.type
     );

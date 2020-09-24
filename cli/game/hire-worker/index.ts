@@ -1,5 +1,5 @@
 import * as prompts from "prompts";
-import { GameState, PlayerActionEnum } from "../../types";
+import { Employee, GameState, PlayerActionEnum } from "../../types";
 import {
   filterCardsToAffordable,
   removeActionFromAvailableActions,
@@ -11,6 +11,7 @@ export async function hireWorker(gameState: GameState): Promise<void> {
   // Filter cards to those that can be afforded
   const affordableCards = filterCardsToAffordable(
     gameState.availableEmployees,
+    (card: Employee) => card.cost,
     gameState.resources
   );
 

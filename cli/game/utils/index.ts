@@ -4,18 +4,20 @@ import {
   Resource,
   PlayerActionEnum,
   Employee,
+  AssignedEmployee,
 } from "../../types";
 import { sortBy, sumBy } from "lodash";
 
 export function filterCardsToAffordable(
-  cards: Array<Card | Employee>,
+  cards: Array<Card | Employee | AssignedEmployee>,
+  costExtractor: (card: any) => number,
   resources: Array<Resource>
-): Array<Card | Employee> {
+): Array<Card | Employee | AssignedEmployee> {
   // tot up resources
   const money = sumBy(resources, "value");
 
   // filter cards to those costing less than resource total
-  return cards.filter((card) => card.cost <= money);
+  return cards.filter((card) => costExtractor(card) <= money);
 }
 
 export function removeActionFromAvailableActions(

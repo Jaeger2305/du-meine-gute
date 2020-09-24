@@ -213,6 +213,44 @@ export function hireWorker(
   };
 }
 
+export function unassignWorker(
+  gameState: GameState,
+  worker: AssignedEmployee,
+  resources: Array<Resource>
+): ServerResponse {
+  const employeeIndex = gameState.assignedEmployees.findIndex(
+    (assignedWorker) => assignedWorker.name === worker.name
+  );
+  gameState.assignedEmployees.splice(employeeIndex, 1);
+
+  // Unreserve cards and put them in the discard
+  // The order shouldn't matter - they're unknown to all.
+  const usedGoods = gameState.reservedCards.splice(0, resources.length);
+  gameState.cardsInDiscard.push(...usedGoods);
+
+  // Find the resources and delete them.
+  // Not efficient. But I'm not sure the server is responsible for this anyway.
+  while (resources.length) {
+    const resourceBeingDeleted = resources.pop();
+    const indexOfResourceToDelete = gameState.resources.findIndex(
+      (gameResource) => gameResource.type === resourceBeingDeleted.type
+    );
+    gameState.resources.splice(indexOfResourceToDelete, 1);
+  }
+
+  // Delete all events other than the end step
+  gameState.availableActions = [playerActions.endStep];
+
+  const response = {
+    assignedEmployees: gameState.assignedEmployees,
+    availableActions: gameState.availableActions,
+    resources: gameState.resources,
+  };
+  return {
+    response,
+  };
+}
+
 /**
  *
  */
@@ -331,6 +369,7 @@ function produce(gameState: GameState): ServerResponse {
 function purchase(gameState: GameState): ServerResponse {
   gameState.availableActions = [
     playerActions.hireWorker,
+    playerActions.unassignEmployee,
     playerActions.buildFactory,
     playerActions.endStep,
   ];
@@ -358,8 +397,15 @@ function endRound(gameState: GameState): ServerResponse {
 
   console.log("current score: ", gameState.score);
 
+  // Reset worker production states
+  gameState.assignedEmployees = gameState.assignedEmployees.map((employee) => ({
+    ...employee,
+    hasProduced: false,
+  }));
+
   return {
     response: {
+      assignedEmployees: gameState.assignedEmployees,
       availableActions: gameState.availableActions,
       winner: gameState.winner,
     },

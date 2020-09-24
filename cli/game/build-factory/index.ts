@@ -1,5 +1,5 @@
 import * as prompts from "prompts";
-import { GameState, PlayerActionEnum } from "../../types";
+import { GameState, PlayerActionEnum, Card } from "../../types";
 import {
   filterCardsToAffordable,
   removeActionFromAvailableActions,
@@ -11,6 +11,7 @@ export async function buildFactory(gameState: GameState) {
   // Filter cards to those that can be afforded
   const affordableCards = filterCardsToAffordable(
     gameState.cardsInHand,
+    (card: Card) => card.cost,
     gameState.resources
   );
 

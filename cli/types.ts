@@ -3,6 +3,7 @@ export enum PlayerActionEnum {
   drawCard = "drawCard",
   discardCard = "discardCard",
   assignEmployee = "assignEmployee",
+  unassignEmployee = "unassignEmployee",
   produceAtFactory = "produceAtFactory",
   buildFactory = "buildFactory",
   hireWorker = "hireWorker",
@@ -45,6 +46,7 @@ export type AssignedEmployee = {
   mode: ProductionEfficiency;
   assignment: Card;
   unassignmentCost: number;
+  hasProduced?: boolean;
 };
 
 export type GameState = {

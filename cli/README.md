@@ -39,7 +39,7 @@ Check the actions fulfill the game logic. Missing parts include:
 - [ ] Connecting the market to the deck
 - [x] Multiple assignments of workers
 - [ ] Choose building before actually building it
-- [ ] Reassigning worker
+- [x] Reassigning worker
 - [ ] handle buildings which provide a permanent boost to draw card
 - [ ] handle buildings which provide a permanent boost to the market
 - [ ] produce for each advanced resource input

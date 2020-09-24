@@ -46,7 +46,7 @@ describe("produce at factory", () => {
       score: 0,
     };
     const factoryWorker = {
-      factoryWorker: game.assignedEmployees[0],
+      ...game.assignedEmployees[0],
       index: 0,
     };
     prompts.inject([factoryWorker]);
@@ -93,7 +93,7 @@ describe("produce at factory", () => {
       score: 0,
     };
     const factoryWorker = {
-      factoryWorker: game.assignedEmployees[0],
+      ...game.assignedEmployees[0],
       index: 0,
     };
     mockActions.checkOutstandingResources.mockReturnValueOnce({
@@ -133,7 +133,7 @@ describe("produce at factory", () => {
       score: 0,
     };
     const factoryWorker = {
-      factoryWorker: game.assignedEmployees[0],
+      ...game.assignedEmployees[0],
       index: 0,
     };
     prompts.inject([factoryWorker]);
@@ -189,7 +189,7 @@ describe("produce at factory", () => {
       score: 0,
     };
     const factoryWorker = {
-      factoryWorker: game.assignedEmployees[0],
+      ...game.assignedEmployees[0],
       index: 0,
     };
     prompts.inject([factoryWorker]);
@@ -259,7 +259,7 @@ describe("produce at factory", () => {
       score: 0,
     };
     const factoryWorker = {
-      factoryWorker: game.assignedEmployees[0],
+      ...game.assignedEmployees[0],
       index: 0,
     };
     prompts.inject([factoryWorker]);
@@ -333,7 +333,7 @@ describe("produce at factory", () => {
       score: 0,
     };
     const factoryWorker = {
-      factoryWorker: game.assignedEmployees[0],
+      ...game.assignedEmployees[0],
       index: 0,
     };
     prompts.inject([factoryWorker]);

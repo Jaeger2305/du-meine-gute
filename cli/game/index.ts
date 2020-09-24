@@ -3,6 +3,7 @@ import { buildFactory } from "./build-factory";
 import { assignEmployee } from "./assign-employee";
 import { produceAtFactory } from "./production";
 import { hireWorker } from "./hire-worker";
+import { unassignEmployee } from "./unassign-employee";
 import { GameState, PlayerActionEnum } from "../types";
 import { drawCard } from "../local-server";
 
@@ -56,6 +57,10 @@ export const playerActions = {
   buildFactory: {
     type: PlayerActionEnum.buildFactory,
     handler: buildFactory,
+  },
+  unassignEmployee: {
+    type: PlayerActionEnum.unassignEmployee,
+    handler: unassignEmployee,
   },
 };
 
