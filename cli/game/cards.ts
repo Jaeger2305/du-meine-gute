@@ -53,6 +53,7 @@ export const apprentice: Employee = {
   name: "apprentice-1",
   resourceSpecialty: wood,
   cost: 3,
+  unassignmentCost: 2,
 };
 
 export const skilledApprentice: Employee = {
@@ -60,6 +61,7 @@ export const skilledApprentice: Employee = {
   name: "skilled-apprentice-1",
   resourceSpecialty: wheat,
   cost: 4,
+  unassignmentCost: 2,
 };
 
 export const master: Employee = {
@@ -67,6 +69,7 @@ export const master: Employee = {
   name: "master-1",
   resourceSpecialty: wheat,
   cost: 5,
+  unassignmentCost: 2,
 };
 
 export const boss: Employee = {
@@ -76,4 +79,5 @@ export const boss: Employee = {
   ],
   name: "boss-1",
   cost: 0,
+  unassignmentCost: 0,
 };

@@ -23,6 +23,7 @@ const boss: AssignedEmployee = {
     productionCount: 2,
     resourceSparingCount: 0,
   },
+  unassignmentCost: 0,
 };
 
 describe("fallback production", () => {

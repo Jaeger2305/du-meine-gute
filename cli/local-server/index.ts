@@ -18,7 +18,6 @@ import {
   master,
   boss,
 } from "../game/cards";
-import { getMaxListeners } from "process";
 
 type ServerResponse = {
   response: any;
@@ -287,6 +286,7 @@ export function assignEmployee(
     assignment: factory,
     name: employee.name,
     mode,
+    unassignmentCost: employee.unassignmentCost,
   };
   gameState.assignedEmployees.push(assignedEmployee);
   return {

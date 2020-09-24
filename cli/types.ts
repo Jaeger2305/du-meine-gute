@@ -37,12 +37,14 @@ export type Employee = {
   modes: Array<ProductionEfficiency>;
   resourceSpecialty?: Resource; // workers can be hired only if meeting the requirement of a certain number of builds. E.g. an apprentice might need 2 wheat based factories to be hired.
   cost: number;
+  unassignmentCost: number;
 };
 
 export type AssignedEmployee = {
   name: string;
   mode: ProductionEfficiency;
   assignment: Card;
+  unassignmentCost: number;
 };
 
 export type GameState = {
