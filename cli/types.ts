@@ -27,7 +27,7 @@ export type Player = {
   name: string;
 };
 
-type ProductionEfficiency = {
+export type ProductionEfficiency = {
   productionCount: number;
   resourceSparingCount: number;
 };

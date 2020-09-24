@@ -1,6 +1,13 @@
 import { sum } from "lodash";
-import { GameState, Card, Employee, Resource } from "../types";
-import { wood, brick, wheat, stone } from "../resources";
+import {
+  GameState,
+  Card,
+  Employee,
+  AssignedEmployee,
+  ProductionEfficiency,
+  Resource,
+} from "../types";
+import { wood, brick, wheat, stone, bread, leather, coal } from "../resources";
 import { playerActions } from "../game";
 import {
   coalMine,
@@ -9,7 +16,9 @@ import {
   skilledApprentice,
   apprentice,
   master,
+  boss,
 } from "../game/cards";
+import { getMaxListeners } from "process";
 
 type ServerResponse = {
   response: any;
@@ -217,24 +226,15 @@ function generateTestCards(): Array<Card> {
  * Returns valid actions that can be performed, which is just acknowledgements
  */
 export function setupGame(game: GameState): void {
-  game.cardsInPlay.push(coalMine);
+  game.cardsInPlay.push(coalMine, bakery);
+  game.cardsInHand.push(bakery, tannery);
+  game.resources.push(bread, leather, bread, bread, leather, coal);
   game.cardsInDeck.push(...generateTestCards());
   game.players.push({
     name: "test-player",
   });
   game.availableEmployees = [skilledApprentice, apprentice, master];
-  game.employees = [
-    {
-      name: "test-employee-1",
-      modes: [
-        {
-          productionCount: 1,
-          resourceSparingCount: 0,
-        },
-      ],
-      cost: 0,
-    },
-  ];
+  game.employees = [boss, master];
   game.availableActions = [playerActions.endStep];
   return;
 }
@@ -276,19 +276,21 @@ function assignEmployees(gameState: GameState): ServerResponse {
 export function assignEmployee(
   gameState: GameState,
   employee: Employee,
+  mode: ProductionEfficiency,
   factory: Card
 ): ServerResponse {
-  gameState.availableActions = [];
-  gameState.assignedEmployees = [
-    {
-      assignment: factory,
-      name: employee.name,
-      mode: { productionCount: 1, resourceSparingCount: 0 },
-    },
-  ];
+  // Validate action
+  console.warn("No validation of assignment");
+
+  // create assignment
+  const assignedEmployee: AssignedEmployee = {
+    assignment: factory,
+    name: employee.name,
+    mode,
+  };
+  gameState.assignedEmployees.push(assignedEmployee);
   return {
     response: {
-      availableActions: gameState.availableActions,
       assignedEmployees: gameState.assignedEmployees,
     },
   };
