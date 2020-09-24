@@ -32,7 +32,7 @@ export const cattle: Resource = {
 
 export const coal: Resource = {
   type: ResourceType.coal,
-  value: 2,
+  value: 1,
   baseResource: false,
 };
 
