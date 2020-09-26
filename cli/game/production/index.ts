@@ -23,8 +23,13 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
     })),
   });
 
-  // Copy initial market resources
-  const marketResources = gameState.marketCards.map((card) => card.resource);
+  // Copy initial market resources, and in play boosts
+  const marketResources = [
+    ...gameState.marketCards.map((card) => card.resource),
+    ...gameState.cardsInPlay
+      .flatMap((card) => card.marketBoost)
+      .filter(Boolean),
+  ];
 
   // Loop asking for a card to discard until all are chosen.
   let canProduce = true;

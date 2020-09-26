@@ -25,6 +25,7 @@ export type Card = {
   chainInput?: Array<Resource>;
   isSunny?: boolean;
   boostDrawCount?: number;
+  marketBoost?: Array<Resource>;
 };
 
 export type Player = {
@@ -82,6 +83,7 @@ export enum ResourceType {
   bread = "bread",
   plank = "plank",
   leather = "leather",
+  documents = "documents",
 }
 
 // We can couple the card to the resource, or we can keep track of the cards reserved as goods separately. that's probably better too.

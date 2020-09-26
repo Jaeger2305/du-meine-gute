@@ -84,6 +84,18 @@ export const altTannery: Card = {
 };
 
 export const office: Card = {
+  name: "office-1",
+  type: "test",
+  resource: wood,
+  output: [documents], // these 3 production traits should be put to the end, because it doesn't produce documents
+  input: [cattle, brick],
+  chainInput: [brick],
+  cost: 4,
+  isSunny: true,
+  boostDrawCount: 1,
+};
+
+export const tradingPost: Card = {
   name: "trading-post-1",
   type: "test",
   resource: wood,
@@ -92,7 +104,7 @@ export const office: Card = {
   chainInput: [brick],
   cost: 4,
   isSunny: true,
-  boostDrawCount: 1,
+  marketBoost: [wood],
 };
 
 // Employees

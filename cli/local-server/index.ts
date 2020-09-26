@@ -23,6 +23,7 @@ import {
   bakeryWithChain,
   altTannery,
   office,
+  tradingPost,
 } from "../game/cards";
 import { removeActionFromAvailableActions } from "../game/utils";
 
@@ -57,7 +58,7 @@ function revealMarket(gameState: GameState): ServerResponse {
   const marketCards: Array<Card> = [];
 
   // Draw cards until 3 suns.
-  while (marketCards.filter((card) => card.isSunny).length < 3) {
+  while (marketCards.filter((card) => card.isSunny).length < 1) {
     // If no cards, shuffle discard
     if (!gameState.cardsInDeck.length) {
       gameState.cardsInDeck = gameState.cardsInDiscard.slice();
@@ -294,7 +295,7 @@ function generateTestCards(): Array<Card> {
  * Returns valid actions that can be performed, which is just acknowledgements
  */
 export function setupGame(game: GameState): void {
-  game.cardsInPlay.push(coalMine, bakery);
+  game.cardsInPlay.push(coalMine, tradingPost);
   game.cardsInHand.push(office, tannery);
   game.resources.push(bread, leather, bread, bread, leather, coal);
   game.cardsInDeck.push(...generateTestCards());
