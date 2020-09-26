@@ -24,6 +24,7 @@ export type Card = {
   cost: number;
   chainInput?: Array<Resource>;
   isSunny?: boolean;
+  boostDrawCount?: number;
 };
 
 export type Player = {

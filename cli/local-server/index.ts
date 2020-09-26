@@ -22,6 +22,7 @@ import {
   sawmill,
   bakeryWithChain,
   altTannery,
+  office,
 } from "../game/cards";
 import { removeActionFromAvailableActions } from "../game/utils";
 
@@ -294,7 +295,7 @@ function generateTestCards(): Array<Card> {
  */
 export function setupGame(game: GameState): void {
   game.cardsInPlay.push(coalMine, bakery);
-  game.cardsInHand.push(bakery, tannery);
+  game.cardsInHand.push(office, tannery);
   game.resources.push(bread, leather, bread, bread, leather, coal);
   game.cardsInDeck.push(...generateTestCards());
   game.players.push({
@@ -311,7 +312,13 @@ export function setupGame(game: GameState): void {
  * After drawing, the user is allowed to discard 2 cards as well, but that's appended after completing the drawing.
  */
 function startRound(gameState: GameState): ServerResponse {
-  gameState.availableActions = [playerActions.drawCard, playerActions.endStep];
+  const drawCardCount =
+    2 +
+    sum(
+      gameState.cardsInPlay.map((card) => card.boostDrawCount).filter(Boolean)
+    );
+  const drawCardActions = new Array(drawCardCount).fill(playerActions.drawCard);
+  gameState.availableActions = [...drawCardActions, playerActions.endStep];
   gameState.marketCards = [];
   return {
     response: {
@@ -437,7 +444,7 @@ function purchase(gameState: GameState): ServerResponse {
  * Either acknowledge and a return to the startRound action, or nothing, meaning the game has ended and all they can do is leave.
  */
 function endRound(gameState: GameState): ServerResponse {
-  const isGameEnd = gameState.cardsInPlay.length >= 3;
+  const isGameEnd = gameState.cardsInPlay.length >= 4;
   gameState.availableActions = isGameEnd ? [] : [playerActions.endStep];
   gameState.winner = isGameEnd ? gameState.players[0] : null;
   gameState.score = sum([

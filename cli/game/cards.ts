@@ -9,7 +9,10 @@ import {
   leather,
   coal,
   plank,
+  documents,
 } from "../resources";
+
+// Factories
 
 export const coalMine: Card = {
   name: "coal-mine-1",
@@ -79,6 +82,20 @@ export const altTannery: Card = {
   cost: 4,
   isSunny: true,
 };
+
+export const office: Card = {
+  name: "trading-post-1",
+  type: "test",
+  resource: wood,
+  output: [documents],
+  input: [cattle, brick],
+  chainInput: [brick],
+  cost: 4,
+  isSunny: true,
+  boostDrawCount: 1,
+};
+
+// Employees
 
 export const apprentice: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],

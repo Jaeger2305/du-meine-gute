@@ -59,3 +59,9 @@ export const leather: Resource = {
   value: 5,
   baseResource: false,
 };
+
+export const documents: Resource = {
+  type: ResourceType.documents,
+  value: 3,
+  baseResource: false,
+};
