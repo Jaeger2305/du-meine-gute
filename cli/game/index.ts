@@ -1,6 +1,7 @@
 import * as prompts from "prompts";
 import { buildFactory } from "./build-factory";
 import { assignEmployee } from "./assign-employee";
+import { reserveFactory } from "./reserve-factory";
 import { produceAtFactory } from "./production";
 import { hireWorker } from "./hire-worker";
 import { unassignEmployee } from "./unassign-employee";
@@ -46,6 +47,10 @@ export const playerActions = {
     type: PlayerActionEnum.assignEmployee,
     handler: assignEmployee,
   },
+  reserveFactory: {
+    type: PlayerActionEnum.reserveFactory,
+    handler: reserveFactory,
+  },
   produceAtFactory: {
     type: PlayerActionEnum.produceAtFactory,
     handler: produceAtFactory,
@@ -78,6 +83,7 @@ export function newGame(): GameState {
     assignedEmployees: [],
     resources: [],
     reservedCards: [],
+    reservedFactory: null,
     marketCards: [],
     score: 0,
   };

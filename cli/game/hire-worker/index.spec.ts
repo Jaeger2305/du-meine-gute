@@ -36,6 +36,7 @@ describe("hire worker", () => {
       assignedEmployees: [],
       resources: [coal, coal, bread, coal],
       reservedCards: [],
+      reservedFactory: null,
       marketCards: [],
       score: 0,
     };
@@ -77,6 +78,7 @@ describe("hire worker", () => {
       assignedEmployees: [],
       resources: [coal, coal, bread, coal],
       reservedCards: [],
+      reservedFactory: null,
       marketCards: [],
       score: 0,
     };
@@ -116,6 +118,7 @@ describe("hire worker", () => {
       assignedEmployees: [],
       resources: [coal, coal, bread, coal],
       reservedCards: [],
+      reservedFactory: null,
       marketCards: [],
       score: 0,
     };
@@ -160,6 +163,7 @@ describe("hire worker", () => {
       assignedEmployees: [],
       resources: [],
       reservedCards: [],
+      reservedFactory: null,
       marketCards: [],
       score: 0,
     };
@@ -209,6 +213,7 @@ describe("hire worker", () => {
       assignedEmployees: [],
       resources: [coal, coal, bread, coal],
       reservedCards: [],
+      reservedFactory: null,
       marketCards: [],
       score: 0,
     };

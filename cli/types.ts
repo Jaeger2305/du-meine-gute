@@ -3,6 +3,7 @@ export enum PlayerActionEnum {
   drawCard = "drawCard",
   discardCard = "discardCard",
   assignEmployee = "assignEmployee",
+  reserveFactory = "reserveFactory",
   unassignEmployee = "unassignEmployee",
   produceAtFactory = "produceAtFactory",
   buildFactory = "buildFactory",
@@ -63,6 +64,7 @@ export type GameState = {
   assignedEmployees: Array<AssignedEmployee>;
   resources: Array<Resource>;
   reservedCards: Array<Card>; // cards which have been removed from the normal draw/discard loop. This is limited to cards which are used to represent resources.
+  reservedFactory: Card | null;
   marketCards: Array<Card>;
   score: number;
 };

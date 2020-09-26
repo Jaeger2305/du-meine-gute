@@ -5,12 +5,12 @@ import {
   removeActionFromAvailableActions,
   verifyResources,
 } from "../utils";
-import { playCard as serverPlayCard } from "../../local-server";
+import { buildFactory as serverBuildFactory } from "../../local-server";
 
 export async function buildFactory(gameState: GameState) {
   // Filter cards to those that can be afforded
   const affordableCards = filterCardsToAffordable(
-    gameState.cardsInHand,
+    [gameState.reservedFactory].filter(Boolean),
     (card: Card) => card.cost,
     gameState.resources
   );
@@ -54,13 +54,13 @@ export async function buildFactory(gameState: GameState) {
 
   // Submit to server
   const {
-    response: { cardsInPlay, cardsInHand, availableActions, resources },
-  } = serverPlayCard(gameState, cardChoice.card, resourcesChoice.resources);
+    response: { cardsInPlay, reservedFactory, availableActions, resources },
+  } = serverBuildFactory(gameState, cardChoice.card, resourcesChoice.resources);
 
   // Update state with results
   // We should probably optimistically update, and if the response doesn't match, throw an error and restore from state.
   gameState.cardsInPlay = cardsInPlay;
-  gameState.cardsInHand = cardsInHand;
+  gameState.reservedFactory = reservedFactory;
   gameState.availableActions = availableActions;
   gameState.resources = resources;
   return;

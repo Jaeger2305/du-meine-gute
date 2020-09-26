@@ -42,6 +42,7 @@ describe("produce at factory", () => {
       ],
       resources: [],
       reservedCards: [],
+      reservedFactory: null,
       marketCards: [sawmill, altBakery],
       score: 0,
     };
@@ -89,6 +90,7 @@ describe("produce at factory", () => {
       ],
       resources: [],
       reservedCards: [],
+      reservedFactory: null,
       marketCards: [sawmill],
       score: 0,
     };
@@ -129,6 +131,7 @@ describe("produce at factory", () => {
       ],
       resources: [],
       reservedCards: [],
+      reservedFactory: null,
       marketCards: [sawmill],
       score: 0,
     };
@@ -185,6 +188,7 @@ describe("produce at factory", () => {
       ],
       resources: [],
       reservedCards: [],
+      reservedFactory: null,
       marketCards: [sawmill, altBakery, altBakery, altBakery],
       score: 0,
     };
@@ -255,6 +259,7 @@ describe("produce at factory", () => {
       ],
       resources: [],
       reservedCards: [],
+      reservedFactory: null,
       marketCards: [sawmill, altBakery, altBakery, altBakery],
       score: 0,
     };
@@ -329,6 +334,7 @@ describe("produce at factory", () => {
       ],
       resources: [],
       reservedCards: [],
+      reservedFactory: null,
       marketCards: [sawmill, altBakery],
       score: 0,
     };

@@ -4,7 +4,7 @@ const mockActions = {
   removeActionFromAvailableActions: jest.fn(),
 };
 const mockServerActions = {
-  playCard: jest.fn(),
+  buildFactory: jest.fn(),
 };
 jest.doMock("../utils", () => mockActions);
 jest.doMock("../../local-server", () => mockServerActions);
@@ -22,10 +22,10 @@ beforeEach(() => {
 
 describe("build factory", () => {
   // Bit more of an integration test.
-  it("should put a card from hand into play if can afford it", async () => {
+  it("should put a card from reserved into play if can afford it", async () => {
     // Arrange
     const game = {
-      cardsInHand: [bakery],
+      cardsInHand: [],
       cardsInDeck: [tannery],
       cardsInDiscard: [],
       cardsInPlay: [],
@@ -37,6 +37,7 @@ describe("build factory", () => {
       assignedEmployees: [],
       resources: [coal, coal, bread, coal],
       reservedCards: [],
+      reservedFactory: bakery,
       marketCards: [],
       score: 0,
     };
@@ -46,11 +47,11 @@ describe("build factory", () => {
     mockActions.removeActionFromAvailableActions.mockImplementation(
       () => (game.availableActions = [playerActions.endStep])
     );
-    mockServerActions.playCard.mockReturnValue({
+    mockServerActions.buildFactory.mockReturnValue({
       response: {
         playedCard: bakery,
         cardsInPlay: [bakery],
-        cardsInHand: [],
+        reservedFactory: null,
         availableActions: [playerActions.endStep],
         resources: [coal, coal],
       },
@@ -61,14 +62,14 @@ describe("build factory", () => {
 
     // Assert
     expect(game.cardsInPlay).toEqual([bakery]);
-    expect(game.cardsInHand).toEqual([]);
+    expect(game.reservedFactory).toEqual(null);
     expect(game.resources).toEqual([coal, coal]);
     expect(game.availableActions).toEqual([playerActions.endStep]);
   });
   it("should allow picking all of one resource", async () => {
     // Arrange
     const game = {
-      cardsInHand: [bakery],
+      cardsInHand: [],
       cardsInDeck: [tannery],
       cardsInDiscard: [],
       cardsInPlay: [],
@@ -80,6 +81,7 @@ describe("build factory", () => {
       assignedEmployees: [],
       resources: [coal, coal, bread, coal],
       reservedCards: [],
+      reservedFactory: bakery,
       marketCards: [],
       score: 0,
     };
@@ -89,11 +91,11 @@ describe("build factory", () => {
     mockActions.removeActionFromAvailableActions.mockImplementation(
       () => (game.availableActions = [playerActions.endStep])
     );
-    mockServerActions.playCard.mockReturnValue({
+    mockServerActions.buildFactory.mockReturnValue({
       response: {
         playedCard: bakery,
         cardsInPlay: [bakery],
-        cardsInHand: [],
+        reservedFactory: null,
         availableActions: [playerActions.endStep],
         resources: [bread, coal],
       },
@@ -108,7 +110,7 @@ describe("build factory", () => {
   it("should allow picking a variety of resources", async () => {
     // Arrange
     const game = {
-      cardsInHand: [bakery],
+      cardsInHand: [],
       cardsInDeck: [tannery],
       cardsInDiscard: [],
       cardsInPlay: [],
@@ -120,6 +122,7 @@ describe("build factory", () => {
       assignedEmployees: [],
       resources: [coal, coal, bread, coal],
       reservedCards: [],
+      reservedFactory: bakery,
       marketCards: [],
       score: 0,
     };
@@ -129,11 +132,11 @@ describe("build factory", () => {
     mockActions.removeActionFromAvailableActions.mockImplementation(
       () => (game.availableActions = [playerActions.endStep])
     );
-    mockServerActions.playCard.mockReturnValue({
+    mockServerActions.buildFactory.mockReturnValue({
       response: {
         playedCard: bakery,
         cardsInPlay: [bakery],
-        cardsInHand: [],
+        reservedFactory: null,
         availableActions: [playerActions.endStep],
         resources: [coal, coal],
       },
@@ -167,6 +170,7 @@ describe("build factory", () => {
       assignedEmployees: [],
       resources: [],
       reservedCards: [],
+      reservedFactory: null,
       marketCards: [],
       score: 0,
     };
@@ -178,11 +182,11 @@ describe("build factory", () => {
           playerActions.endStep,
         ])
     );
-    mockServerActions.playCard.mockReturnValue({
+    mockServerActions.buildFactory.mockReturnValue({
       response: {
         playedCard: bakery,
         cardsInPlay: [bakery],
-        cardsInHand: [],
+        reservedFactory: null,
         availableActions: [playerActions.endStep],
         resources: [coal, coal],
       },
@@ -199,7 +203,7 @@ describe("build factory", () => {
   });
   it("should remove all actions except endStep if it completed", async () => {
     const game = {
-      cardsInHand: [bakery],
+      cardsInHand: [],
       cardsInDeck: [tannery],
       cardsInDiscard: [],
       cardsInPlay: [],
@@ -215,6 +219,7 @@ describe("build factory", () => {
       assignedEmployees: [],
       resources: [coal, coal, bread, coal],
       reservedCards: [],
+      reservedFactory: bakery,
       marketCards: [],
       score: 0,
     };
@@ -224,11 +229,11 @@ describe("build factory", () => {
     mockActions.removeActionFromAvailableActions.mockImplementation(
       () => (game.availableActions = [playerActions.endStep])
     );
-    mockServerActions.playCard.mockReturnValue({
+    mockServerActions.buildFactory.mockReturnValue({
       response: {
         playedCard: bakery,
         cardsInPlay: [bakery],
-        cardsInHand: [],
+        reservedFactory: null,
         availableActions: [playerActions.endStep],
         resources: [coal, coal],
       },

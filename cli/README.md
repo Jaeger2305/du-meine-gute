@@ -38,7 +38,7 @@ Check the actions fulfill the game logic. Missing parts include:
 - [x] Connecting resources to the deck
 - [x] Connecting the market to the deck
 - [x] Multiple assignments of workers
-- [ ] Choose building before actually building it
+- [x] Choose building before actually building it
 - [x] Reassigning worker
 - [ ] handle buildings which provide a permanent boost to draw card
 - [ ] handle buildings which provide a permanent boost to the market
@@ -47,6 +47,8 @@ Check the actions fulfill the game logic. Missing parts include:
 - [ ] Discarding cards at the beginning of the round
 - [ ] chaining is only possible when using from the hand
 - [ ] add an extra round after the game has ended, and allow producing at all factories.
+- [ ] purchasing a worker has requirements on top of cost
+- [ ] builds cost and victory points need to be separated
 
 Also, there are some quality of life tasks:
 

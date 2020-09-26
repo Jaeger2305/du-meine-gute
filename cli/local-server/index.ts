@@ -6,6 +6,7 @@ import {
   AssignedEmployee,
   ProductionEfficiency,
   Resource,
+  PlayerActionEnum,
 } from "../types";
 import { wood, brick, wheat, stone, bread, leather, coal } from "../resources";
 import { playerActions } from "../game";
@@ -22,6 +23,7 @@ import {
   bakeryWithChain,
   altTannery,
 } from "../game/cards";
+import { removeActionFromAvailableActions } from "../game/utils";
 
 type ServerResponse = {
   response: any;
@@ -137,7 +139,7 @@ export function produceGood(
  * Puts a card from a players hand into play.
  * Returns the function to update the client game state
  */
-export function playCard(
+export function buildFactory(
   gameState: GameState,
   card: Card,
   resources: Array<Resource>
@@ -146,11 +148,8 @@ export function playCard(
     gameState.cardsInDeck = gameState.cardsInDiscard.slice().reverse();
     gameState.cardsInDiscard = [];
   }
-  const cardIndex = gameState.cardsInHand.findIndex(
-    (cardInHand) => cardInHand.name === card.name
-  );
-  const playedCard = gameState.cardsInHand.splice(cardIndex, 1);
-  gameState.cardsInPlay.splice(0, 0, ...playedCard);
+  const playedCard = gameState.reservedFactory;
+  gameState.cardsInPlay.push(playedCard);
 
   // Unreserve cards and put them in the discard
   // The order shouldn't matter - they're unknown to all.
@@ -169,11 +168,12 @@ export function playCard(
 
   // Delete all events other than the end step
   gameState.availableActions = [playerActions.endStep];
+  gameState.reservedFactory = null;
 
   const response = {
     playedCard,
     cardsInPlay: gameState.cardsInPlay,
-    cardsInHand: gameState.cardsInHand,
+    reservedFactory: gameState.reservedFactory,
     availableActions: gameState.availableActions,
     resources: gameState.resources,
   };
@@ -327,10 +327,30 @@ function startRound(gameState: GameState): ServerResponse {
 function assignEmployees(gameState: GameState): ServerResponse {
   gameState.availableActions = [
     playerActions.assignEmployee,
+    playerActions.reserveFactory,
     playerActions.endStep,
   ];
   return {
     response: {
+      availableActions: gameState.availableActions,
+    },
+  };
+}
+
+export function reserveFactory(gameState: GameState, factory: Card) {
+  const cardIndex = gameState.cardsInHand.findIndex(
+    (cardInHand) => cardInHand.name === factory.name
+  );
+  gameState.cardsInHand.splice(cardIndex, 1);
+
+  gameState.reservedFactory = factory;
+
+  // Originally a client side util, but the whole local server here will likely be disposed/refactored once porting into NativeScript.
+  removeActionFromAvailableActions(gameState, PlayerActionEnum.reserveFactory);
+  return {
+    response: {
+      reservedFactory: gameState.reservedFactory,
+      cardsInHand: gameState.cardsInHand,
       availableActions: gameState.availableActions,
     },
   };
