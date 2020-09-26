@@ -36,9 +36,13 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
   let hasProduced = false;
   while (canProduce) {
     const inputResources =
-      hasProduced && factoryChoice.factoryWorker.assignment.chainInput
-        ? [...factoryChoice.factoryWorker.assignment.chainInput]
-        : [...factoryChoice.factoryWorker.assignment.input];
+      hasProduced &&
+      factoryChoice.factoryWorker.assignment.productionConfig.chainInput
+        ? [
+            ...factoryChoice.factoryWorker.assignment.productionConfig
+              .chainInput,
+          ]
+        : [...factoryChoice.factoryWorker.assignment.productionConfig.input];
     // Check if can use the market resources
     const {
       isEnoughToProduce,
@@ -84,7 +88,7 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
       const producedResources: Array<Resource> = new Array(
         hasProduced ? 1 : factoryChoice.factoryWorker.mode.productionCount
       )
-        .fill(factoryChoice.factoryWorker.assignment.output)
+        .fill(factoryChoice.factoryWorker.assignment.productionConfig.output)
         .flat();
       // Draw card from deck to represent the resource
       producedResources.forEach((resource) => {
@@ -98,7 +102,7 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
       });
 
       // If the assignment allows only one production and no chaining, production can no longer happen.
-      if (!factoryChoice.factoryWorker.assignment.chainInput)
+      if (!factoryChoice.factoryWorker.assignment.productionConfig.chainInput)
         canProduce = false;
 
       hasProduced = true;

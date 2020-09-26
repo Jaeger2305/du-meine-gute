@@ -18,8 +18,10 @@ export const coalMine: Card = {
   name: "coal-mine-1",
   type: "test",
   resource: wood,
-  output: [coal],
-  input: [wood, brick],
+  productionConfig: {
+    output: [coal],
+    input: [wood, brick],
+  },
   cost: 0,
 };
 
@@ -27,8 +29,10 @@ export const sawmill: Card = {
   name: "sawmill-1",
   type: "test",
   resource: wood,
-  output: [plank],
-  input: [wood, stone],
+  productionConfig: {
+    output: [plank],
+    input: [wood, stone],
+  },
   cost: 3,
 };
 
@@ -36,8 +40,10 @@ export const bakery: Card = {
   name: "bakery-1",
   type: "test",
   resource: wheat,
-  output: [bread],
-  input: [wood, wheat],
+  productionConfig: {
+    output: [bread],
+    input: [wood, wheat],
+  },
   cost: 2,
 };
 
@@ -45,8 +51,10 @@ export const altBakery: Card = {
   name: "bakery-2",
   type: "test",
   resource: wheat,
-  output: [bread],
-  input: [stone, wheat],
+  productionConfig: {
+    output: [bread],
+    input: [stone, wheat],
+  },
   cost: 2,
   isSunny: true,
 };
@@ -55,9 +63,11 @@ export const bakeryWithChain: Card = {
   name: "bakery-2",
   type: "test",
   resource: wheat,
-  output: [bread],
-  input: [wood, wheat],
-  chainInput: [wheat],
+  productionConfig: {
+    output: [bread],
+    input: [wood, wheat],
+    chainInput: [wheat],
+  },
   cost: 3,
 };
 
@@ -65,9 +75,11 @@ export const tannery: Card = {
   name: "tannery-1",
   type: "test",
   resource: brick,
-  output: [leather],
-  input: [cattle, stone],
-  chainInput: [wood],
+  productionConfig: {
+    output: [leather],
+    input: [cattle, stone],
+    chainInput: [wood],
+  },
   cost: 4,
   isSunny: true,
 };
@@ -76,9 +88,11 @@ export const altTannery: Card = {
   name: "tannery-1",
   type: "test",
   resource: wood,
-  output: [leather],
-  input: [cattle, brick],
-  chainInput: [brick],
+  productionConfig: {
+    output: [leather],
+    input: [cattle, brick],
+    chainInput: [brick],
+  },
   cost: 4,
   isSunny: true,
 };
@@ -87,9 +101,6 @@ export const office: Card = {
   name: "office-1",
   type: "test",
   resource: wood,
-  output: [documents], // these 3 production traits should be put to the end, because it doesn't produce documents
-  input: [cattle, brick],
-  chainInput: [brick],
   cost: 4,
   isSunny: true,
   boostDrawCount: 1,
@@ -99,9 +110,11 @@ export const tradingPost: Card = {
   name: "trading-post-1",
   type: "test",
   resource: wood,
-  output: [documents],
-  input: [cattle, brick],
-  chainInput: [brick],
+  productionConfig: {
+    output: [documents],
+    input: [cattle, brick],
+    chainInput: [brick],
+  },
   cost: 4,
   isSunny: true,
   marketBoost: [wood],

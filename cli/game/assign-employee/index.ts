@@ -28,6 +28,7 @@ function getUnoccupiedFactories(
 ): Array<Card> {
   return factories.filter(
     (factory) =>
+      factory.productionConfig &&
       !assignedEmployees
         .map((assignedEmployee) => assignedEmployee.assignment.name)
         .includes(factory.name)

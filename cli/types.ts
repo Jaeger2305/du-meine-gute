@@ -19,13 +19,17 @@ export type Card = {
   type: string;
   name: string;
   resource: Resource;
-  output: Array<Resource>;
-  input: Array<Resource>;
+  productionConfig?: ProductionConfig;
   cost: number;
-  chainInput?: Array<Resource>;
   isSunny?: boolean;
   boostDrawCount?: number;
   marketBoost?: Array<Resource>;
+};
+
+export type ProductionConfig = {
+  output: Array<Resource>;
+  input: Array<Resource>;
+  chainInput?: Array<Resource>;
 };
 
 export type Player = {

@@ -45,7 +45,7 @@ export async function fallbackProduction(
   const {
     isEnoughToProduce: isEnoughToProduceIncludingHand,
   } = checkOutstandingResources(
-    assignedEmployee.assignment.input,
+    assignedEmployee.assignment.productionConfig.input,
     [...marketResources, ...resourcesInHand],
     assignedEmployee.mode.resourceSparingCount
   );
@@ -84,7 +84,7 @@ export async function fallbackProduction(
     isEnoughToProduce: isEnoughToProduceIncludingDiscardSelection,
     isExactToProduce: isExactToProduceIncludingDiscardSelection,
   } = checkOutstandingResources(
-    assignedEmployee.assignment.input,
+    assignedEmployee.assignment.productionConfig.input,
     [...marketResources, ...choice.cards.map((card) => card.resource)],
     assignedEmployee.mode.resourceSparingCount
   );

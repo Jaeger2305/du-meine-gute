@@ -42,6 +42,7 @@ Check the actions fulfill the game logic. Missing parts include:
 - [x] Reassigning worker
 - [x] handle buildings which provide a permanent boost to draw card
 - [x] handle buildings which provide a permanent boost to the market
+- [x] filter on buildings which don't produce.
 - [ ] handle buildings which have flexible input (e.g. glass needs 12 resources of any kind)
 - [ ] produce for each advanced resource input
 - [ ] initial random allocation of coal mines
