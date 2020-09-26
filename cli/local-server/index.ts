@@ -23,7 +23,7 @@ import {
   bakeryWithChain,
   altTannery,
   office,
-  tradingPost,
+  glassblower,
 } from "../game/cards";
 import { removeActionFromAvailableActions } from "../game/utils";
 
@@ -295,7 +295,7 @@ function generateTestCards(): Array<Card> {
  * Returns valid actions that can be performed, which is just acknowledgements
  */
 export function setupGame(game: GameState): void {
-  game.cardsInPlay.push(coalMine, tradingPost);
+  game.cardsInPlay.push(coalMine, glassblower);
   game.cardsInHand.push(office, tannery);
   game.resources.push(bread, leather, bread, bread, leather, coal);
   game.cardsInDeck.push(...generateTestCards());

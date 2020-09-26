@@ -10,6 +10,8 @@ import {
   coal,
   plank,
   documents,
+  placeholder,
+  glass,
 } from "../resources";
 
 // Factories
@@ -118,6 +120,18 @@ export const tradingPost: Card = {
   cost: 4,
   isSunny: true,
   marketBoost: [wood],
+};
+
+export const glassblower: Card = {
+  name: "glassblower-1",
+  type: "test",
+  resource: stone,
+  productionConfig: {
+    output: [glass],
+    input: [placeholder, placeholder, placeholder],
+  },
+  cost: 2,
+  isSunny: true,
 };
 
 // Employees

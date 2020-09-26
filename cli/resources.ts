@@ -1,5 +1,11 @@
 import { Resource, ResourceType } from "./types";
 
+export const placeholder: Resource = {
+  type: ResourceType.placeholder,
+  value: 0,
+  baseResource: true,
+};
+
 export const wheat: Resource = {
   type: ResourceType.wheat,
   value: 0,
@@ -63,5 +69,11 @@ export const leather: Resource = {
 export const documents: Resource = {
   type: ResourceType.documents,
   value: 3,
+  baseResource: false,
+};
+
+export const glass: Resource = {
+  type: ResourceType.glass,
+  value: 4,
   baseResource: false,
 };

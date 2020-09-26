@@ -1,6 +1,11 @@
 import * as prompts from "prompts";
 import { produceGood } from "../../local-server";
-import { GameState, Resource } from "../../types";
+import {
+  AssignedEmployee,
+  GameState,
+  Resource,
+  ResourceType,
+} from "../../types";
 import { playerActions } from "../index";
 import {
   checkOutstandingResources,
@@ -13,7 +18,9 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
     .map((factoryWorker, index) => ({ ...factoryWorker, index }))
     .filter((employee) => !employee.hasProduced);
 
-  const factoryChoice = await prompts({
+  const factoryChoice: {
+    factoryWorker: AssignedEmployee & { index: number };
+  } = await prompts({
     type: "select",
     message: `pick an assigned worker`,
     name: "factoryWorker",
@@ -43,6 +50,7 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
               .chainInput,
           ]
         : [...factoryChoice.factoryWorker.assignment.productionConfig.input];
+    inputResources.sort((a) => (a.type === ResourceType.placeholder ? 1 : -1)); // Move placeholders to the end of the array. Functionally splitting this is probably cleaner, but slightly more complex.
     // Check if can use the market resources
     const {
       isEnoughToProduce,
@@ -77,7 +85,9 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
       // Remove the market used resources
       while (inputResources.length) {
         const resourceIndex = marketResources.findIndex(
-          (resource) => inputResources[0] === resource
+          (resource) =>
+            inputResources[0].type === resource.type ||
+            inputResources[0].type === ResourceType.placeholder // If it's a placeholder, use whatever is in the market. This requires placeholders to be at the end, sorted earlier.
         );
         inputResources.shift();
         if (resourceIndex > -1) gameState.marketCards.splice(resourceIndex, 1); // it might not be found in case this was spared because the worker was efficient.

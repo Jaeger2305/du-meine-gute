@@ -1,6 +1,6 @@
 import * as prompts from "prompts";
 import { AssignedEmployee, Card } from "../../types";
-import { wood, bread, wheat, cattle, coal } from "../../resources";
+import { wood, bread, wheat, cattle, coal, placeholder } from "../../resources";
 import {
   checkOutstandingResources,
   fallbackProduction,
@@ -11,8 +11,10 @@ const breadCard: Card = {
   type: "test",
   name: "test-bread",
   resource: wheat,
-  output: [bread],
-  input: [coal, cattle],
+  productionConfig: {
+    output: [bread],
+    input: [coal, cattle],
+  },
   cost: 2,
 };
 
@@ -89,8 +91,13 @@ describe("check outstanding resources", () => {
     expect(result.requiredExtraResources).toEqual([]);
   });
   it("confirms there is enough resources from the input when there is a needed discount", () => {
-    const result = checkOutstandingResources([bread], [], 1);
+    const result = checkOutstandingResources([wheat], [], 1);
     expect(result.isEnoughToProduce).toBe(true);
+    expect(result.requiredExtraResources).toEqual([wheat]); // maybe this should rename to missing resources
+  });
+  it("rejects enough if there's a discount, but the required is a secondary resource", () => {
+    const result = checkOutstandingResources([bread], [], 1);
+    expect(result.isEnoughToProduce).toBe(false);
     expect(result.requiredExtraResources).toEqual([bread]); // maybe this should rename to missing resources
   });
   it("confirms there are not enough resources from the input when there is no discount", () => {
@@ -112,5 +119,89 @@ describe("check outstanding resources", () => {
     const result = checkOutstandingResources([bread], [bread], 0);
     expect(result.isEnoughToProduce).toBe(true);
     expect(result.isExactToProduce).toBe(true);
+  });
+  it("rejects production when there are more placeholders required than in the input", () => {
+    const result = checkOutstandingResources(
+      [placeholder, placeholder],
+      [wheat],
+      0
+    );
+    expect(result.isEnoughToProduce).toBe(false);
+    expect(result.requiredExtraResources).toEqual([placeholder]);
+  });
+  it("rejects production when there aren't enough base input resources", () => {
+    const result = checkOutstandingResources(
+      [placeholder, placeholder],
+      [bread, bread, bread],
+      0
+    );
+    expect(result.isEnoughToProduce).toBe(false);
+    expect(result.requiredExtraResources).toEqual([placeholder, placeholder]);
+  });
+  it("accepts production when there are excessive extra base input resources for the required placeholders", () => {
+    const result = checkOutstandingResources(
+      [placeholder, placeholder],
+      [wheat, wheat, wheat],
+      0
+    );
+    expect(result.isEnoughToProduce).toBe(true);
+    expect(result.isExactToProduce).toBe(false);
+    expect(result.requiredExtraResources).toEqual([]);
+  });
+  it("accepts production when there are exact extra input resources for the required placeholders", () => {
+    const result = checkOutstandingResources(
+      [placeholder, placeholder],
+      [wheat, wheat],
+      0
+    );
+    expect(result.isEnoughToProduce).toBe(true);
+    expect(result.isExactToProduce).toBe(true);
+    expect(result.requiredExtraResources).toEqual([]);
+  });
+  it("accepts production when there are resource savings to cover the required placeholders", () => {
+    const result = checkOutstandingResources(
+      [placeholder, placeholder],
+      [wheat],
+      1
+    );
+    expect(result.isEnoughToProduce).toBe(true);
+    expect(result.isExactToProduce).toBe(true);
+    expect(result.requiredExtraResources).toEqual([placeholder]);
+  });
+  it("accepts production when there are big resource savings and no input", () => {
+    const result = checkOutstandingResources([placeholder, placeholder], [], 2);
+    expect(result.isEnoughToProduce).toBe(true);
+    expect(result.isExactToProduce).toBe(true);
+    expect(result.requiredExtraResources).toEqual([placeholder, placeholder]);
+  });
+  it("accepts production when there are big resource savings with some input", () => {
+    const result = checkOutstandingResources(
+      [placeholder, placeholder, placeholder],
+      [wheat],
+      2
+    );
+    expect(result.isEnoughToProduce).toBe(true);
+    expect(result.isExactToProduce).toBe(true);
+    expect(result.requiredExtraResources).toEqual([placeholder, placeholder]);
+  });
+  it("accepts production when there are big resource savings but superfluous secondary input", () => {
+    const result = checkOutstandingResources(
+      [placeholder, placeholder, placeholder],
+      [wheat, bread],
+      2
+    );
+    expect(result.isEnoughToProduce).toBe(true);
+    expect(result.isExactToProduce).toBe(false);
+    expect(result.requiredExtraResources).toEqual([placeholder, placeholder]);
+  });
+  it("accepts production when there are big resource savings with mixed placeholder/base input", () => {
+    const result = checkOutstandingResources(
+      [placeholder, placeholder, wheat],
+      [wheat],
+      2
+    );
+    expect(result.isEnoughToProduce).toBe(true);
+    expect(result.isExactToProduce).toBe(true);
+    expect(result.requiredExtraResources).toEqual([placeholder, placeholder]);
   });
 });

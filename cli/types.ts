@@ -76,6 +76,8 @@ export type GameState = {
 };
 
 export enum ResourceType {
+  placeholder = "placeholder",
+
   wood = "wood",
   brick = "brick",
   wheat = "wheat",
@@ -88,6 +90,7 @@ export enum ResourceType {
   plank = "plank",
   leather = "leather",
   documents = "documents",
+  glass = "glass",
 }
 
 // We can couple the card to the resource, or we can keep track of the cards reserved as goods separately. that's probably better too.
