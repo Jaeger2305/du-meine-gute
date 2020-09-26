@@ -8,7 +8,7 @@ const mockServerActions = {
 jest.doMock("./production-utils", () => mockActions);
 jest.doMock("../../local-server", () => mockServerActions);
 import * as prompts from "prompts";
-import { wood, wheat, bread } from "../../resources";
+import { wood, wheat, bread, butter, coal } from "../../resources";
 import { playerActions } from "../index";
 import { altBakery, bakery, bakeryWithChain, sawmill, tannery } from "../cards";
 import { produceAtFactory } from "./index";
@@ -380,5 +380,86 @@ describe("produce at factory", () => {
     });
     await produceAtFactory(game);
     expect(game.resources).toEqual([bread, bread]);
+  });
+  it("should produce multiple resources if chaining production that requires multiple secondary input", async () => {
+    const game = {
+      cardsInHand: [],
+      cardsInDeck: [],
+      cardsInDiscard: [],
+      cardsInPlay: [],
+      winner: null,
+      players: [],
+      availableActions: [playerActions.produceAtFactory],
+      employees: [],
+      availableEmployees: [],
+      assignedEmployees: [
+        {
+          name: "assigned",
+          assignment: {
+            name: "bakery-3",
+            type: "test",
+            resource: wheat,
+            productionConfig: {
+              output: [bread],
+              input: [wood, wheat],
+              chainInput: [butter, coal],
+            },
+            cost: 3,
+          },
+          mode: {
+            productionCount: 1,
+            resourceSparingCount: 0,
+          },
+          unassignmentCost: 0,
+        },
+      ],
+      resources: [butter, coal],
+      reservedCards: [],
+      reservedFactory: null,
+      marketCards: [sawmill, altBakery],
+      score: 0,
+    };
+    const factoryWorker = {
+      ...game.assignedEmployees[0],
+      index: 0,
+    };
+    prompts.inject([factoryWorker]);
+
+    mockActions.checkOutstandingResources
+      .mockReturnValueOnce({
+        isEnoughToProduce: true,
+        isExactToProduce: true,
+        requiredExtraResources: [],
+      })
+      .mockReturnValueOnce({
+        isEnoughToProduce: false,
+        isExactToProduce: false,
+        requiredExtraResources: [butter, coal],
+      })
+      .mockReturnValueOnce({
+        isEnoughToProduce: false,
+        isExactToProduce: false,
+        requiredExtraResources: [butter, coal],
+      });
+
+    mockActions.fallbackProduction
+      .mockResolvedValueOnce({
+        fallbackSuccess: true,
+        cardIndexesToDelete: [0],
+      })
+      .mockResolvedValueOnce({
+        fallbackSuccess: false,
+        cardIndexesToDelete: [],
+      });
+
+    mockServerActions.produceGood.mockReturnValue({
+      response: {
+        cardsInDiscard: [bakery],
+        cardsInDeck: [],
+        resources: [bread, bread, bread],
+      },
+    });
+    await produceAtFactory(game);
+    expect(game.resources).toEqual([bread, bread, bread]);
   });
 });

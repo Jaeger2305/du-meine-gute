@@ -95,8 +95,14 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
 
       // Add the resources to the game state
       // First production depends on the worker, but chains do not.
+      const chainProductionCount =
+        factoryChoice.factoryWorker.assignment.productionConfig.chainInput?.filter(
+          (resource) => !resource.baseResource
+        ).length ?? 1;
       const producedResources: Array<Resource> = new Array(
-        hasProduced ? 1 : factoryChoice.factoryWorker.mode.productionCount
+        hasProduced
+          ? chainProductionCount
+          : factoryChoice.factoryWorker.mode.productionCount
       )
         .fill(factoryChoice.factoryWorker.assignment.productionConfig.output)
         .flat();
