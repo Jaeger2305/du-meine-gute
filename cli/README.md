@@ -36,7 +36,7 @@ Check the actions fulfill the game logic. Missing parts include:
 - [x] Scoring at end of game
 - [x] Implementing hiring workers
 - [x] Connecting resources to the deck
-- [ ] Connecting the market to the deck
+- [x] Connecting the market to the deck
 - [x] Multiple assignments of workers
 - [ ] Choose building before actually building it
 - [x] Reassigning worker
@@ -56,6 +56,7 @@ Also, there are some quality of life tasks:
 - [ ] avoid mutation where possible (although it might make sense in some places, when transferring into Vue)
 - [ ] production is complicated, there might be a better way of doing it (the loops and mutations aren't nice)
 - [ ] separating produced goods from base goods
+- [ ] pull game options into a config (suns require for market, victory building count, starting cost, starting cards, etc.)
 
 And laborious tasks:
 

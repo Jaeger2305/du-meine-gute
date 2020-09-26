@@ -22,6 +22,7 @@ export type Card = {
   input: Array<Resource>;
   cost: number;
   chainInput?: Array<Resource>;
+  isSunny?: boolean;
 };
 
 export type Player = {
@@ -62,7 +63,7 @@ export type GameState = {
   assignedEmployees: Array<AssignedEmployee>;
   resources: Array<Resource>;
   reservedCards: Array<Card>; // cards which have been removed from the normal draw/discard loop. This is limited to cards which are used to represent resources.
-  marketResources: Array<Resource>;
+  marketCards: Array<Card>;
   score: number;
 };
 
@@ -76,6 +77,7 @@ export enum ResourceType {
   coal = "coal",
   butter = "butter",
   bread = "bread",
+  plank = "plank",
   leather = "leather",
 }
 

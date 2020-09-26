@@ -8,6 +8,7 @@ import {
   cattle,
   leather,
   coal,
+  plank,
 } from "../resources";
 
 export const coalMine: Card = {
@@ -19,6 +20,15 @@ export const coalMine: Card = {
   cost: 0,
 };
 
+export const sawmill: Card = {
+  name: "sawmill-1",
+  type: "test",
+  resource: wood,
+  output: [plank],
+  input: [wood, stone],
+  cost: 3,
+};
+
 export const bakery: Card = {
   name: "bakery-1",
   type: "test",
@@ -26,6 +36,16 @@ export const bakery: Card = {
   output: [bread],
   input: [wood, wheat],
   cost: 2,
+};
+
+export const altBakery: Card = {
+  name: "bakery-2",
+  type: "test",
+  resource: wheat,
+  output: [bread],
+  input: [stone, wheat],
+  cost: 2,
+  isSunny: true,
 };
 
 export const bakeryWithChain: Card = {
@@ -46,6 +66,18 @@ export const tannery: Card = {
   input: [cattle, stone],
   chainInput: [wood],
   cost: 4,
+  isSunny: true,
+};
+
+export const altTannery: Card = {
+  name: "tannery-1",
+  type: "test",
+  resource: wood,
+  output: [leather],
+  input: [cattle, brick],
+  chainInput: [brick],
+  cost: 4,
+  isSunny: true,
 };
 
 export const apprentice: Employee = {

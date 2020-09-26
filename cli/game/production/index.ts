@@ -24,7 +24,7 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
   });
 
   // Copy initial market resources
-  const marketResources = [...gameState.marketResources];
+  const marketResources = gameState.marketCards.map((card) => card.resource);
 
   // Loop asking for a card to discard until all are chosen.
   let canProduce = true;
@@ -71,7 +71,7 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
           (resource) => inputResources[0] === resource
         );
         inputResources.shift();
-        if (resourceIndex > -1) marketResources.splice(resourceIndex, 1); // it might not be found in case this was spared because the worker was efficient.
+        if (resourceIndex > -1) gameState.marketCards.splice(resourceIndex, 1); // it might not be found in case this was spared because the worker was efficient.
       }
 
       // Add the resources to the game state

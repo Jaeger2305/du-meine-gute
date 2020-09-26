@@ -17,6 +17,10 @@ import {
   apprentice,
   master,
   boss,
+  altBakery,
+  sawmill,
+  bakeryWithChain,
+  altTannery,
 } from "../game/cards";
 
 type ServerResponse = {
@@ -45,17 +49,27 @@ export const roundSteps: Array<(gameState: GameState) => ServerResponse> = [
  * This is normally just an acknowledgement, as the players can't choose anything here.
  */
 function revealMarket(gameState: GameState): ServerResponse {
-  // should be connected to deck, and stop drawing after picking 3 suns.
   gameState.availableActions = [playerActions.endStep];
-  const baseResources = [brick, stone, wheat, wood];
-  const marketResources = [...new Array(10)].map(
-    (v) => baseResources[Math.floor(Math.random() * baseResources.length)]
-  );
-  gameState.marketResources.push(...marketResources);
+
+  const marketCards: Array<Card> = [];
+
+  // Draw cards until 3 suns.
+  while (marketCards.filter((card) => card.isSunny).length < 3) {
+    // If no cards, shuffle discard
+    if (!gameState.cardsInDeck.length) {
+      gameState.cardsInDeck = gameState.cardsInDiscard.slice();
+      gameState.cardsInDiscard = [];
+    }
+    const drawnCard = gameState.cardsInDeck.splice(0, 1);
+    marketCards.push(...drawnCard);
+  }
+  gameState.marketCards.push(...marketCards);
+
   return {
     response: {
+      drawnCards: marketCards,
       availableActions: gameState.availableActions,
-      marketResources: gameState.marketResources,
+      marketCards: gameState.marketCards,
     },
   };
 }
@@ -255,7 +269,23 @@ export function unassignWorker(
  *
  */
 function generateTestCards(): Array<Card> {
-  return [bakery, tannery];
+  return [
+    bakery,
+    tannery,
+    altBakery,
+    sawmill,
+    bakery,
+    bakeryWithChain,
+    coalMine,
+    tannery,
+    tannery,
+    coalMine,
+    bakeryWithChain,
+    bakeryWithChain,
+    altBakery,
+    altTannery,
+    altTannery,
+  ];
 }
 
 /**
@@ -282,7 +312,7 @@ export function setupGame(game: GameState): void {
  */
 function startRound(gameState: GameState): ServerResponse {
   gameState.availableActions = [playerActions.drawCard, playerActions.endStep];
-  gameState.marketResources = [];
+  gameState.marketCards = [];
   return {
     response: {
       availableActions: gameState.availableActions,
@@ -402,6 +432,10 @@ function endRound(gameState: GameState): ServerResponse {
     ...employee,
     hasProduced: false,
   }));
+
+  // Discard the market
+  gameState.cardsInDiscard.push(...gameState.marketCards);
+  gameState.marketCards = [];
 
   return {
     response: {

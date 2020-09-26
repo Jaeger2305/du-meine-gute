@@ -61,7 +61,7 @@ describe("remove build action from available actions", () => {
       assignedEmployees: [],
       resources: [],
       reservedCards: [],
-      marketResources: [],
+      marketCards: [],
       score: 0,
     };
     removeActionFromAvailableActions(game, PlayerActionEnum.buildFactory);
@@ -81,7 +81,7 @@ describe("remove build action from available actions", () => {
       assignedEmployees: [],
       resources: [],
       reservedCards: [],
-      marketResources: [],
+      marketCards: [],
       score: 0,
     };
 

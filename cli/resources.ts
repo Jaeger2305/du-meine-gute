@@ -36,6 +36,12 @@ export const coal: Resource = {
   baseResource: false,
 };
 
+export const plank: Resource = {
+  type: ResourceType.plank,
+  value: 3,
+  baseResource: false,
+};
+
 export const bread: Resource = {
   type: ResourceType.bread,
   value: 1,

@@ -37,7 +37,7 @@ describe("build factory", () => {
       assignedEmployees: [],
       resources: [coal, coal, bread, coal],
       reservedCards: [],
-      marketResources: [],
+      marketCards: [],
       score: 0,
     };
     prompts.inject([bakery, [coal, bread]]);
@@ -80,7 +80,7 @@ describe("build factory", () => {
       assignedEmployees: [],
       resources: [coal, coal, bread, coal],
       reservedCards: [],
-      marketResources: [],
+      marketCards: [],
       score: 0,
     };
     prompts.inject([bakery, [coal, coal]]);
@@ -120,7 +120,7 @@ describe("build factory", () => {
       assignedEmployees: [],
       resources: [coal, coal, bread, coal],
       reservedCards: [],
-      marketResources: [],
+      marketCards: [],
       score: 0,
     };
     prompts.inject([bakery, [coal, bread]]);
@@ -167,7 +167,7 @@ describe("build factory", () => {
       assignedEmployees: [],
       resources: [],
       reservedCards: [],
-      marketResources: [],
+      marketCards: [],
       score: 0,
     };
     mockActions.filterCardsToAffordable.mockReturnValue([]);
@@ -215,7 +215,7 @@ describe("build factory", () => {
       assignedEmployees: [],
       resources: [coal, coal, bread, coal],
       reservedCards: [],
-      marketResources: [],
+      marketCards: [],
       score: 0,
     };
     prompts.inject([bakery, [coal, bread]]);

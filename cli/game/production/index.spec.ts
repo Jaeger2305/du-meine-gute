@@ -10,7 +10,7 @@ jest.doMock("../../local-server", () => mockServerActions);
 import * as prompts from "prompts";
 import { wood, wheat, bread } from "../../resources";
 import { playerActions } from "../index";
-import { bakery, bakeryWithChain, tannery } from "../cards";
+import { altBakery, bakery, bakeryWithChain, sawmill, tannery } from "../cards";
 import { produceAtFactory } from "./index";
 
 beforeEach(() => {
@@ -42,7 +42,7 @@ describe("produce at factory", () => {
       ],
       resources: [],
       reservedCards: [],
-      marketResources: [wood, wheat],
+      marketCards: [sawmill, altBakery],
       score: 0,
     };
     const factoryWorker = {
@@ -89,7 +89,7 @@ describe("produce at factory", () => {
       ],
       resources: [],
       reservedCards: [],
-      marketResources: [wood],
+      marketCards: [sawmill],
       score: 0,
     };
     const factoryWorker = {
@@ -129,7 +129,7 @@ describe("produce at factory", () => {
       ],
       resources: [],
       reservedCards: [],
-      marketResources: [wood],
+      marketCards: [sawmill],
       score: 0,
     };
     const factoryWorker = {
@@ -185,7 +185,7 @@ describe("produce at factory", () => {
       ],
       resources: [],
       reservedCards: [],
-      marketResources: [wood, wheat, wheat, wheat],
+      marketCards: [sawmill, altBakery, altBakery, altBakery],
       score: 0,
     };
     const factoryWorker = {
@@ -255,7 +255,7 @@ describe("produce at factory", () => {
       ],
       resources: [],
       reservedCards: [],
-      marketResources: [wood, wheat, wheat, wheat],
+      marketCards: [sawmill, altBakery, altBakery, altBakery],
       score: 0,
     };
     const factoryWorker = {
@@ -329,7 +329,7 @@ describe("produce at factory", () => {
       ],
       resources: [],
       reservedCards: [],
-      marketResources: [wood, wheat],
+      marketCards: [sawmill, altBakery],
       score: 0,
     };
     const factoryWorker = {

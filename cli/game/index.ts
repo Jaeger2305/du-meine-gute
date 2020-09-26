@@ -78,7 +78,7 @@ export function newGame(): GameState {
     assignedEmployees: [],
     resources: [],
     reservedCards: [],
-    marketResources: [],
+    marketCards: [],
     score: 0,
   };
   return gameState;
