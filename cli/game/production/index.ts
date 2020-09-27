@@ -51,13 +51,14 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
           ]
         : [...factoryChoice.factoryWorker.assignment.productionConfig.input];
     inputResources.sort((a) => (a.type === ResourceType.placeholder ? 1 : -1)); // Move placeholders to the end of the array. Functionally splitting this is probably cleaner, but slightly more complex.
+    const canUseMarketResources = !hasProduced;
     // Check if can use the market resources
     const {
       isEnoughToProduce,
       requiredExtraResources,
     } = checkOutstandingResources(
       inputResources, // should toggle based on has produced
-      marketResources,
+      canUseMarketResources ? marketResources : [], // the market can only be used for initial production
       hasProduced
         ? 0 // the discount applies only to the first production
         : factoryChoice.factoryWorker.mode.resourceSparingCount
@@ -69,7 +70,7 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
       const { fallbackSuccess, cardIndexesToDelete } = await fallbackProduction(
         requiredExtraResources,
         gameState.cardsInHand,
-        marketResources,
+        canUseMarketResources ? marketResources : [],
         factoryChoice.factoryWorker
       );
       cardIndexesToDelete.forEach((cardIndexToDelete) => {
