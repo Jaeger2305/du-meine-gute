@@ -1,5 +1,10 @@
 import * as prompts from "prompts";
-import { AssignedEmployee, GameState, PlayerActionEnum } from "../../types";
+import {
+  AssignedEmployee,
+  GameState,
+  PlayerActionEnum,
+  Resource,
+} from "../../types";
 import {
   filterCardsToAffordable,
   removeActionFromAvailableActions,
@@ -23,7 +28,7 @@ export async function unassignEmployee(gameState: GameState): Promise<void> {
     );
 
   // Ask which employee to unassign
-  const employeeChoice = await prompts({
+  const employeeChoice: { employee: AssignedEmployee } = await prompts({
     type: "select",
     message: `pick a worker to unassign`,
     name: "employee",
@@ -33,18 +38,22 @@ export async function unassignEmployee(gameState: GameState): Promise<void> {
     })),
   });
 
-  // Ask to pay for unassignment
-  const resourcesChoice = await prompts({
-    type: "multiselect",
-    message: `pick resources to spend`,
-    name: "resources",
-    choices: gameState.resources
-      .map((resource, index) => ({
-        title: `${resource.type} - ${resource.value}`,
-        value: { ...resource, originalIndex: index },
-      }))
-      .filter((resource) => resource.value),
-  });
+  // Ask to pay for unassignment, if there's a cost
+  const resourcesChoice: {
+    resources: Array<Resource & { index: number }>;
+  } = employeeChoice.employee.unassignmentCost
+    ? { resources: [] }
+    : await prompts({
+        type: "multiselect",
+        message: `pick resources to spend`,
+        name: "resources",
+        choices: gameState.resources
+          .map((resource, index) => ({
+            title: `${resource.type} - ${resource.value}`,
+            value: { ...resource, originalIndex: index },
+          }))
+          .filter((resource) => resource.value),
+      });
 
   // Verify resources are not under or wasted
   if (

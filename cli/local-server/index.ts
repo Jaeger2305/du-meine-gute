@@ -465,7 +465,8 @@ function purchase(gameState: GameState): ServerResponse {
  * Either acknowledge and a return to the startRound action, or nothing, meaning the game has ended and all they can do is leave.
  */
 function endRound(gameState: GameState): ServerResponse {
-  const isGameEnd = gameState.cardsInPlay.length >= 4;
+  const isGameEnd = gameState.isGameEnding; // if marked as game ending last round, mark as finished here.
+  gameState.isGameEnding = gameState.cardsInPlay.length >= 4;
   gameState.availableActions = isGameEnd ? [] : [playerActions.endStep];
   gameState.winner = isGameEnd ? gameState.players[0] : null;
   gameState.score = sum([
@@ -480,6 +481,25 @@ function endRound(gameState: GameState): ServerResponse {
     ...employee,
     hasProduced: false,
   }));
+
+  // If at the end of the game, assign investors for free.
+  const assignedFactories = gameState.assignedEmployees.map(
+    (employee) => employee.assignment.name
+  );
+  const unassignedFactories = gameState.cardsInPlay.filter(
+    (card) => !assignedFactories.includes(card.name) && card.productionConfig
+  );
+  const investorAssignments: Array<AssignedEmployee> = unassignedFactories.map(
+    (factory, index) => ({
+      name: `investor ${index} - ${
+        factory.name
+      } - ${factory.productionConfig.output.join()}`,
+      mode: { productionCount: 1, resourceSparingCount: 0 },
+      unassignmentCost: 0,
+      assignment: factory,
+    })
+  );
+  gameState.assignedEmployees.push(...investorAssignments);
 
   // Discard the market
   gameState.cardsInDiscard.push(...gameState.marketCards);

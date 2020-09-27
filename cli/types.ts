@@ -73,6 +73,7 @@ export type GameState = {
   reservedFactory: Card | null;
   marketCards: Array<Card>;
   score: number;
+  isGameEnding?: boolean;
 };
 
 export enum ResourceType {

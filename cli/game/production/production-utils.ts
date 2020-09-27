@@ -132,9 +132,14 @@ export async function fallbackProduction(
   }
 
   // Pick out which cards can be discarded
+  const requiredExtraResourceTypes = requiredExtraResources.map((r) => r.type);
   const allRelevantCardsInHand = cardsInHand
     .map((card, originalIndex) => ({ ...card, originalIndex }))
-    .filter((card) => requiredExtraResources.includes(card.resource));
+    .filter(
+      (card) =>
+        requiredExtraResourceTypes.includes(card.resource.type) ||
+        requiredExtraResourceTypes.includes(ResourceType.placeholder)
+    );
 
   const choice = await prompts({
     type: "multiselect",

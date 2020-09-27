@@ -20,14 +20,7 @@ async function main() {
   while (game.availableActions.length) {
     // console.clear();
     console.log("starting step", RoundSteps[(step - 1) % roundSteps.length]);
-    console.log(
-      `Cards in play: `,
-      game.cardsInPlay,
-      "Cards in hand: ",
-      game.cardsInHand,
-      "Resources:",
-      game.resources
-    );
+    console.log(`Game state: `, game);
     // Wait for user input
     const chosenAction = await prompts({
       type: "select",

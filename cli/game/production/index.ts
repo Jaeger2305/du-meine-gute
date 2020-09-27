@@ -67,6 +67,10 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
     if (isEnoughToProduce) {
       canProduce = true;
     } else {
+      // There's a minor bug here - when fallback production fails because of invalid input, production is marked as finished.
+      // It means making the wrong selection will cause the player to miss out on that resource.
+      // Could be combatted by a refactor of this function, handling via clientside logic, or adding another parameter into the fallback production (invalidSelection)
+      // This would help distinguish between when to retry the fallback production and when to mark as finished.
       const { fallbackSuccess, cardIndexesToDelete } = await fallbackProduction(
         requiredExtraResources,
         gameState.cardsInHand,
