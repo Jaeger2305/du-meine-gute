@@ -46,7 +46,7 @@ Check the actions fulfill the game logic. Missing parts include:
 - [x] handle buildings which have flexible input (e.g. glass needs 12 resources of any kind)
 - [x] produce for each advanced resource input
 - [x] initial random allocation of coal mines
-- [ ] Discarding cards at the beginning of the round
+- [x] Discarding cards at the beginning of the round
 - [ ] chaining is only possible when using from the hand
 - [ ] add an extra round after the game has ended, and allow producing at all factories.
 - [ ] purchasing a worker has requirements on top of cost
@@ -61,6 +61,7 @@ Also, there are some quality of life tasks:
 - [ ] production is complicated, there might be a better way of doing it (the loops and mutations aren't nice)
 - [ ] separating produced goods from base goods
 - [ ] pull game options into a config (suns require for market, victory building count, starting cost, starting cards, etc.)
+- [ ] abstract card shuffle to separate function
 
 And laborious tasks:
 

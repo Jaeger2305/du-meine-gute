@@ -41,6 +41,7 @@ function gameReady() {}
 
 export const roundSteps: Array<(gameState: GameState) => ServerResponse> = [
   startRound,
+  draw,
   revealMarket,
   assignEmployees,
   revealMarket,
@@ -316,6 +317,23 @@ export function setupGame(game: GameState): void {
  * After drawing, the user is allowed to discard 2 cards as well, but that's appended after completing the drawing.
  */
 function startRound(gameState: GameState): ServerResponse {
+  gameState.availableActions = [
+    playerActions.discardCard,
+    playerActions.endStep,
+  ];
+  gameState.marketCards = [];
+  return {
+    response: {
+      availableActions: gameState.availableActions,
+    },
+  };
+}
+
+/**
+ * Returns valid actions that can be performed, which is drawing 3 cards.
+ * After drawing, the user is allowed to discard 2 cards as well, but that's appended after completing the drawing.
+ */
+function draw(gameState: GameState): ServerResponse {
   const drawCardCount =
     2 +
     sum(
@@ -323,7 +341,6 @@ function startRound(gameState: GameState): ServerResponse {
     );
   const drawCardActions = new Array(drawCardCount).fill(playerActions.drawCard);
   gameState.availableActions = [...drawCardActions, playerActions.endStep];
-  gameState.marketCards = [];
   return {
     response: {
       availableActions: gameState.availableActions,

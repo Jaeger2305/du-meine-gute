@@ -1,4 +1,4 @@
-import * as prompts from "prompts";
+import { discard } from "./discard";
 import { buildFactory } from "./build-factory";
 import { assignEmployee } from "./assign-employee";
 import { reserveFactory } from "./reserve-factory";
@@ -28,20 +28,7 @@ export const playerActions = {
   },
   discardCard: {
     type: PlayerActionEnum.discardCard,
-    handler: async (gameState: GameState) => {
-      const cardChoice = await prompts({
-        type: "select",
-        message: `pick a card to discard, and gain that resource`,
-        name: "card",
-        choices: gameState.cardsInHand.map((card, index) => ({
-          title: card.name,
-          value: { card, index },
-        })),
-      });
-      gameState.cardsInHand.splice(cardChoice.card.index, 1);
-      gameState.cardsInDiscard.push(cardChoice.card.card);
-      gameState.resources.push(cardChoice.card.card.resource);
-    },
+    handler: discard,
   },
   assignEmployee: {
     type: PlayerActionEnum.assignEmployee,
