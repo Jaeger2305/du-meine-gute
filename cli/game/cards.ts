@@ -1,10 +1,12 @@
 import { Card, Employee } from "../types";
 import {
   wood,
+  wool,
   brick,
   bread,
   wheat,
   stone,
+  metal,
   cattle,
   leather,
   coal,
@@ -16,13 +18,50 @@ import {
 
 // Factories
 
-export const coalMine: Card = {
-  name: "coal-mine-1",
+export const coalMineWheat: Card = {
+  name: "coal-mine-wheat",
   type: "test",
   resource: wood,
   productionConfig: {
     output: [coal],
-    input: [wood, brick],
+    input: [wood, wheat, wheat],
+    chainInput: [wood],
+  },
+  cost: 0,
+};
+
+export const coalMineWool: Card = {
+  name: "coal-mine-wool",
+  type: "test",
+  resource: wood,
+  productionConfig: {
+    output: [coal],
+    input: [wood, wool, wool],
+    chainInput: [wood],
+  },
+  cost: 0,
+};
+
+export const coalMineBrick: Card = {
+  name: "coal-mine-brick",
+  type: "test",
+  resource: wood,
+  productionConfig: {
+    output: [coal],
+    input: [wood, brick, brick],
+    chainInput: [wood],
+  },
+  cost: 0,
+};
+
+export const coalMineMetal: Card = {
+  name: "coal-mine-metal",
+  type: "test",
+  resource: wood,
+  productionConfig: {
+    output: [coal],
+    input: [wood, metal, metal],
+    chainInput: [wood],
   },
   cost: 0,
 };

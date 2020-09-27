@@ -12,6 +12,18 @@ export const wheat: Resource = {
   baseResource: true,
 };
 
+export const wool: Resource = {
+  type: ResourceType.wool,
+  value: 0,
+  baseResource: true,
+};
+
+export const metal: Resource = {
+  type: ResourceType.metal,
+  value: 0,
+  baseResource: true,
+};
+
 export const wood: Resource = {
   type: ResourceType.wood,
   value: 0,

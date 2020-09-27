@@ -79,6 +79,8 @@ export enum ResourceType {
   placeholder = "placeholder",
 
   wood = "wood",
+  wool = "wool",
+  metal = "metal",
   brick = "brick",
   wheat = "wheat",
   stone = "stone",

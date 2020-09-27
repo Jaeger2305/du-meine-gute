@@ -45,7 +45,7 @@ Check the actions fulfill the game logic. Missing parts include:
 - [x] filter on buildings which don't produce.
 - [x] handle buildings which have flexible input (e.g. glass needs 12 resources of any kind)
 - [x] produce for each advanced resource input
-- [ ] initial random allocation of coal mines
+- [x] initial random allocation of coal mines
 - [ ] Discarding cards at the beginning of the round
 - [ ] chaining is only possible when using from the hand
 - [ ] add an extra round after the game has ended, and allow producing at all factories.

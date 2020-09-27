@@ -8,10 +8,9 @@ import {
   Resource,
   PlayerActionEnum,
 } from "../types";
-import { wood, brick, wheat, stone, bread, leather, coal } from "../resources";
+import { bread, leather, coal } from "../resources";
 import { playerActions } from "../game";
 import {
-  coalMine,
   bakery,
   tannery,
   skilledApprentice,
@@ -24,6 +23,10 @@ import {
   altTannery,
   office,
   glassblower,
+  coalMineBrick,
+  coalMineMetal,
+  coalMineWool,
+  coalMineWheat,
 } from "../game/cards";
 import { removeActionFromAvailableActions } from "../game/utils";
 
@@ -278,10 +281,8 @@ function generateTestCards(): Array<Card> {
     sawmill,
     bakery,
     bakeryWithChain,
-    coalMine,
     tannery,
     tannery,
-    coalMine,
     bakeryWithChain,
     bakeryWithChain,
     altBakery,
@@ -295,7 +296,9 @@ function generateTestCards(): Array<Card> {
  * Returns valid actions that can be performed, which is just acknowledgements
  */
 export function setupGame(game: GameState): void {
-  game.cardsInPlay.push(coalMine, glassblower);
+  const coalMines = [coalMineWheat, coalMineBrick, coalMineMetal, coalMineWool];
+  const chosenCoalMine = coalMines[Math.floor(Math.random() * 4)];
+  game.cardsInPlay.push(chosenCoalMine, glassblower);
   game.cardsInHand.push(office, tannery);
   game.resources.push(bread, leather, bread, bread, leather, coal);
   game.cardsInDeck.push(...generateTestCards());
