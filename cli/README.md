@@ -29,40 +29,22 @@ The server can restore the client in case the connection is dropped.
 
 ## TODO
 
-Refactor the actions in to separate files
-Check the actions fulfill the game logic. Missing parts include:
+Integrating the server side tasks
 
-- [x] Costing of buildings
-- [x] Scoring at end of game
-- [x] Implementing hiring workers
-- [x] Connecting resources to the deck
-- [x] Connecting the market to the deck
-- [x] Multiple assignments of workers
-- [x] Choose building before actually building it
-- [x] Reassigning worker
-- [x] handle buildings which provide a permanent boost to draw card
-- [x] handle buildings which provide a permanent boost to the market
-- [x] filter on buildings which don't produce.
-- [x] handle buildings which have flexible input (e.g. glass needs 12 resources of any kind)
-- [x] produce for each advanced resource input
-- [x] initial random allocation of coal mines
-- [x] Discarding cards at the beginning of the round
-- [x] chaining is only possible when using from the hand
-- [x] add an extra round after the game has ended, and allow producing at all factories.
-- [x] purchasing a worker has requirements on top of cost
-- [x] builds cost and victory points need to be separated
-- [ ] if hiring worker, disable building
+- [ ] allow multiple players in clientside types/architecture
+- [ ] allow serverside verification/checkpoints/reversions
+- [ ] ensuring clear separation of server and client
+- [ ] allow hidden information from other players
+- [ ] convert from server state to point in time client state
 
 Also, there are some quality of life tasks:
 
+- [ ] pull game options into a config (suns require for market, victory building count, starting cost, starting cards, etc.)
 - [ ] tests
 - [ ] refactoring player actions into separate files
-- [ ] ensuring clear separation of server and client
+- [ ] abstract card shuffle to separate function
 - [ ] avoid mutation where possible (although it might make sense in some places, when transferring into Vue)
 - [ ] production is complicated, there might be a better way of doing it (the loops and mutations aren't nice)
-- [ ] separating produced goods from base goods
-- [ ] pull game options into a config (suns require for market, victory building count, starting cost, starting cards, etc.)
-- [ ] abstract card shuffle to separate function
 
 And laborious tasks:
 
