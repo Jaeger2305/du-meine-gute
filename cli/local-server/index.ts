@@ -469,10 +469,14 @@ function endRound(gameState: GameState): ServerResponse {
   gameState.isGameEnding = gameState.cardsInPlay.length >= 4;
   gameState.availableActions = isGameEnd ? [] : [playerActions.endStep];
   gameState.winner = isGameEnd ? gameState.players[0] : null;
-  gameState.score = sum([
-    ...gameState.resources.map((resource) => resource.value),
-    ...gameState.cardsInPlay.map((card) => card.cost),
-  ]);
+  const resourcesScore = Math.floor(
+    sum(gameState.resources.map((resource) => resource.value)) / 5
+  );
+  const factoryScore = sum(gameState.cardsInPlay.map((card) => card.points));
+  const employeeScore = sum(
+    gameState.employees.map((employee) => employee.points)
+  );
+  gameState.score = resourcesScore + factoryScore + employeeScore;
 
   console.log("current score: ", gameState.score);
 

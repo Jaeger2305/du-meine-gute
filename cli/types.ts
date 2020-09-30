@@ -21,6 +21,7 @@ export type Card = {
   resource: Resource;
   productionConfig?: ProductionConfig;
   cost: number;
+  points: number;
   isSunny?: boolean;
   boostDrawCount?: number;
   marketBoost?: Array<Resource>;
@@ -46,6 +47,7 @@ export type Employee = {
   modes: Array<ProductionEfficiency>;
   resourceSpecialty?: Array<Resource>; // workers can be hired only if meeting the requirement of a certain number of builds. E.g. an apprentice might need 2 wheat based factories to be hired.
   cost: number;
+  points: number;
   unassignmentCost: number;
 };
 

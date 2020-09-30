@@ -28,6 +28,7 @@ export const coalMineWheat: Card = {
     chainInput: [wood],
   },
   cost: 0,
+  points: 0,
 };
 
 export const coalMineWool: Card = {
@@ -40,6 +41,7 @@ export const coalMineWool: Card = {
     chainInput: [wood],
   },
   cost: 0,
+  points: 0,
 };
 
 export const coalMineBrick: Card = {
@@ -52,6 +54,7 @@ export const coalMineBrick: Card = {
     chainInput: [wood],
   },
   cost: 0,
+  points: 0,
 };
 
 export const coalMineMetal: Card = {
@@ -64,6 +67,7 @@ export const coalMineMetal: Card = {
     chainInput: [wood],
   },
   cost: 0,
+  points: 0,
 };
 
 export const sawmill: Card = {
@@ -75,6 +79,7 @@ export const sawmill: Card = {
     input: [wood, stone],
   },
   cost: 3,
+  points: 2,
 };
 
 export const bakery: Card = {
@@ -86,6 +91,7 @@ export const bakery: Card = {
     input: [wood, wheat],
   },
   cost: 2,
+  points: 2,
 };
 
 export const altBakery: Card = {
@@ -98,6 +104,7 @@ export const altBakery: Card = {
   },
   cost: 2,
   isSunny: true,
+  points: 1,
 };
 
 export const bakeryWithChain: Card = {
@@ -110,6 +117,7 @@ export const bakeryWithChain: Card = {
     chainInput: [wheat],
   },
   cost: 3,
+  points: 2,
 };
 
 export const tannery: Card = {
@@ -122,6 +130,7 @@ export const tannery: Card = {
     chainInput: [wood],
   },
   cost: 4,
+  points: 3,
   isSunny: true,
 };
 
@@ -135,6 +144,7 @@ export const altTannery: Card = {
     chainInput: [brick],
   },
   cost: 4,
+  points: 3,
   isSunny: true,
 };
 
@@ -144,6 +154,7 @@ export const office: Card = {
   resource: wood,
   cost: 4,
   isSunny: true,
+  points: 2,
   boostDrawCount: 1,
 };
 
@@ -157,6 +168,7 @@ export const tradingPost: Card = {
     chainInput: [brick],
   },
   cost: 4,
+  points: 2,
   isSunny: true,
   marketBoost: [wood],
 };
@@ -170,6 +182,7 @@ export const glassblower: Card = {
     input: [placeholder, placeholder, placeholder],
   },
   cost: 2,
+  points: 2,
   isSunny: true,
 };
 
@@ -180,6 +193,7 @@ export const apprentice: Employee = {
   name: "apprentice-1",
   resourceSpecialty: [wood],
   cost: 3,
+  points: 2,
   unassignmentCost: 2,
 };
 
@@ -188,6 +202,7 @@ export const skilledApprentice: Employee = {
   name: "skilled-apprentice-1",
   resourceSpecialty: [wheat],
   cost: 4,
+  points: 3,
   unassignmentCost: 2,
 };
 
@@ -196,6 +211,7 @@ export const master: Employee = {
   name: "master-1",
   resourceSpecialty: [wheat],
   cost: 5,
+  points: 4,
   unassignmentCost: 2,
 };
 
@@ -206,5 +222,6 @@ export const boss: Employee = {
   ],
   name: "boss-1",
   cost: 0,
+  points: 0,
   unassignmentCost: 0,
 };
