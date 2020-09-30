@@ -6,17 +6,27 @@ import {
   verifyResources,
 } from "../utils";
 import { hireWorker as serverHireWorker } from "../../local-server";
+import { differenceBy } from "lodash";
 
 export async function hireWorker(gameState: GameState): Promise<void> {
   // Filter cards to those that can be afforded
-  const affordableCards = filterCardsToAffordable(
+  const affordableCards = filterCardsToAffordable<Employee>(
     gameState.availableEmployees,
     (card: Employee) => card.cost,
     gameState.resources
   );
 
+  // Filter cards according to their prerequisites
+  const factoryTypesInPlay = gameState.cardsInPlay.map(
+    (factory) => factory.resource
+  );
+  const availableCards = affordableCards.filter(
+    (card) =>
+      !differenceBy(card.resourceSpecialty, factoryTypesInPlay, "type").length
+  );
+
   // Short circuit if nothing found
-  if (!affordableCards.length)
+  if (!availableCards.length)
     return removeActionFromAvailableActions(
       gameState,
       PlayerActionEnum.hireWorker
@@ -27,7 +37,7 @@ export async function hireWorker(gameState: GameState): Promise<void> {
     type: "select",
     message: `pick an card to play`,
     name: "card",
-    choices: affordableCards.map((card) => ({
+    choices: availableCards.map((card) => ({
       title: card.name,
       value: card,
     })),

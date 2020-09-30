@@ -178,7 +178,7 @@ export const glassblower: Card = {
 export const apprentice: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "apprentice-1",
-  resourceSpecialty: wood,
+  resourceSpecialty: [wood],
   cost: 3,
   unassignmentCost: 2,
 };
@@ -186,7 +186,7 @@ export const apprentice: Employee = {
 export const skilledApprentice: Employee = {
   modes: [{ productionCount: 3, resourceSparingCount: 0 }],
   name: "skilled-apprentice-1",
-  resourceSpecialty: wheat,
+  resourceSpecialty: [wheat],
   cost: 4,
   unassignmentCost: 2,
 };
@@ -194,7 +194,7 @@ export const skilledApprentice: Employee = {
 export const master: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "master-1",
-  resourceSpecialty: wheat,
+  resourceSpecialty: [wheat],
   cost: 5,
   unassignmentCost: 2,
 };

@@ -8,11 +8,11 @@ import {
 } from "../../types";
 import { sortBy, sumBy } from "lodash";
 
-export function filterCardsToAffordable(
-  cards: Array<Card | Employee | AssignedEmployee>,
-  costExtractor: (card: any) => number,
+export function filterCardsToAffordable<T>(
+  cards: Array<T>,
+  costExtractor: (card: T) => number,
   resources: Array<Resource>
-): Array<Card | Employee | AssignedEmployee> {
+): Array<T> {
   // tot up resources
   const money = sumBy(resources, "value");
 

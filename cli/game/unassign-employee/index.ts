@@ -14,7 +14,7 @@ import { unassignWorker as serverUnassignWorker } from "../../local-server";
 
 export async function unassignEmployee(gameState: GameState): Promise<void> {
   // Filter employees to an affordable list
-  const affordableUnassignments = filterCardsToAffordable(
+  const affordableUnassignments = filterCardsToAffordable<AssignedEmployee>(
     gameState.assignedEmployees,
     (card: AssignedEmployee) => card.unassignmentCost,
     gameState.resources

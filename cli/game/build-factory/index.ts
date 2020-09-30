@@ -9,7 +9,7 @@ import { buildFactory as serverBuildFactory } from "../../local-server";
 
 export async function buildFactory(gameState: GameState) {
   // Filter cards to those that can be afforded
-  const affordableCards = filterCardsToAffordable(
+  const affordableCards = filterCardsToAffordable<Card>(
     [gameState.reservedFactory].filter(Boolean),
     (card: Card) => card.cost,
     gameState.resources

@@ -49,8 +49,9 @@ Check the actions fulfill the game logic. Missing parts include:
 - [x] Discarding cards at the beginning of the round
 - [x] chaining is only possible when using from the hand
 - [x] add an extra round after the game has ended, and allow producing at all factories.
-- [ ] purchasing a worker has requirements on top of cost
+- [x] purchasing a worker has requirements on top of cost
 - [ ] builds cost and victory points need to be separated
+- [ ] if hiring worker, disable building
 
 Also, there are some quality of life tasks:
 

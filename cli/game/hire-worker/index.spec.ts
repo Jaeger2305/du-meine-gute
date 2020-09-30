@@ -12,7 +12,7 @@ jest.doMock("../../local-server", () => mockServerActions);
 import * as prompts from "prompts";
 import { hireWorker } from "./index";
 import { playerActions } from "../index";
-import { bakery, apprentice } from "../cards";
+import { bakery, apprentice, sawmill } from "../cards";
 import { bread, coal } from "../../resources";
 
 beforeEach(() => {
@@ -27,7 +27,7 @@ describe("hire worker", () => {
       cardsInHand: [],
       cardsInDeck: [],
       cardsInDiscard: [],
-      cardsInPlay: [bakery],
+      cardsInPlay: [sawmill],
       winner: null,
       players: [],
       availableActions: [playerActions.hireWorker, playerActions.endStep],
@@ -69,7 +69,7 @@ describe("hire worker", () => {
       cardsInHand: [],
       cardsInDeck: [],
       cardsInDiscard: [],
-      cardsInPlay: [],
+      cardsInPlay: [sawmill],
       winner: null,
       players: [],
       availableActions: [playerActions.hireWorker, playerActions.endStep],
@@ -82,7 +82,7 @@ describe("hire worker", () => {
       marketCards: [],
       score: 0,
     };
-    prompts.inject([apprentice, [coal, coal]]);
+    prompts.inject([apprentice, [coal, coal, coal]]);
     mockActions.verifyResources.mockReturnValue(true);
     mockActions.filterCardsToAffordable.mockReturnValue([apprentice]);
     mockActions.removeActionFromAvailableActions.mockImplementation(
@@ -109,7 +109,7 @@ describe("hire worker", () => {
       cardsInHand: [],
       cardsInDeck: [],
       cardsInDiscard: [],
-      cardsInPlay: [],
+      cardsInPlay: [sawmill],
       winner: null,
       players: [],
       availableActions: [playerActions.hireWorker, playerActions.endStep],
@@ -122,9 +122,9 @@ describe("hire worker", () => {
       marketCards: [],
       score: 0,
     };
-    prompts.inject([bakery, [coal, bread]]);
+    prompts.inject([apprentice, [coal, bread, bread]]);
     mockActions.verifyResources.mockReturnValue(true);
-    mockActions.filterCardsToAffordable.mockReturnValue([bakery]);
+    mockActions.filterCardsToAffordable.mockReturnValue([apprentice]);
     mockActions.removeActionFromAvailableActions.mockImplementation(
       () => (game.availableActions = [playerActions.endStep])
     );
@@ -150,7 +150,7 @@ describe("hire worker", () => {
       cardsInHand: [],
       cardsInDeck: [],
       cardsInDiscard: [],
-      cardsInPlay: [],
+      cardsInPlay: [sawmill],
       winner: null,
       players: [],
       availableActions: [
@@ -200,7 +200,7 @@ describe("hire worker", () => {
       cardsInHand: [],
       cardsInDeck: [],
       cardsInDiscard: [],
-      cardsInPlay: [],
+      cardsInPlay: [sawmill],
       winner: null,
       players: [],
       availableActions: [
@@ -217,9 +217,9 @@ describe("hire worker", () => {
       marketCards: [],
       score: 0,
     };
-    prompts.inject([bakery, [coal, bread]]);
+    prompts.inject([apprentice, [coal, bread, bread]]);
     mockActions.verifyResources.mockReturnValue(true);
-    mockActions.filterCardsToAffordable.mockReturnValue([bakery]);
+    mockActions.filterCardsToAffordable.mockReturnValue([apprentice]);
     mockActions.removeActionFromAvailableActions.mockImplementation(
       () => (game.availableActions = [playerActions.endStep])
     );
@@ -234,6 +234,36 @@ describe("hire worker", () => {
 
     await hireWorker(game);
     expect(game.availableActions).toEqual([playerActions.endStep]);
+  });
+  it("should have no options when the resource speciality prerequisite isn't met", async () => {
+    const game = {
+      cardsInHand: [],
+      cardsInDeck: [],
+      cardsInDiscard: [],
+      cardsInPlay: [bakery],
+      winner: null,
+      players: [],
+      availableActions: [
+        playerActions.buildFactory,
+        playerActions.hireWorker,
+        playerActions.endStep,
+      ],
+      availableEmployees: [apprentice],
+      employees: [],
+      assignedEmployees: [],
+      resources: [coal, coal, bread, coal],
+      reservedCards: [],
+      reservedFactory: null,
+      marketCards: [],
+      score: 0,
+    };
+    mockActions.filterCardsToAffordable.mockReturnValue([apprentice]);
+    mockActions.removeActionFromAvailableActions.mockImplementation(
+      () => (game.availableActions = [playerActions.endStep])
+    );
+
+    await hireWorker(game);
+    expect(game.employees).toEqual([]);
   });
   xit("should filter workers according to their building requirements", () => {});
 });
