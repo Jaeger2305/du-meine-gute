@@ -14,6 +14,7 @@ import { buildFactory } from "./index";
 import { playerActions } from "../index";
 import { bakery, tannery } from "../cards";
 import { bread, coal } from "../../resources";
+import { defaultGame } from "../../__mocks__/game";
 
 beforeEach(() => {
   Object.values(mockActions).forEach((mock) => mock.mockClear());
@@ -24,28 +25,22 @@ describe("build factory", () => {
   // Bit more of an integration test.
   it("should put a card from reserved into play if can afford it", async () => {
     // Arrange
-    const game = {
-      cardsInHand: [],
-      cardsInDeck: [tannery],
-      cardsInDiscard: [],
-      cardsInPlay: [],
-      winner: null,
-      players: [],
+    const player = {
+      ...defaultGame.players[0],
       availableActions: [playerActions.buildFactory, playerActions.endStep],
-      employees: [],
-      availableEmployees: [],
-      assignedEmployees: [],
       resources: [coal, coal, bread, coal],
-      reservedCards: [],
       reservedFactory: bakery,
-      marketCards: [],
-      score: 0,
+    };
+    const game = {
+      ...defaultGame,
+      cardsInDeck: [tannery],
+      players: [player],
     };
     prompts.inject([bakery, [coal, bread]]);
     mockActions.verifyResources.mockReturnValue(true);
     mockActions.filterCardsToAffordable.mockReturnValue([bakery]);
     mockActions.removeActionFromAvailableActions.mockImplementation(
-      () => (game.availableActions = [playerActions.endStep])
+      () => (player.availableActions = [playerActions.endStep])
     );
     mockServerActions.buildFactory.mockReturnValue({
       response: {
@@ -58,38 +53,32 @@ describe("build factory", () => {
     });
 
     // Act
-    await buildFactory(game);
+    await buildFactory(game, player);
 
     // Assert
-    expect(game.cardsInPlay).toEqual([bakery]);
-    expect(game.reservedFactory).toEqual(null);
-    expect(game.resources).toEqual([coal, coal]);
-    expect(game.availableActions).toEqual([playerActions.endStep]);
+    expect(player.cardsInPlay).toEqual([bakery]);
+    expect(player.reservedFactory).toEqual(null);
+    expect(player.resources).toEqual([coal, coal]);
+    expect(player.availableActions).toEqual([playerActions.endStep]);
   });
   it("should allow picking all of one resource", async () => {
     // Arrange
-    const game = {
-      cardsInHand: [],
-      cardsInDeck: [tannery],
-      cardsInDiscard: [],
-      cardsInPlay: [],
-      winner: null,
-      players: [],
+    const player = {
+      ...defaultGame.players[0],
       availableActions: [playerActions.buildFactory, playerActions.endStep],
-      employees: [],
-      availableEmployees: [],
-      assignedEmployees: [],
       resources: [coal, coal, bread, coal],
-      reservedCards: [],
       reservedFactory: bakery,
-      marketCards: [],
-      score: 0,
+    };
+    const game = {
+      ...defaultGame,
+      cardsInDeck: [tannery],
+      players: [player],
     };
     prompts.inject([bakery, [coal, coal]]);
     mockActions.verifyResources.mockReturnValue(true);
     mockActions.filterCardsToAffordable.mockReturnValue([bakery]);
     mockActions.removeActionFromAvailableActions.mockImplementation(
-      () => (game.availableActions = [playerActions.endStep])
+      () => (player.availableActions = [playerActions.endStep])
     );
     mockServerActions.buildFactory.mockReturnValue({
       response: {
@@ -102,35 +91,29 @@ describe("build factory", () => {
     });
 
     // Act
-    await buildFactory(game);
+    await buildFactory(game, player);
 
     // Assert
-    expect(game.cardsInPlay).toEqual([bakery]);
+    expect(player.cardsInPlay).toEqual([bakery]);
   });
   it("should allow picking a variety of resources", async () => {
     // Arrange
-    const game = {
-      cardsInHand: [],
-      cardsInDeck: [tannery],
-      cardsInDiscard: [],
-      cardsInPlay: [],
-      winner: null,
-      players: [],
+    const player = {
+      ...defaultGame.players[0],
       availableActions: [playerActions.buildFactory, playerActions.endStep],
-      employees: [],
-      availableEmployees: [],
-      assignedEmployees: [],
       resources: [coal, coal, bread, coal],
-      reservedCards: [],
       reservedFactory: bakery,
-      marketCards: [],
-      score: 0,
+    };
+    const game = {
+      ...defaultGame,
+      cardsInDeck: [tannery],
+      players: [player],
     };
     prompts.inject([bakery, [coal, bread]]);
     mockActions.verifyResources.mockReturnValue(true);
     mockActions.filterCardsToAffordable.mockReturnValue([bakery]);
     mockActions.removeActionFromAvailableActions.mockImplementation(
-      () => (game.availableActions = [playerActions.endStep])
+      () => (player.availableActions = [playerActions.endStep])
     );
     mockServerActions.buildFactory.mockReturnValue({
       response: {
@@ -143,41 +126,35 @@ describe("build factory", () => {
     });
 
     // Act
-    await buildFactory(game);
+    await buildFactory(game, player);
 
     // Assert
-    expect(game.cardsInPlay).toEqual([bakery]);
+    expect(player.cardsInPlay).toEqual([bakery]);
   });
 
   xit("should re-ask if failing validation", async () => {}); // probably not needed, because the action won't be run and can be re-done anyway
   xit("should do nothing if action was aborted", async () => {}); // not implemented
   it("should remove the action if there is no building to choose", async () => {
     // Arrange
-    const game = {
-      cardsInHand: [],
-      cardsInDeck: [tannery],
-      cardsInDiscard: [],
-      cardsInPlay: [],
-      winner: null,
-      players: [],
+    const player = {
+      ...defaultGame.players[0],
       availableActions: [
         playerActions.buildFactory,
         playerActions.hireWorker,
         playerActions.endStep,
       ],
-      employees: [],
-      availableEmployees: [],
-      assignedEmployees: [],
       resources: [],
-      reservedCards: [],
       reservedFactory: null,
-      marketCards: [],
-      score: 0,
+    };
+    const game = {
+      ...defaultGame,
+      cardsInDeck: [tannery],
+      players: [player],
     };
     mockActions.filterCardsToAffordable.mockReturnValue([]);
     mockActions.removeActionFromAvailableActions.mockImplementation(
       () =>
-        (game.availableActions = [
+        (player.availableActions = [
           playerActions.hireWorker,
           playerActions.endStep,
         ])
@@ -193,41 +170,35 @@ describe("build factory", () => {
     });
 
     // Act
-    await buildFactory(game);
+    await buildFactory(game, player);
 
     // Assert
-    expect(game.availableActions).toEqual([
+    expect(player.availableActions).toEqual([
       playerActions.hireWorker,
       playerActions.endStep,
     ]);
   });
   it("should remove all actions except endStep if it completed", async () => {
-    const game = {
-      cardsInHand: [],
-      cardsInDeck: [tannery],
-      cardsInDiscard: [],
-      cardsInPlay: [],
-      winner: null,
-      players: [],
+    const player = {
+      ...defaultGame.players[0],
       availableActions: [
         playerActions.buildFactory,
         playerActions.hireWorker,
         playerActions.endStep,
       ],
-      employees: [],
-      availableEmployees: [],
-      assignedEmployees: [],
       resources: [coal, coal, bread, coal],
-      reservedCards: [],
       reservedFactory: bakery,
-      marketCards: [],
-      score: 0,
+    };
+    const game = {
+      ...defaultGame,
+      cardsInDeck: [tannery],
+      players: [player],
     };
     prompts.inject([bakery, [coal, bread]]);
     mockActions.verifyResources.mockReturnValue(true);
     mockActions.filterCardsToAffordable.mockReturnValue([bakery]);
     mockActions.removeActionFromAvailableActions.mockImplementation(
-      () => (game.availableActions = [playerActions.endStep])
+      () => (player.availableActions = [playerActions.endStep])
     );
     mockServerActions.buildFactory.mockReturnValue({
       response: {
@@ -239,8 +210,8 @@ describe("build factory", () => {
       },
     });
 
-    await buildFactory(game);
-    expect(game.availableActions).toEqual([playerActions.endStep]);
+    await buildFactory(game, player);
+    expect(player.availableActions).toEqual([playerActions.endStep]);
   });
   xit("should discard picked resources", async () => {}); // Resources are distinct from cards currently and can't be discarded/reserved yet.
 });

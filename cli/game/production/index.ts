@@ -94,7 +94,6 @@ export async function produceAtFactory(
 
     // Produce the resource
     if (canProduce) {
-      console.log("producing the resource");
       // Remove the market used resources
       while (inputResources.length) {
         const resourceIndex = marketResources.findIndex(

@@ -7,6 +7,7 @@ import { playerActions } from "../index";
 import { bakery, bakeryWithChain } from "../cards";
 import { bread, coal, wheat, leather, butter } from "../../resources";
 import { Card, PlayerActionEnum } from "../../types";
+import { defaultGame } from "../../__mocks__/game";
 
 describe("filter to affordable cards", () => {
   it("should limit the options to only those affordable", () => {
@@ -48,47 +49,21 @@ describe("verify resource choice", () => {
 
 describe("remove build action from available actions", () => {
   it("should remove the action from the available actions", () => {
-    const game = {
-      cardsInHand: [],
-      cardsInDeck: [],
-      cardsInDiscard: [],
-      cardsInPlay: [],
-      winner: null,
-      players: [],
+    const player = {
+      ...defaultGame.players[0],
       availableActions: [playerActions.buildFactory, playerActions.endStep],
-      availableEmployees: [],
-      employees: [],
-      assignedEmployees: [],
-      resources: [],
-      reservedCards: [],
-      reservedFactory: null,
-      marketCards: [],
-      score: 0,
     };
-    removeActionFromAvailableActions(game, PlayerActionEnum.buildFactory);
-    expect(game.availableActions).toEqual([playerActions.endStep]);
+    removeActionFromAvailableActions(player, PlayerActionEnum.buildFactory);
+    expect(player.availableActions).toEqual([playerActions.endStep]);
   });
   it("should throw if there is no action found", () => {
-    const game = {
-      cardsInHand: [],
-      cardsInDeck: [],
-      cardsInDiscard: [],
-      cardsInPlay: [],
-      winner: null,
-      players: [],
+    const player = {
+      ...defaultGame.players[0],
       availableActions: [playerActions.endStep],
-      availableEmployees: [],
-      employees: [],
-      assignedEmployees: [],
-      resources: [],
-      reservedCards: [],
-      reservedFactory: null,
-      marketCards: [],
-      score: 0,
     };
 
     expect(() =>
-      removeActionFromAvailableActions(game, PlayerActionEnum.buildFactory)
+      removeActionFromAvailableActions(player, PlayerActionEnum.buildFactory)
     ).toThrow();
   });
 });

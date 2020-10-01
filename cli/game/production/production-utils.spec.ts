@@ -1,36 +1,20 @@
 import * as prompts from "prompts";
-import { AssignedEmployee, Card } from "../../types";
-import { wood, bread, wheat, cattle, coal, placeholder } from "../../resources";
+import { wood, bread, wheat, placeholder } from "../../resources";
 import {
   checkOutstandingResources,
   fallbackProduction,
 } from "./production-utils";
-import { bakery, tannery } from "../cards";
-
-const breadCard: Card = {
-  type: "test",
-  name: "test-bread",
-  resource: wheat,
-  productionConfig: {
-    output: [bread],
-    input: [coal, cattle],
-  },
-  cost: 2,
-};
-
-const boss: AssignedEmployee = {
-  name: "assigned",
-  assignment: bakery,
-  mode: {
-    productionCount: 2,
-    resourceSparingCount: 0,
-  },
-  unassignmentCost: 0,
-};
+import { tannery, breadCard } from "../../__mocks__/card";
+import { bossAssigned } from "../../__mocks__/employee";
 
 describe("fallback production", () => {
   it("fails production if there aren't enough available cards when using the cards in hand", async () => {
-    const result = await fallbackProduction([bread], [tannery], [], boss);
+    const result = await fallbackProduction(
+      [bread],
+      [tannery],
+      [],
+      bossAssigned
+    );
     expect(result.fallbackSuccess).toBe(false);
   });
   it("fails production if too few cards are selected", async () => {
@@ -40,7 +24,7 @@ describe("fallback production", () => {
       [wheat],
       [tannery, breadCard],
       [wood],
-      boss
+      bossAssigned
     );
     expect(result.fallbackSuccess).toBe(false);
   });
@@ -51,7 +35,7 @@ describe("fallback production", () => {
       [wheat],
       [tannery, breadCard],
       [wood],
-      boss
+      bossAssigned
     );
     expect(result.fallbackSuccess).toBe(false);
   });
@@ -62,7 +46,7 @@ describe("fallback production", () => {
       [wheat],
       [tannery, breadCard],
       [wood],
-      boss
+      bossAssigned
     );
     expect(result.fallbackSuccess).toBe(true);
   });
@@ -73,7 +57,7 @@ describe("fallback production", () => {
       [wheat],
       [tannery, breadCard],
       [wood],
-      boss
+      bossAssigned
     );
     expect(result.cardIndexesToDelete).toEqual([1]);
   });
