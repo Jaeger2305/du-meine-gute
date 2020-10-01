@@ -1,11 +1,4 @@
-import {
-  GameState,
-  Card,
-  Resource,
-  PlayerActionEnum,
-  Employee,
-  AssignedEmployee,
-} from "../../types";
+import { PlayerState, Resource, PlayerActionEnum } from "../../types";
 import { sortBy, sumBy } from "lodash";
 
 export function filterCardsToAffordable<T>(
@@ -21,7 +14,7 @@ export function filterCardsToAffordable<T>(
 }
 
 export function removeActionFromAvailableActions(
-  { availableActions }: GameState,
+  { availableActions }: PlayerState,
   actionToRemove: PlayerActionEnum
 ): void {
   const index = availableActions.findIndex(

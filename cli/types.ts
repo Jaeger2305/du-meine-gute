@@ -60,22 +60,29 @@ export type AssignedEmployee = {
 };
 
 export type GameState = {
-  cardsInHand: Array<Card>;
   cardsInDeck: Array<Card>;
   cardsInDiscard: Array<Card>;
-  cardsInPlay: Array<Card>;
   winner: Player | null;
-  players: Array<Player>;
-  availableActions: Array<PlayerAction>;
+  players: Array<PlayerState>;
   availableEmployees: Array<Employee>;
-  employees: Array<Employee>;
-  assignedEmployees: Array<AssignedEmployee>;
-  resources: Array<Resource>;
   reservedCards: Array<Card>; // cards which have been removed from the normal draw/discard loop. This is limited to cards which are used to represent resources.
-  reservedFactory: Card | null;
   marketCards: Array<Card>;
   score: number;
   isGameEnding?: boolean;
+};
+
+export type PlayerState = {
+  id: string;
+  playerNumber: number;
+  player: Player;
+  cardsInHand: Array<Card>;
+  cardsInPlay: Array<Card>;
+  availableActions: Array<PlayerAction>;
+  employees: Array<Employee>;
+  assignedEmployees: Array<AssignedEmployee>;
+  resources: Array<Resource>;
+  reservedFactory: Card | null;
+  score: number;
 };
 
 export enum ResourceType {

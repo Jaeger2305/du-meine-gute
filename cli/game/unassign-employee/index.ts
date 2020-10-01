@@ -3,6 +3,7 @@ import {
   AssignedEmployee,
   GameState,
   PlayerActionEnum,
+  PlayerState,
   Resource,
 } from "../../types";
 import {
@@ -12,18 +13,21 @@ import {
 } from "../utils";
 import { unassignWorker as serverUnassignWorker } from "../../local-server";
 
-export async function unassignEmployee(gameState: GameState): Promise<void> {
+export async function unassignEmployee(
+  gameState: GameState,
+  playerState: PlayerState
+): Promise<void> {
   // Filter employees to an affordable list
   const affordableUnassignments = filterCardsToAffordable<AssignedEmployee>(
-    gameState.assignedEmployees,
+    playerState.assignedEmployees,
     (card: AssignedEmployee) => card.unassignmentCost,
-    gameState.resources
+    playerState.resources
   );
 
   // Return early and remove action if no affordable assigned employees
   if (!affordableUnassignments.length)
     return removeActionFromAvailableActions(
-      gameState,
+      playerState,
       PlayerActionEnum.unassignEmployee
     );
 
@@ -47,7 +51,7 @@ export async function unassignEmployee(gameState: GameState): Promise<void> {
         type: "multiselect",
         message: `pick resources to spend`,
         name: "resources",
-        choices: gameState.resources
+        choices: playerState.resources
           .map((resource, index) => ({
             title: `${resource.type} - ${resource.value}`,
             value: { ...resource, originalIndex: index },
@@ -69,13 +73,14 @@ export async function unassignEmployee(gameState: GameState): Promise<void> {
     response: { assignedEmployees, availableActions, resources },
   } = serverUnassignWorker(
     gameState,
+    playerState,
     employeeChoice.employee,
     resourcesChoice.resources
   );
 
   // Update state with results
   // We should probably optimistically update, and if the response doesn't match, throw an error and restore from state.
-  gameState.assignedEmployees = assignedEmployees;
-  gameState.availableActions = availableActions;
-  gameState.resources = resources;
+  playerState.assignedEmployees = assignedEmployees;
+  playerState.availableActions = availableActions;
+  playerState.resources = resources;
 }

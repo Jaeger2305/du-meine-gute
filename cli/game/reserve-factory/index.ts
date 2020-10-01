@@ -1,13 +1,16 @@
 import * as prompts from "prompts";
-import { GameState, PlayerActionEnum, Card } from "../../types";
+import { GameState, PlayerActionEnum, Card, PlayerState } from "../../types";
 import { removeActionFromAvailableActions } from "../utils";
 import { reserveFactory as serverReserveFactory } from "../../local-server";
 
-export async function reserveFactory(gameState: GameState) {
+export async function reserveFactory(
+  gameState: GameState,
+  playerState: PlayerState
+) {
   // If no cards in hand, remove action
-  if (!gameState.cardsInHand.length)
+  if (!playerState.cardsInHand.length)
     return removeActionFromAvailableActions(
-      gameState,
+      playerState,
       PlayerActionEnum.reserveFactory
     );
 
@@ -16,7 +19,7 @@ export async function reserveFactory(gameState: GameState) {
     type: "select",
     message: `pick an card to reserve`,
     name: "card",
-    choices: gameState.cardsInHand.map((card) => ({
+    choices: playerState.cardsInHand.map((card) => ({
       title: card.name,
       value: card,
     })),
@@ -25,12 +28,12 @@ export async function reserveFactory(gameState: GameState) {
   // Reserve card for building
   const {
     response: { reservedFactory, cardsInHand, availableActions },
-  } = serverReserveFactory(gameState, cardChoice.card);
+  } = serverReserveFactory(gameState, playerState, cardChoice.card);
 
   // Update state with results
   // We should probably optimistically update, and if the response doesn't match, throw an error and restore from state.
-  gameState.reservedFactory = reservedFactory;
-  gameState.cardsInHand = cardsInHand;
-  gameState.availableActions = availableActions;
+  playerState.reservedFactory = reservedFactory;
+  playerState.cardsInHand = cardsInHand;
+  playerState.availableActions = availableActions;
   return;
 }

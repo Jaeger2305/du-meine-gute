@@ -3,18 +3,24 @@ import { produceGood } from "../../local-server";
 import {
   AssignedEmployee,
   GameState,
+  PlayerActionEnum,
+  PlayerState,
   Resource,
   ResourceType,
 } from "../../types";
 import { playerActions } from "../index";
+import { removeActionFromAvailableActions } from "../utils";
 import {
   checkOutstandingResources,
   fallbackProduction,
 } from "./production-utils";
 
-export async function produceAtFactory(gameState: GameState): Promise<void> {
+export async function produceAtFactory(
+  gameState: GameState,
+  playerState: PlayerState
+): Promise<void> {
   // Filter to fresh workers
-  const readyWorkers = gameState.assignedEmployees
+  const readyWorkers = playerState.assignedEmployees
     .map((factoryWorker, index) => ({ ...factoryWorker, index }))
     .filter((employee) => !employee.hasProduced);
 
@@ -33,7 +39,7 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
   // Copy initial market resources, and in play boosts
   const marketResources = [
     ...gameState.marketCards.map((card) => card.resource),
-    ...gameState.cardsInPlay
+    ...playerState.cardsInPlay
       .flatMap((card) => card.marketBoost)
       .filter(Boolean),
   ];
@@ -73,13 +79,15 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
       // This would help distinguish between when to retry the fallback production and when to mark as finished.
       const { fallbackSuccess, cardIndexesToDelete } = await fallbackProduction(
         requiredExtraResources,
-        gameState.cardsInHand,
+        playerState.cardsInHand,
         canUseMarketResources ? marketResources : [],
         factoryChoice.factoryWorker
       );
       cardIndexesToDelete.forEach((cardIndexToDelete) => {
-        gameState.cardsInDiscard.push(gameState.cardsInHand[cardIndexToDelete]);
-        gameState.cardsInHand.splice(cardIndexToDelete, 1);
+        gameState.cardsInDiscard.push(
+          playerState.cardsInHand[cardIndexToDelete]
+        );
+        playerState.cardsInHand.splice(cardIndexToDelete, 1);
       }); // it's not nice to mutate the game state here.
       canProduce = fallbackSuccess;
     }
@@ -95,6 +103,7 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
             inputResources[0].type === ResourceType.placeholder // If it's a placeholder, use whatever is in the market. This requires placeholders to be at the end, sorted earlier.
         );
         inputResources.shift();
+        // This breaks with multi players
         if (resourceIndex > -1) gameState.marketCards.splice(resourceIndex, 1); // it might not be found in case this was spared because the worker was efficient.
       }
 
@@ -115,11 +124,11 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
       producedResources.forEach((resource) => {
         ({
           response: {
-            resources: gameState.resources,
+            resources: playerState.resources,
             cardsInDiscard: gameState.cardsInDiscard,
             cardsInDeck: gameState.cardsInDeck,
           },
-        } = produceGood(gameState, resource));
+        } = produceGood(gameState, playerState, resource));
       });
 
       // If the assignment allows only one production and no chaining, production can no longer happen.
@@ -131,25 +140,22 @@ export async function produceAtFactory(gameState: GameState): Promise<void> {
   }
 
   // Indicate the worker has produced this round.
-  gameState.assignedEmployees[
+  playerState.assignedEmployees[
     factoryChoice.factoryWorker.index
   ].hasProduced = true;
   // Remove the assigned worker if free to do so
   if (factoryChoice.factoryWorker.unassignmentCost === 0) {
-    gameState.assignedEmployees.splice(factoryChoice.factoryWorker.index, 1);
+    playerState.assignedEmployees.splice(factoryChoice.factoryWorker.index, 1);
   }
 
   // if there are no more workers to produce at, remove the available step
   if (
-    !gameState.assignedEmployees.filter((employee) => !employee.hasProduced)
+    !playerState.assignedEmployees.filter((employee) => !employee.hasProduced)
       .length
   ) {
-    const indexOfProductionAction = gameState.availableActions.findIndex(
-      (action) => action.type === playerActions.produceAtFactory.type
+    removeActionFromAvailableActions(
+      playerState,
+      PlayerActionEnum.produceAtFactory
     );
-    if (indexOfProductionAction < 0)
-      throw new Error("We were expecting a production action here.");
-
-    gameState.availableActions.splice(indexOfProductionAction, 1);
   }
 }

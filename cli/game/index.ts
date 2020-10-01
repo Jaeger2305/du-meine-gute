@@ -5,23 +5,23 @@ import { reserveFactory } from "./reserve-factory";
 import { produceAtFactory } from "./production";
 import { hireWorker } from "./hire-worker";
 import { unassignEmployee } from "./unassign-employee";
-import { GameState, PlayerActionEnum } from "../types";
+import { GameState, PlayerActionEnum, PlayerState } from "../types";
 import { drawCard } from "../local-server";
 
 export const playerActions = {
   endStep: {
     type: PlayerActionEnum.endStep,
-    handler: (gameState: GameState) => {
-      gameState.availableActions = [];
+    handler: (gameState: GameState, playerState: PlayerState) => {
+      playerState.availableActions = [];
     },
   },
   drawCard: {
     type: PlayerActionEnum.drawCard,
-    handler: (gameState: GameState) => {
+    handler: (gameState: GameState, playerState: PlayerState) => {
       const {
         response: { cardsInDeck, cardsInHand, cardsInDiscard },
-      } = drawCard(gameState);
-      gameState.cardsInHand = cardsInHand;
+      } = drawCard(gameState, playerState);
+      playerState.cardsInHand = cardsInHand;
       gameState.cardsInDeck = cardsInDeck;
       gameState.cardsInDiscard = cardsInDiscard;
     },
@@ -58,19 +58,12 @@ export const playerActions = {
 
 export function newGame(): GameState {
   const gameState: GameState = {
-    cardsInHand: [],
     cardsInDeck: [],
     cardsInDiscard: [],
-    cardsInPlay: [],
     winner: null,
     players: [],
-    availableActions: [],
     availableEmployees: [],
-    employees: [],
-    assignedEmployees: [],
-    resources: [],
     reservedCards: [],
-    reservedFactory: null,
     marketCards: [],
     score: 0,
   };

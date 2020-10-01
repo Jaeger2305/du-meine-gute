@@ -1,6 +1,7 @@
 import * as prompts from "prompts";
 import {
   GameState,
+  PlayerState,
   ProductionEfficiency,
   PlayerActionEnum,
   Employee,
@@ -35,22 +36,25 @@ function getUnoccupiedFactories(
   );
 }
 
-export async function assignEmployee(gameState: GameState): Promise<void> {
+export async function assignEmployee(
+  gameState: GameState,
+  playerState: PlayerState
+): Promise<void> {
   // Filter the employees to those that haven't been assigned yet.
   const unassignedEmployees = getUnassignedEmployees(
-    gameState.employees,
-    gameState.assignedEmployees
+    playerState.employees,
+    playerState.assignedEmployees
   );
 
   const unoccupiedFactories = getUnoccupiedFactories(
-    gameState.assignedEmployees,
-    gameState.cardsInPlay
+    playerState.assignedEmployees,
+    playerState.cardsInPlay
   );
 
   // Return early if no employees or unoccupied factories, removing the action.
   if (!unassignedEmployees.length || !unoccupiedFactories.length)
     return removeActionFromAvailableActions(
-      gameState,
+      playerState,
       PlayerActionEnum.assignEmployee
     );
 
@@ -97,18 +101,21 @@ export async function assignEmployee(gameState: GameState): Promise<void> {
     response: { assignedEmployees },
   } = serverAssignEmployee(
     gameState,
+    playerState,
     employeeChoice.employee,
     efficiencyChoice.mode,
     cardChoice.card
   );
-  gameState.assignedEmployees = assignedEmployees;
+  playerState.assignedEmployees = assignedEmployees;
 
   if (
-    !getUnassignedEmployees(gameState.employees, gameState.assignedEmployees)
-      .length
+    !getUnassignedEmployees(
+      playerState.employees,
+      playerState.assignedEmployees
+    ).length
   ) {
     return removeActionFromAvailableActions(
-      gameState,
+      playerState,
       PlayerActionEnum.assignEmployee
     );
   }

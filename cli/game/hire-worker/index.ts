@@ -1,5 +1,10 @@
 import * as prompts from "prompts";
-import { Employee, GameState, PlayerActionEnum } from "../../types";
+import {
+  Employee,
+  GameState,
+  PlayerActionEnum,
+  PlayerState,
+} from "../../types";
 import {
   filterCardsToAffordable,
   removeActionFromAvailableActions,
@@ -8,16 +13,19 @@ import {
 import { hireWorker as serverHireWorker } from "../../local-server";
 import { differenceBy } from "lodash";
 
-export async function hireWorker(gameState: GameState): Promise<void> {
+export async function hireWorker(
+  gameState: GameState,
+  playerState: PlayerState
+): Promise<void> {
   // Filter cards to those that can be afforded
   const affordableCards = filterCardsToAffordable<Employee>(
     gameState.availableEmployees,
     (card: Employee) => card.cost,
-    gameState.resources
+    playerState.resources
   );
 
   // Filter cards according to their prerequisites
-  const factoryTypesInPlay = gameState.cardsInPlay.map(
+  const factoryTypesInPlay = playerState.cardsInPlay.map(
     (factory) => factory.resource
   );
   const availableCards = affordableCards.filter(
@@ -28,7 +36,7 @@ export async function hireWorker(gameState: GameState): Promise<void> {
   // Short circuit if nothing found
   if (!availableCards.length)
     return removeActionFromAvailableActions(
-      gameState,
+      playerState,
       PlayerActionEnum.hireWorker
     );
 
@@ -51,7 +59,7 @@ export async function hireWorker(gameState: GameState): Promise<void> {
     type: "multiselect",
     message: `pick resources to spend`,
     name: "resources",
-    choices: gameState.resources
+    choices: playerState.resources
       .map((resource, index) => ({
         title: `${resource.type} - ${resource.value}`,
         value: { ...resource, originalIndex: index },
@@ -65,13 +73,18 @@ export async function hireWorker(gameState: GameState): Promise<void> {
   // Submit to server
   const {
     response: { employees, availableEmployees, availableActions, resources },
-  } = serverHireWorker(gameState, cardChoice.card, resourcesChoice.resources);
+  } = serverHireWorker(
+    gameState,
+    playerState,
+    cardChoice.card,
+    resourcesChoice.resources
+  );
 
   // Update state with results
   // We should probably optimistically update, and if the response doesn't match, throw an error and restore from state.
-  gameState.employees = employees;
   gameState.availableEmployees = availableEmployees;
-  gameState.availableActions = availableActions;
-  gameState.resources = resources;
+  playerState.employees = employees;
+  playerState.availableActions = availableActions;
+  playerState.resources = resources;
   return;
 }

@@ -7,6 +7,7 @@ import {
   ProductionEfficiency,
   Resource,
   PlayerActionEnum,
+  PlayerState,
 } from "../types";
 import { bread, leather, coal } from "../resources";
 import { playerActions } from "../game";
@@ -39,7 +40,10 @@ type ServerResponse = {
  */
 function gameReady() {}
 
-export const roundSteps: Array<(gameState: GameState) => ServerResponse> = [
+export const roundSteps: Array<(
+  gameState: GameState,
+  playerState: PlayerState
+) => ServerResponse> = [
   startRound,
   draw,
   revealMarket,
@@ -56,8 +60,11 @@ export const roundSteps: Array<(gameState: GameState) => ServerResponse> = [
  * Returns valid actions that can be performed, specific for this round.
  * This is normally just an acknowledgement, as the players can't choose anything here.
  */
-function revealMarket(gameState: GameState): ServerResponse {
-  gameState.availableActions = [playerActions.endStep];
+function revealMarket(
+  gameState: GameState,
+  playerState: PlayerState
+): ServerResponse {
+  playerState.availableActions = [playerActions.endStep];
 
   const marketCards: Array<Card> = [];
 
@@ -76,7 +83,7 @@ function revealMarket(gameState: GameState): ServerResponse {
   return {
     response: {
       drawnCards: marketCards,
-      availableActions: gameState.availableActions,
+      availableActions: playerState.availableActions,
       marketCards: gameState.marketCards,
     },
   };
@@ -86,7 +93,10 @@ function revealMarket(gameState: GameState): ServerResponse {
  * Reveals a card from the deck after the user has requested drawing a card.
  * Returns the function to update the client game state
  */
-export function drawCard(gameState: GameState): ServerResponse {
+export function drawCard(
+  gameState: GameState,
+  playerState: PlayerState
+): ServerResponse {
   // If there are no cards to draw from, shuffle the discard.
   if (!gameState.cardsInDeck.length) {
     gameState.cardsInDeck = gameState.cardsInDiscard.slice().reverse();
@@ -95,20 +105,17 @@ export function drawCard(gameState: GameState): ServerResponse {
 
   // Draw the card
   const drawnCard = gameState.cardsInDeck.splice(0, 1);
-  gameState.cardsInHand.splice(0, 0, ...drawnCard);
+  playerState.cardsInHand.splice(0, 0, ...drawnCard);
 
   // Find the event and delete it
-  const drawCardActionIndex = gameState.availableActions.findIndex(
-    (a) => a.type === "drawCard"
-  );
-  gameState.availableActions.splice(drawCardActionIndex, 1);
+  removeActionFromAvailableActions(playerState, PlayerActionEnum.drawCard);
 
   // Send the response back
   const response = {
     drawnCard,
     cardsInDiscard: gameState.cardsInDiscard,
     cardsInDeck: gameState.cardsInDeck,
-    cardsInHand: gameState.cardsInHand,
+    cardsInHand: playerState.cardsInHand,
   };
   return {
     response,
@@ -117,6 +124,7 @@ export function drawCard(gameState: GameState): ServerResponse {
 
 export function produceGood(
   gameState: GameState,
+  playerState: PlayerState,
   resource: Resource
 ): ServerResponse {
   // If there are no cards to draw from, shuffle the discard.
@@ -128,13 +136,13 @@ export function produceGood(
   // Draw the card into the reserved card space
   const drawnCard = gameState.cardsInDeck.splice(0, 1);
   gameState.reservedCards.push(...drawnCard);
-  gameState.resources.push(resource);
+  playerState.resources.push(resource);
 
   // Send the response back
   const response = {
     cardsInDiscard: gameState.cardsInDiscard,
     cardsInDeck: gameState.cardsInDeck,
-    resources: gameState.resources,
+    resources: playerState.resources,
   };
   return {
     response,
@@ -147,6 +155,7 @@ export function produceGood(
  */
 export function buildFactory(
   gameState: GameState,
+  playerState: PlayerState,
   card: Card,
   resources: Array<Resource>
 ): ServerResponse {
@@ -154,8 +163,8 @@ export function buildFactory(
     gameState.cardsInDeck = gameState.cardsInDiscard.slice().reverse();
     gameState.cardsInDiscard = [];
   }
-  const playedCard = gameState.reservedFactory;
-  gameState.cardsInPlay.push(playedCard);
+  const playedCard = playerState.reservedFactory;
+  playerState.cardsInPlay.push(playedCard);
 
   // Unreserve cards and put them in the discard
   // The order shouldn't matter - they're unknown to all.
@@ -166,22 +175,22 @@ export function buildFactory(
   // Not efficient. But I'm not sure the server is responsible for this anyway.
   while (resources.length) {
     const resourceBeingDeleted = resources.pop();
-    const indexOfResourceToDelete = gameState.resources.findIndex(
+    const indexOfResourceToDelete = playerState.resources.findIndex(
       (gameResource) => gameResource.type === resourceBeingDeleted.type
     );
-    gameState.resources.splice(indexOfResourceToDelete, 1);
+    playerState.resources.splice(indexOfResourceToDelete, 1);
   }
 
   // Delete all events other than the end step
-  gameState.availableActions = [playerActions.endStep];
-  gameState.reservedFactory = null;
+  playerState.availableActions = [playerActions.endStep];
+  playerState.reservedFactory = null;
 
   const response = {
     playedCard,
-    cardsInPlay: gameState.cardsInPlay,
-    reservedFactory: gameState.reservedFactory,
-    availableActions: gameState.availableActions,
-    resources: gameState.resources,
+    cardsInPlay: playerState.cardsInPlay,
+    reservedFactory: playerState.reservedFactory,
+    availableActions: playerState.availableActions,
+    resources: playerState.resources,
   };
   return {
     response,
@@ -194,6 +203,7 @@ export function buildFactory(
  */
 export function hireWorker(
   gameState: GameState,
+  playerState: PlayerState,
   worker: Employee,
   resources: Array<Resource>
 ): ServerResponse {
@@ -201,7 +211,7 @@ export function hireWorker(
     (availableWorker) => availableWorker.name === worker.name
   );
   const hiredEmployee = gameState.availableEmployees.splice(employeeIndex, 1);
-  gameState.employees.push(...hiredEmployee);
+  playerState.employees.push(...hiredEmployee);
 
   // Unreserve cards and put them in the discard
   // The order shouldn't matter - they're unknown to all.
@@ -212,21 +222,21 @@ export function hireWorker(
   // Not efficient. But I'm not sure the server is responsible for this anyway.
   while (resources.length) {
     const resourceBeingDeleted = resources.pop();
-    const indexOfResourceToDelete = gameState.resources.findIndex(
+    const indexOfResourceToDelete = playerState.resources.findIndex(
       (gameResource) => gameResource.type === resourceBeingDeleted.type
     );
-    gameState.resources.splice(indexOfResourceToDelete, 1);
+    playerState.resources.splice(indexOfResourceToDelete, 1);
   }
 
   // Delete all events other than the end step
-  gameState.availableActions = [playerActions.endStep];
+  playerState.availableActions = [playerActions.endStep];
 
   const response = {
     playedCard: hiredEmployee,
-    employees: gameState.employees,
-    availableActions: gameState.availableActions,
+    employees: playerState.employees,
+    availableActions: playerState.availableActions,
     availableEmployees: gameState.availableEmployees,
-    resources: gameState.resources,
+    resources: playerState.resources,
   };
   return {
     response,
@@ -235,13 +245,14 @@ export function hireWorker(
 
 export function unassignWorker(
   gameState: GameState,
+  playerState: PlayerState,
   worker: AssignedEmployee,
   resources: Array<Resource>
 ): ServerResponse {
-  const employeeIndex = gameState.assignedEmployees.findIndex(
+  const employeeIndex = playerState.assignedEmployees.findIndex(
     (assignedWorker) => assignedWorker.name === worker.name
   );
-  gameState.assignedEmployees.splice(employeeIndex, 1);
+  playerState.assignedEmployees.splice(employeeIndex, 1);
 
   // Unreserve cards and put them in the discard
   // The order shouldn't matter - they're unknown to all.
@@ -252,19 +263,19 @@ export function unassignWorker(
   // Not efficient. But I'm not sure the server is responsible for this anyway.
   while (resources.length) {
     const resourceBeingDeleted = resources.pop();
-    const indexOfResourceToDelete = gameState.resources.findIndex(
+    const indexOfResourceToDelete = playerState.resources.findIndex(
       (gameResource) => gameResource.type === resourceBeingDeleted.type
     );
-    gameState.resources.splice(indexOfResourceToDelete, 1);
+    playerState.resources.splice(indexOfResourceToDelete, 1);
   }
 
   // Delete all events other than the end step
-  gameState.availableActions = [playerActions.endStep];
+  playerState.availableActions = [playerActions.endStep];
 
   const response = {
-    assignedEmployees: gameState.assignedEmployees,
-    availableActions: gameState.availableActions,
-    resources: gameState.resources,
+    assignedEmployees: playerState.assignedEmployees,
+    availableActions: playerState.availableActions,
+    resources: playerState.resources,
   };
   return {
     response,
@@ -297,18 +308,27 @@ function generateTestCards(): Array<Card> {
  * Returns valid actions that can be performed, which is just acknowledgements
  */
 export function setupGame(game: GameState): void {
+  game.cardsInDeck.push(...generateTestCards());
+  game.availableEmployees = [skilledApprentice, apprentice, master];
+
   const coalMines = [coalMineWheat, coalMineBrick, coalMineMetal, coalMineWool];
   const chosenCoalMine = coalMines[Math.floor(Math.random() * 4)];
-  game.cardsInPlay.push(chosenCoalMine, glassblower);
-  game.cardsInHand.push(office, tannery);
-  game.resources.push(bread, leather, bread, bread, leather, coal);
-  game.cardsInDeck.push(...generateTestCards());
-  game.players.push({
-    name: "test-player",
-  });
-  game.availableEmployees = [skilledApprentice, apprentice, master];
-  game.employees = [boss, master];
-  game.availableActions = [playerActions.endStep];
+  const players: Array<PlayerState> = [
+    {
+      id: "test-player-id-1",
+      playerNumber: 0,
+      employees: [boss, master],
+      cardsInHand: [office, tannery],
+      cardsInPlay: [chosenCoalMine, glassblower],
+      resources: [bread, leather, bread, bread, leather, coal],
+      availableActions: [playerActions.endStep],
+      assignedEmployees: [],
+      reservedFactory: null,
+      score: 0,
+      player: { name: "test-player-name-1" },
+    },
+  ];
+  game.players = players;
   return;
 }
 
@@ -316,15 +336,18 @@ export function setupGame(game: GameState): void {
  * Returns valid actions that can be performed, which is drawing 3 cards.
  * After drawing, the user is allowed to discard 2 cards as well, but that's appended after completing the drawing.
  */
-function startRound(gameState: GameState): ServerResponse {
-  gameState.availableActions = [
+function startRound(
+  gameState: GameState,
+  playerState: PlayerState
+): ServerResponse {
+  playerState.availableActions = [
     playerActions.discardCard,
     playerActions.endStep,
   ];
   gameState.marketCards = [];
   return {
     response: {
-      availableActions: gameState.availableActions,
+      availableActions: playerState.availableActions,
     },
   };
 }
@@ -333,17 +356,17 @@ function startRound(gameState: GameState): ServerResponse {
  * Returns valid actions that can be performed, which is drawing 3 cards.
  * After drawing, the user is allowed to discard 2 cards as well, but that's appended after completing the drawing.
  */
-function draw(gameState: GameState): ServerResponse {
+function draw(gameState: GameState, playerState: PlayerState): ServerResponse {
   const drawCardCount =
     2 +
     sum(
-      gameState.cardsInPlay.map((card) => card.boostDrawCount).filter(Boolean)
+      playerState.cardsInPlay.map((card) => card.boostDrawCount).filter(Boolean)
     );
   const drawCardActions = new Array(drawCardCount).fill(playerActions.drawCard);
-  gameState.availableActions = [...drawCardActions, playerActions.endStep];
+  playerState.availableActions = [...drawCardActions, playerActions.endStep];
   return {
     response: {
-      availableActions: gameState.availableActions,
+      availableActions: playerState.availableActions,
     },
   };
 }
@@ -352,34 +375,44 @@ function draw(gameState: GameState): ServerResponse {
  * Initiate the assignment step in the round
  * The returns valid actions that can be performed specific for this round.
  */
-function assignEmployees(gameState: GameState): ServerResponse {
-  gameState.availableActions = [
+function assignEmployees(
+  gameState: GameState,
+  playerState: PlayerState
+): ServerResponse {
+  playerState.availableActions = [
     playerActions.assignEmployee,
     playerActions.reserveFactory,
     playerActions.endStep,
   ];
   return {
     response: {
-      availableActions: gameState.availableActions,
+      availableActions: playerState.availableActions,
     },
   };
 }
 
-export function reserveFactory(gameState: GameState, factory: Card) {
-  const cardIndex = gameState.cardsInHand.findIndex(
+export function reserveFactory(
+  gameState: GameState,
+  playerState: PlayerState,
+  factory: Card
+) {
+  const cardIndex = playerState.cardsInHand.findIndex(
     (cardInHand) => cardInHand.name === factory.name
   );
-  gameState.cardsInHand.splice(cardIndex, 1);
+  playerState.cardsInHand.splice(cardIndex, 1);
 
-  gameState.reservedFactory = factory;
+  playerState.reservedFactory = factory;
 
   // Originally a client side util, but the whole local server here will likely be disposed/refactored once porting into NativeScript.
-  removeActionFromAvailableActions(gameState, PlayerActionEnum.reserveFactory);
+  removeActionFromAvailableActions(
+    playerState,
+    PlayerActionEnum.reserveFactory
+  );
   return {
     response: {
-      reservedFactory: gameState.reservedFactory,
-      cardsInHand: gameState.cardsInHand,
-      availableActions: gameState.availableActions,
+      reservedFactory: playerState.reservedFactory,
+      cardsInHand: playerState.cardsInHand,
+      availableActions: playerState.availableActions,
     },
   };
 }
@@ -390,6 +423,7 @@ export function reserveFactory(gameState: GameState, factory: Card) {
  */
 export function assignEmployee(
   gameState: GameState,
+  playerState: PlayerState,
   employee: Employee,
   mode: ProductionEfficiency,
   factory: Card
@@ -404,10 +438,10 @@ export function assignEmployee(
     mode,
     unassignmentCost: employee.unassignmentCost,
   };
-  gameState.assignedEmployees.push(assignedEmployee);
+  playerState.assignedEmployees.push(assignedEmployee);
   return {
     response: {
-      assignedEmployees: gameState.assignedEmployees,
+      assignedEmployees: playerState.assignedEmployees,
     },
   };
 }
@@ -423,14 +457,17 @@ export function assignEmployee(
  * This includes
  *  - produceAtFactory (for each factory with a worker assigned)
  */
-function produce(gameState: GameState): ServerResponse {
-  gameState.availableActions = [
+function produce(
+  gameState: GameState,
+  playerState: PlayerState
+): ServerResponse {
+  playerState.availableActions = [
     playerActions.produceAtFactory,
     playerActions.endStep,
   ];
   return {
     response: {
-      availableActions: gameState.availableActions,
+      availableActions: playerState.availableActions,
     },
   };
 }
@@ -444,8 +481,11 @@ function produce(gameState: GameState): ServerResponse {
  * Returns the valid actions that can be performed specific for this round.
  * This could include hiring a worker, building a factory, or skipping
  */
-function purchase(gameState: GameState): ServerResponse {
-  gameState.availableActions = [
+function purchase(
+  gameState: GameState,
+  playerState: PlayerState
+): ServerResponse {
+  playerState.availableActions = [
     playerActions.hireWorker,
     playerActions.unassignEmployee,
     playerActions.buildFactory,
@@ -453,7 +493,7 @@ function purchase(gameState: GameState): ServerResponse {
   ];
   return {
     response: {
-      availableActions: gameState.availableActions,
+      availableActions: playerState.availableActions,
     },
   };
 }
@@ -464,46 +504,53 @@ function purchase(gameState: GameState): ServerResponse {
  * Returns the valid actions that can be performed for this round.
  * Either acknowledge and a return to the startRound action, or nothing, meaning the game has ended and all they can do is leave.
  */
-function endRound(gameState: GameState): ServerResponse {
+function endRound(
+  gameState: GameState,
+  playerState: PlayerState
+): ServerResponse {
   const isGameEnd = gameState.isGameEnding; // if marked as game ending last round, mark as finished here.
-  gameState.isGameEnding = gameState.cardsInPlay.length >= 4;
-  gameState.availableActions = isGameEnd ? [] : [playerActions.endStep];
-  gameState.winner = isGameEnd ? gameState.players[0] : null;
+  gameState.isGameEnding = playerState.cardsInPlay.length >= 4;
+  playerState.availableActions = isGameEnd ? [] : [playerActions.endStep];
+  gameState.winner = isGameEnd ? playerState.player : null;
   const resourcesScore = Math.floor(
-    sum(gameState.resources.map((resource) => resource.value)) / 5
+    sum(playerState.resources.map((resource) => resource.value)) / 5
   );
-  const factoryScore = sum(gameState.cardsInPlay.map((card) => card.points));
+  const factoryScore = sum(playerState.cardsInPlay.map((card) => card.points));
   const employeeScore = sum(
-    gameState.employees.map((employee) => employee.points)
+    playerState.employees.map((employee) => employee.points)
   );
-  gameState.score = resourcesScore + factoryScore + employeeScore;
+  playerState.score = sum([resourcesScore, factoryScore, employeeScore]);
 
-  console.log("current score: ", gameState.score);
+  console.log("current score: ", playerState.score);
 
   // Reset worker production states
-  gameState.assignedEmployees = gameState.assignedEmployees.map((employee) => ({
-    ...employee,
-    hasProduced: false,
-  }));
-
-  // If at the end of the game, assign investors for free.
-  const assignedFactories = gameState.assignedEmployees.map(
-    (employee) => employee.assignment.name
-  );
-  const unassignedFactories = gameState.cardsInPlay.filter(
-    (card) => !assignedFactories.includes(card.name) && card.productionConfig
-  );
-  const investorAssignments: Array<AssignedEmployee> = unassignedFactories.map(
-    (factory, index) => ({
-      name: `investor ${index} - ${
-        factory.name
-      } - ${factory.productionConfig.output.join()}`,
-      mode: { productionCount: 1, resourceSparingCount: 0 },
-      unassignmentCost: 0,
-      assignment: factory,
+  playerState.assignedEmployees = playerState.assignedEmployees.map(
+    (employee) => ({
+      ...employee,
+      hasProduced: false,
     })
   );
-  gameState.assignedEmployees.push(...investorAssignments);
+
+  // If at the end of the game, assign investors for free.
+  if (gameState.isGameEnding) {
+    const assignedFactories = playerState.assignedEmployees.map(
+      (employee) => employee.assignment.name
+    );
+    const unassignedFactories = playerState.cardsInPlay.filter(
+      (card) => !assignedFactories.includes(card.name) && card.productionConfig
+    );
+    const investorAssignments: Array<AssignedEmployee> = unassignedFactories.map(
+      (factory, index) => ({
+        name: `investor ${index} - ${
+          factory.name
+        } - ${factory.productionConfig.output.join()}`,
+        mode: { productionCount: 1, resourceSparingCount: 0 },
+        unassignmentCost: 0,
+        assignment: factory,
+      })
+    );
+    playerState.assignedEmployees.push(...investorAssignments);
+  }
 
   // Discard the market
   gameState.cardsInDiscard.push(...gameState.marketCards);
@@ -511,8 +558,8 @@ function endRound(gameState: GameState): ServerResponse {
 
   return {
     response: {
-      assignedEmployees: gameState.assignedEmployees,
-      availableActions: gameState.availableActions,
+      assignedEmployees: playerState.assignedEmployees,
+      availableActions: playerState.availableActions,
       winner: gameState.winner,
     },
   };
