@@ -60,6 +60,7 @@ export type AssignedEmployee = {
 };
 
 export type GameState = {
+  config: GameConfig;
   cardsInDeck: Array<Card>;
   cardsInDiscard: Array<Card>;
   winner: Player | null;
@@ -69,6 +70,14 @@ export type GameState = {
   marketCards: Array<Card>;
   score: number;
   isGameEnding?: boolean;
+};
+
+// A good place to add flexible features like hand count or play card limit in the future.
+export type GameConfig = {
+  marketSuns: number; // standard rules should be 3. Cards are drawn into the market until the number of suns matches this value.
+  buildCountForEndGame: number; // standard rules should be 8. Once 8 cards are built, the end game round is triggered
+  drawCount: number; // standard rules should be 2. Affects how many cards are able to be drawn at the beginning of the round.
+  pointsPerResource: number; // standard rules should be 0.25. This means with total resource value of 37, a floored 7 points will be awarded.
 };
 
 export type PlayerState = {

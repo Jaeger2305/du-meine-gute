@@ -2,6 +2,12 @@ import { GameState } from "../types";
 import { emptyPlayerState } from "./player";
 
 export const emptyGame: GameState = {
+  config: {
+    marketSuns: 3,
+    buildCountForEndGame: 8,
+    drawCount: 2,
+    pointsPerResource: 0.25,
+  },
   cardsInDeck: [],
   cardsInDiscard: [],
   winner: null,

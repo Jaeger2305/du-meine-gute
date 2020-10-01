@@ -69,7 +69,10 @@ function revealMarket(
   const marketCards: Array<Card> = [];
 
   // Draw cards until 3 suns.
-  while (marketCards.filter((card) => card.isSunny).length < 1) {
+  while (
+    marketCards.filter((card) => card.isSunny).length <
+    gameState.config.marketSuns
+  ) {
     // If no cards, shuffle discard
     if (!gameState.cardsInDeck.length) {
       gameState.cardsInDeck = gameState.cardsInDiscard.slice();
@@ -358,7 +361,7 @@ function startRound(
  */
 function draw(gameState: GameState, playerState: PlayerState): ServerResponse {
   const drawCardCount =
-    2 +
+    gameState.config.drawCount +
     sum(
       playerState.cardsInPlay.map((card) => card.boostDrawCount).filter(Boolean)
     );
@@ -509,11 +512,13 @@ function endRound(
   playerState: PlayerState
 ): ServerResponse {
   const isGameEnd = gameState.isGameEnding; // if marked as game ending last round, mark as finished here.
-  gameState.isGameEnding = playerState.cardsInPlay.length >= 4;
+  gameState.isGameEnding =
+    playerState.cardsInPlay.length >= gameState.config.buildCountForEndGame;
   playerState.availableActions = isGameEnd ? [] : [playerActions.endStep];
   gameState.winner = isGameEnd ? playerState.player : null;
   const resourcesScore = Math.floor(
-    sum(playerState.resources.map((resource) => resource.value)) / 5
+    sum(playerState.resources.map((resource) => resource.value)) *
+      gameState.config.pointsPerResource
   );
   const factoryScore = sum(playerState.cardsInPlay.map((card) => card.points));
   const employeeScore = sum(

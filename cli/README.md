@@ -39,7 +39,7 @@ Integrating the server side tasks
 
 Also, there are some quality of life tasks:
 
-- [ ] pull game options into a config (suns require for market, victory building count, starting cost, starting cards, etc.)
+- [x] pull game options into a config (suns require for market, victory building count, starting cost, starting cards, etc.)
 - [ ] tests
 - [ ] refactoring player actions into separate files
 - [ ] abstract card shuffle to separate function
