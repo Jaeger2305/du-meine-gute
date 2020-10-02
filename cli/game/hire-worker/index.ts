@@ -12,6 +12,7 @@ import {
 } from "../utils";
 import { hireWorker as serverHireWorker } from "../../local-server";
 import { differenceBy } from "lodash";
+import { payForWorker } from "./hire-worker-utils";
 
 export async function hireWorker(
   gameState: GameState,
@@ -70,21 +71,19 @@ export async function hireWorker(
   // Verify resources are not under or wasted
   if (!verifyResources(resourcesChoice.resources, cardChoice.card.cost)) return;
 
-  // Submit to server
-  const {
-    response: { employees, availableEmployees, availableActions, resources },
-  } = serverHireWorker(
+  // Notify server
+  serverHireWorker(
     gameState,
     playerState,
     cardChoice.card,
     resourcesChoice.resources
   );
 
-  // Update state with results
-  // We should probably optimistically update, and if the response doesn't match, throw an error and restore from state.
-  gameState.availableEmployees = availableEmployees;
-  playerState.employees = employees;
-  playerState.availableActions = availableActions;
-  playerState.resources = resources;
-  return;
+  // Optimistically update
+  payForWorker(
+    gameState,
+    playerState,
+    cardChoice.card,
+    resourcesChoice.resources
+  );
 }

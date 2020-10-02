@@ -1,7 +1,14 @@
-import { difference, differenceBy, intersection } from "lodash";
+import { differenceBy, intersection } from "lodash";
 import * as prompts from "prompts";
 import { placeholder } from "../../resources";
-import { Resource, Card, AssignedEmployee, ResourceType } from "../../types";
+import {
+  Resource,
+  Card,
+  AssignedEmployee,
+  ResourceType,
+  GameState,
+  PlayerState,
+} from "../../types";
 
 export function checkOutstandingResources(
   requiredResources: Array<Resource>,
@@ -182,4 +189,22 @@ export async function fallbackProduction(
     .sort()
     .reverse();
   return { fallbackSuccess: true, cardIndexesToDelete };
+}
+
+export function produceGood(
+  { cardsInDeck, cardsInDiscard, reservedCards }: GameState,
+  { resources }: PlayerState,
+  resource: Resource
+): void {
+  // If there are no cards to draw from, shuffle the discard.
+  if (!cardsInDeck.length) {
+    cardsInDeck.push(
+      ...cardsInDiscard.splice(0, cardsInDiscard.length).reverse()
+    );
+  }
+
+  // Draw the card into the reserved card space
+  const drawnCard = cardsInDeck.splice(0, 1);
+  reservedCards.push(...drawnCard);
+  resources.push(resource);
 }

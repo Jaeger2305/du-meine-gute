@@ -96,9 +96,9 @@ export async function assignEmployee(
     })),
   });
 
-  // No error checking
+  // Validate with the server
   const {
-    response: { assignedEmployees },
+    response: { isOK, resetState },
   } = serverAssignEmployee(
     gameState,
     playerState,
@@ -106,7 +106,16 @@ export async function assignEmployee(
     efficiencyChoice.mode,
     cardChoice.card
   );
-  playerState.assignedEmployees = assignedEmployees;
+  if (!isOK) {
+    Object.assign(gameState, resetState);
+  }
+  const assignedEmployee: AssignedEmployee = {
+    assignment: cardChoice.card,
+    name: employeeChoice.employee.name,
+    mode: efficiencyChoice.mode,
+    unassignmentCost: employeeChoice.employee.unassignmentCost,
+  };
+  playerState.assignedEmployees.push(assignedEmployee);
 
   if (
     !getUnassignedEmployees(

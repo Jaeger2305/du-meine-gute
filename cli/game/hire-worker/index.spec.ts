@@ -3,10 +3,14 @@ const mockActions = {
   verifyResources: jest.fn(),
   removeActionFromAvailableActions: jest.fn(),
 };
+const mockUtils = {
+  payForWorker: jest.fn(),
+};
 const mockServerActions = {
   hireWorker: jest.fn(),
 };
 jest.doMock("../utils", () => mockActions);
+jest.doMock("./hire-worker-utils", () => mockUtils);
 jest.doMock("../../local-server", () => mockServerActions);
 
 import * as prompts from "prompts";
@@ -19,6 +23,7 @@ import { defaultGame } from "../../__mocks__/game";
 beforeEach(() => {
   Object.values(mockActions).forEach((mock) => mock.mockClear());
   Object.values(mockServerActions).forEach((mock) => mock.mockClear());
+  Object.values(mockUtils).forEach((mock) => mock.mockClear());
 });
 
 describe("hire worker", () => {
@@ -43,11 +48,14 @@ describe("hire worker", () => {
     );
     mockServerActions.hireWorker.mockReturnValue({
       response: {
-        employees: [apprentice],
-        availableEmployees: [],
-        availableActions: [playerActions.endStep],
-        resources: [coal, coal],
+        isOK: true,
       },
+    });
+    mockUtils.payForWorker.mockImplementation(() => {
+      player.employees = [apprentice];
+      player.availableActions = [playerActions.endStep];
+      player.resources = [coal, coal];
+      game.availableEmployees = [];
     });
 
     // Act
@@ -79,11 +87,14 @@ describe("hire worker", () => {
     );
     mockServerActions.hireWorker.mockReturnValue({
       response: {
-        employees: [apprentice],
-        availableEmployees: [],
-        availableActions: [playerActions.endStep],
-        resources: [bread, coal],
+        isOK: true,
       },
+    });
+    mockUtils.payForWorker.mockImplementation(() => {
+      player.employees = [apprentice];
+      player.availableActions = [playerActions.endStep];
+      player.resources = [bread, coal];
+      game.availableEmployees = [];
     });
 
     // Act
@@ -113,11 +124,14 @@ describe("hire worker", () => {
     );
     mockServerActions.hireWorker.mockReturnValue({
       response: {
-        employees: [apprentice],
-        availableEmployees: [],
-        availableActions: [playerActions.endStep],
-        resources: [coal, coal],
+        isOK: true,
       },
+    });
+    mockUtils.payForWorker.mockImplementation(() => {
+      player.employees = [apprentice];
+      player.availableActions = [playerActions.endStep];
+      player.resources = [coal, coal];
+      game.availableEmployees = [];
     });
 
     // Act
@@ -154,11 +168,7 @@ describe("hire worker", () => {
     );
     mockServerActions.hireWorker.mockReturnValue({
       response: {
-        playedCard: null,
-        employees: [],
-        availableEmployees: [],
-        availableActions: [playerActions.endStep],
-        resources: [coal, coal],
+        isOK: true,
       },
     });
 
@@ -197,11 +207,14 @@ describe("hire worker", () => {
     );
     mockServerActions.hireWorker.mockReturnValue({
       response: {
-        employees: [apprentice],
-        availableEmployees: [],
-        availableActions: [playerActions.endStep],
-        resources: [coal, coal],
+        isOK: true,
       },
+    });
+    mockUtils.payForWorker.mockImplementation(() => {
+      player.employees = [apprentice];
+      player.availableActions = [playerActions.endStep];
+      player.resources = [coal, coal];
+      game.availableEmployees = [];
     });
 
     await hireWorker(game, player);

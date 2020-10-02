@@ -1,5 +1,5 @@
 import * as prompts from "prompts";
-import { produceGood } from "../../local-server";
+import { produceGood as serverProduceGood } from "../../local-server";
 import {
   AssignedEmployee,
   GameState,
@@ -8,11 +8,11 @@ import {
   Resource,
   ResourceType,
 } from "../../types";
-import { playerActions } from "../index";
 import { removeActionFromAvailableActions } from "../utils";
 import {
   checkOutstandingResources,
   fallbackProduction,
+  produceGood,
 } from "./production-utils";
 
 export async function produceAtFactory(
@@ -120,15 +120,9 @@ export async function produceAtFactory(
         .fill(factoryChoice.factoryWorker.assignment.productionConfig.output)
         .flat();
       // Draw card from deck to represent the resource
-      producedResources.forEach((resource) => {
-        ({
-          response: {
-            resources: playerState.resources,
-            cardsInDiscard: gameState.cardsInDiscard,
-            cardsInDeck: gameState.cardsInDeck,
-          },
-        } = produceGood(gameState, playerState, resource));
-      });
+      producedResources.forEach((resource) =>
+        produceGood(gameState, playerState, resource)
+      );
 
       // If the assignment allows only one production and no chaining, production can no longer happen.
       if (!factoryChoice.factoryWorker.assignment.productionConfig.chainInput)

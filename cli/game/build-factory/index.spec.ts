@@ -6,8 +6,12 @@ const mockActions = {
 const mockServerActions = {
   buildFactory: jest.fn(),
 };
+const mockUtils = {
+  payForFactory: jest.fn(),
+};
 jest.doMock("../utils", () => mockActions);
 jest.doMock("../../local-server", () => mockServerActions);
+jest.doMock("./build-factory-utils", () => mockUtils);
 
 import * as prompts from "prompts";
 import { buildFactory } from "./index";
@@ -19,6 +23,7 @@ import { defaultGame } from "../../__mocks__/game";
 beforeEach(() => {
   Object.values(mockActions).forEach((mock) => mock.mockClear());
   Object.values(mockServerActions).forEach((mock) => mock.mockClear());
+  Object.values(mockUtils).forEach((mock) => mock.mockClear());
 });
 
 describe("build factory", () => {
@@ -44,12 +49,14 @@ describe("build factory", () => {
     );
     mockServerActions.buildFactory.mockReturnValue({
       response: {
-        playedCard: bakery,
-        cardsInPlay: [bakery],
-        reservedFactory: null,
-        availableActions: [playerActions.endStep],
-        resources: [coal, coal],
+        isOK: true,
       },
+    });
+    mockUtils.payForFactory.mockImplementation(() => {
+      player.cardsInPlay = [bakery];
+      player.reservedFactory = null;
+      player.availableActions = [playerActions.endStep];
+      player.resources = [coal, coal];
     });
 
     // Act
@@ -82,12 +89,14 @@ describe("build factory", () => {
     );
     mockServerActions.buildFactory.mockReturnValue({
       response: {
-        playedCard: bakery,
-        cardsInPlay: [bakery],
-        reservedFactory: null,
-        availableActions: [playerActions.endStep],
-        resources: [bread, coal],
+        isOK: true,
       },
+    });
+    mockUtils.payForFactory.mockImplementation(() => {
+      player.cardsInPlay = [bakery];
+      player.reservedFactory = null;
+      player.availableActions = [playerActions.endStep];
+      player.resources = [bread, coal];
     });
 
     // Act
@@ -117,12 +126,14 @@ describe("build factory", () => {
     );
     mockServerActions.buildFactory.mockReturnValue({
       response: {
-        playedCard: bakery,
-        cardsInPlay: [bakery],
-        reservedFactory: null,
-        availableActions: [playerActions.endStep],
-        resources: [coal, coal],
+        isOK: true,
       },
+    });
+    mockUtils.payForFactory.mockImplementation(() => {
+      player.cardsInPlay = [bakery];
+      player.reservedFactory = null;
+      player.availableActions = [playerActions.endStep];
+      player.resources = [coal, coal];
     });
 
     // Act
@@ -202,12 +213,14 @@ describe("build factory", () => {
     );
     mockServerActions.buildFactory.mockReturnValue({
       response: {
-        playedCard: bakery,
-        cardsInPlay: [bakery],
-        reservedFactory: null,
-        availableActions: [playerActions.endStep],
-        resources: [coal, coal],
+        isOK: true,
       },
+    });
+    mockUtils.payForFactory.mockImplementation(() => {
+      player.cardsInPlay = [bakery];
+      player.reservedFactory = null;
+      player.availableActions = [playerActions.endStep];
+      player.resources = [coal, coal];
     });
 
     await buildFactory(game, player);

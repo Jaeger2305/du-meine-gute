@@ -18,23 +18,32 @@ Inside the game folder, there is a loop waiting for user input.
 
 Once the CLI starts, the server populates it with available actions for the player to take.
 
-Each player action is configured by the current gameState, calling the local-server function to modify and sync the state.
+Each player action is configured by the current gameState, this is optimistically mutating the data on the client side.
 
 When there are no more actions, the server will send more available actions, effectively ticking over to the next round.
 
-The client uses the server response when something is hidden information, like what's in the deck, or another player's hand.
+The client should use or await the server response when something is hidden information, like what's in the deck, or another player's hand.
 
-The idea is that the client controls most of the state, and sends messages to sync up to the server.
-The server can restore the client in case the connection is dropped.
+The idea is that the client controls most of the state, and sends messages to sync up to the server / communicate those updates to other players
+In case of connection dropping, or failed validation, the server can restore the client and dismiss any messages sent after the point of failure.
 
 ## TODO
 
+Next
+
+- [x] remove request response inside of playcard, hire worker, etc. These are all known quantities and can be done optimistically
+- [ ] route requests to local or remote server depending on mode (stored in game state)
+- [ ] refactor shuffle function
+- [ ] refactor payment function (worker vs factory)
+- [ ] split out server requests/validation into separate files
+
 Integrating the server side tasks
 
+- [ ] sort out server request/response issue. It should only return valid/invalid, and rollback if invalid. Ideally, when working locally vs remotely, it should call the same service.
 - [ ] allow multiple players in clientside types/architecture
 - [ ] allow serverside verification/checkpoints/reversions
 - [ ] ensuring clear separation of server and client
-- [ ] allow hidden information from other players
+- [ ] allow hidden information from other players, and the server (ie when drawing cards/shuffle deck)
 - [ ] convert from server state to point in time client state
 
 Also, there are some quality of life tasks:

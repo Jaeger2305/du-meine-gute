@@ -11,6 +11,7 @@ import {
   removeActionFromAvailableActions,
   verifyResources,
 } from "../utils";
+import { unassignWorker as clientUnassignWorker } from "./unassign-employee-utils";
 import { unassignWorker as serverUnassignWorker } from "../../local-server";
 
 export async function unassignEmployee(
@@ -68,19 +69,19 @@ export async function unassignEmployee(
   )
     return;
 
-  // Submit to server
-  const {
-    response: { assignedEmployees, availableActions, resources },
-  } = serverUnassignWorker(
+  // Notify to server
+  serverUnassignWorker(
     gameState,
     playerState,
     employeeChoice.employee,
     resourcesChoice.resources
   );
 
-  // Update state with results
-  // We should probably optimistically update, and if the response doesn't match, throw an error and restore from state.
-  playerState.assignedEmployees = assignedEmployees;
-  playerState.availableActions = availableActions;
-  playerState.resources = resources;
+  // Optimistically update client state
+  clientUnassignWorker(
+    gameState,
+    playerState,
+    employeeChoice.employee,
+    resourcesChoice.resources
+  );
 }

@@ -1,6 +1,7 @@
 const mockActions = {
   checkOutstandingResources: jest.fn(),
   fallbackProduction: jest.fn().mockResolvedValue({}),
+  produceGood: jest.fn(),
 };
 const mockServerActions = {
   produceGood: jest.fn(),
@@ -23,6 +24,7 @@ import {
 
 beforeEach(() => {
   Object.values(mockActions).forEach((mock) => mock.mockClear());
+  Object.values(mockServerActions).forEach((mock) => mock.mockClear());
 });
 
 describe("produce at factory", () => {
@@ -48,10 +50,13 @@ describe("produce at factory", () => {
     });
     mockServerActions.produceGood.mockReturnValue({
       response: {
-        cardsInDiscard: [],
-        cardsInDeck: [],
-        resources: [bread],
+        isOK: true,
       },
+    });
+    mockActions.produceGood.mockImplementation(() => {
+      player.resources = [bread];
+      game.cardsInDeck = [];
+      game.cardsInDiscard = [];
     });
     await produceAtFactory(game, player);
     expect(player.resources).toEqual([bread]);
@@ -76,6 +81,16 @@ describe("produce at factory", () => {
       requiredExtraResources: [wheat],
     });
     prompts.inject([factoryWorker]);
+    mockServerActions.produceGood.mockReturnValue({
+      response: {
+        isOK: true,
+      },
+    });
+    mockActions.produceGood.mockImplementation(() => {
+      player.resources = [bread];
+      game.cardsInDeck = [];
+      game.cardsInDiscard = [];
+    });
     await produceAtFactory(game, player);
     expect(player.resources).toEqual([bread]);
   });
@@ -108,10 +123,13 @@ describe("produce at factory", () => {
     });
     mockServerActions.produceGood.mockReturnValue({
       response: {
-        cardsInDiscard: [bakery],
-        cardsInDeck: [],
-        resources: [bread],
+        isOK: true,
       },
+    });
+    mockActions.produceGood.mockImplementation(() => {
+      player.resources = [bread];
+      game.cardsInDeck = [];
+      game.cardsInDiscard = [bakery];
     });
     await produceAtFactory(game, player);
     expect(player.resources).toEqual([bread]);
@@ -164,10 +182,13 @@ describe("produce at factory", () => {
     });
     mockServerActions.produceGood.mockReturnValue({
       response: {
-        cardsInDiscard: [],
-        cardsInDeck: [],
-        resources: [bread, bread, bread],
+        isOK: true,
       },
+    });
+    mockActions.produceGood.mockImplementation(() => {
+      player.resources = [bread, bread, bread];
+      game.cardsInDeck = [];
+      game.cardsInDiscard = [];
     });
     await produceAtFactory(game, player);
     expect(player.resources).toEqual([bread, bread, bread]);
@@ -222,10 +243,13 @@ describe("produce at factory", () => {
     });
     mockServerActions.produceGood.mockReturnValue({
       response: {
-        cardsInDiscard: [],
-        cardsInDeck: [],
-        resources: [bread, bread, bread, bread, bread],
+        isOK: true,
       },
+    });
+    mockActions.produceGood.mockImplementation(() => {
+      player.resources = [bread, bread, bread, bread, bread];
+      game.cardsInDeck = [];
+      game.cardsInDiscard = [];
     });
     await produceAtFactory(game, player);
     expect(player.resources).toEqual([bread, bread, bread, bread, bread]);
@@ -276,11 +300,15 @@ describe("produce at factory", () => {
 
     mockServerActions.produceGood.mockReturnValue({
       response: {
-        cardsInDiscard: [bakery],
-        cardsInDeck: [],
-        resources: [bread, bread],
+        isOK: true,
       },
     });
+    mockActions.produceGood.mockImplementation(() => {
+      player.resources = [bread, bread];
+      game.cardsInDeck = [];
+      game.cardsInDiscard = [bakery];
+    });
+
     await produceAtFactory(game, player);
     expect(player.resources).toEqual([bread, bread]);
   });
@@ -330,10 +358,13 @@ describe("produce at factory", () => {
 
     mockServerActions.produceGood.mockReturnValue({
       response: {
-        cardsInDiscard: [bakery],
-        cardsInDeck: [],
-        resources: [bread, bread, bread],
+        isOK: true,
       },
+    });
+    mockActions.produceGood.mockImplementation(() => {
+      player.resources = [bread, bread, bread];
+      game.cardsInDeck = [];
+      game.cardsInDiscard = [bakery];
     });
     await produceAtFactory(game, player);
     expect(player.resources).toEqual([bread, bread, bread]);
@@ -373,10 +404,13 @@ describe("produce at factory", () => {
 
     mockServerActions.produceGood.mockReturnValue({
       response: {
-        cardsInDiscard: [],
-        cardsInDeck: [],
-        resources: [bread],
+        isOK: true,
       },
+    });
+    mockActions.produceGood.mockImplementation(() => {
+      player.resources = [bread];
+      game.cardsInDeck = [];
+      game.cardsInDiscard = [];
     });
     await produceAtFactory(game, player);
     expect(player.resources).toEqual([bread]);

@@ -1,12 +1,13 @@
 import * as prompts from "prompts";
 import { GameState, PlayerActionEnum, Card, PlayerState } from "../../types";
 import { removeActionFromAvailableActions } from "../utils";
+import { reserveFactory as clientReserveFactory } from "./reserve-factory-utils";
 import { reserveFactory as serverReserveFactory } from "../../local-server";
 
 export async function reserveFactory(
   gameState: GameState,
   playerState: PlayerState
-) {
+): Promise<void> {
   // If no cards in hand, remove action
   if (!playerState.cardsInHand.length)
     return removeActionFromAvailableActions(
@@ -25,15 +26,9 @@ export async function reserveFactory(
     })),
   });
 
-  // Reserve card for building
-  const {
-    response: { reservedFactory, cardsInHand, availableActions },
-  } = serverReserveFactory(gameState, playerState, cardChoice.card);
+  // Notify server of choice
+  serverReserveFactory(gameState, playerState, cardChoice.card);
 
-  // Update state with results
-  // We should probably optimistically update, and if the response doesn't match, throw an error and restore from state.
-  playerState.reservedFactory = reservedFactory;
-  playerState.cardsInHand = cardsInHand;
-  playerState.availableActions = availableActions;
-  return;
+  // Optimistically update state with results
+  clientReserveFactory(playerState, cardChoice.card);
 }

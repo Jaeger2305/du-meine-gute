@@ -5,6 +5,7 @@ import {
   removeActionFromAvailableActions,
   verifyResources,
 } from "../utils";
+import { payForFactory } from "./build-factory-utils";
 import { buildFactory as serverBuildFactory } from "../../local-server";
 
 export async function buildFactory(
@@ -55,21 +56,11 @@ export async function buildFactory(
   // Verify resources are not under or wasted
   if (!verifyResources(resourcesChoice.resources, cardChoice.card.cost)) return;
 
-  // Submit to server
-  const {
-    response: { cardsInPlay, reservedFactory, availableActions, resources },
-  } = serverBuildFactory(
-    gameState,
-    playerState,
-    cardChoice.card,
-    resourcesChoice.resources
-  );
+  // Notify server
+  serverBuildFactory(gameState, playerState, resourcesChoice.resources);
 
-  // Update state with results
-  // We should probably optimistically update, and if the response doesn't match, throw an error and restore from state.
-  playerState.cardsInPlay = cardsInPlay;
-  playerState.reservedFactory = reservedFactory;
-  playerState.availableActions = availableActions;
-  playerState.resources = resources;
+  // Optimistically update
+  payForFactory(gameState, playerState, resourcesChoice.resources);
+  playerState.reservedFactory = null;
   return;
 }

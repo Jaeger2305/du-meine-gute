@@ -189,3 +189,7 @@ describe("check outstanding resources", () => {
     expect(result.requiredExtraResources).toEqual([placeholder, placeholder]);
   });
 });
+
+describe("produce good", () => {
+  xit("should test produce good logic", () => {});
+});

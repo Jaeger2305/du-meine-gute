@@ -130,25 +130,9 @@ export function produceGood(
   playerState: PlayerState,
   resource: Resource
 ): ServerResponse {
-  // If there are no cards to draw from, shuffle the discard.
-  if (!gameState.cardsInDeck.length) {
-    gameState.cardsInDeck = gameState.cardsInDiscard.slice().reverse();
-    gameState.cardsInDiscard = [];
-  }
-
-  // Draw the card into the reserved card space
-  const drawnCard = gameState.cardsInDeck.splice(0, 1);
-  gameState.reservedCards.push(...drawnCard);
-  playerState.resources.push(resource);
-
-  // Send the response back
-  const response = {
-    cardsInDiscard: gameState.cardsInDiscard,
-    cardsInDeck: gameState.cardsInDeck,
-    resources: playerState.resources,
-  };
+  console.warn("No validation of goods production by the server");
   return {
-    response,
+    response: { isOK: true },
   };
 }
 
@@ -159,44 +143,11 @@ export function produceGood(
 export function buildFactory(
   gameState: GameState,
   playerState: PlayerState,
-  card: Card,
   resources: Array<Resource>
 ): ServerResponse {
-  if (!gameState.cardsInDeck.length) {
-    gameState.cardsInDeck = gameState.cardsInDiscard.slice().reverse();
-    gameState.cardsInDiscard = [];
-  }
-  const playedCard = playerState.reservedFactory;
-  playerState.cardsInPlay.push(playedCard);
-
-  // Unreserve cards and put them in the discard
-  // The order shouldn't matter - they're unknown to all.
-  const usedGoods = gameState.reservedCards.splice(0, resources.length);
-  gameState.cardsInDiscard.push(...usedGoods);
-
-  // Find the resources and delete them.
-  // Not efficient. But I'm not sure the server is responsible for this anyway.
-  while (resources.length) {
-    const resourceBeingDeleted = resources.pop();
-    const indexOfResourceToDelete = playerState.resources.findIndex(
-      (gameResource) => gameResource.type === resourceBeingDeleted.type
-    );
-    playerState.resources.splice(indexOfResourceToDelete, 1);
-  }
-
-  // Delete all events other than the end step
-  playerState.availableActions = [playerActions.endStep];
-  playerState.reservedFactory = null;
-
-  const response = {
-    playedCard,
-    cardsInPlay: playerState.cardsInPlay,
-    reservedFactory: playerState.reservedFactory,
-    availableActions: playerState.availableActions,
-    resources: playerState.resources,
-  };
+  console.warn("No validation of build factory by the server");
   return {
-    response,
+    response: { isOK: true },
   };
 }
 
@@ -210,39 +161,9 @@ export function hireWorker(
   worker: Employee,
   resources: Array<Resource>
 ): ServerResponse {
-  const employeeIndex = gameState.availableEmployees.findIndex(
-    (availableWorker) => availableWorker.name === worker.name
-  );
-  const hiredEmployee = gameState.availableEmployees.splice(employeeIndex, 1);
-  playerState.employees.push(...hiredEmployee);
-
-  // Unreserve cards and put them in the discard
-  // The order shouldn't matter - they're unknown to all.
-  const usedGoods = gameState.reservedCards.splice(0, resources.length);
-  gameState.cardsInDiscard.push(...usedGoods);
-
-  // Find the resources and delete them.
-  // Not efficient. But I'm not sure the server is responsible for this anyway.
-  while (resources.length) {
-    const resourceBeingDeleted = resources.pop();
-    const indexOfResourceToDelete = playerState.resources.findIndex(
-      (gameResource) => gameResource.type === resourceBeingDeleted.type
-    );
-    playerState.resources.splice(indexOfResourceToDelete, 1);
-  }
-
-  // Delete all events other than the end step
-  playerState.availableActions = [playerActions.endStep];
-
-  const response = {
-    playedCard: hiredEmployee,
-    employees: playerState.employees,
-    availableActions: playerState.availableActions,
-    availableEmployees: gameState.availableEmployees,
-    resources: playerState.resources,
-  };
+  console.warn("No validation of hiring worker");
   return {
-    response,
+    response: { isOK: true },
   };
 }
 
@@ -252,36 +173,9 @@ export function unassignWorker(
   worker: AssignedEmployee,
   resources: Array<Resource>
 ): ServerResponse {
-  const employeeIndex = playerState.assignedEmployees.findIndex(
-    (assignedWorker) => assignedWorker.name === worker.name
-  );
-  playerState.assignedEmployees.splice(employeeIndex, 1);
-
-  // Unreserve cards and put them in the discard
-  // The order shouldn't matter - they're unknown to all.
-  const usedGoods = gameState.reservedCards.splice(0, resources.length);
-  gameState.cardsInDiscard.push(...usedGoods);
-
-  // Find the resources and delete them.
-  // Not efficient. But I'm not sure the server is responsible for this anyway.
-  while (resources.length) {
-    const resourceBeingDeleted = resources.pop();
-    const indexOfResourceToDelete = playerState.resources.findIndex(
-      (gameResource) => gameResource.type === resourceBeingDeleted.type
-    );
-    playerState.resources.splice(indexOfResourceToDelete, 1);
-  }
-
-  // Delete all events other than the end step
-  playerState.availableActions = [playerActions.endStep];
-
-  const response = {
-    assignedEmployees: playerState.assignedEmployees,
-    availableActions: playerState.availableActions,
-    resources: playerState.resources,
-  };
+  console.warn("No validation of goods production by the server");
   return {
-    response,
+    response: { isOK: true },
   };
 }
 
@@ -399,24 +293,9 @@ export function reserveFactory(
   playerState: PlayerState,
   factory: Card
 ) {
-  const cardIndex = playerState.cardsInHand.findIndex(
-    (cardInHand) => cardInHand.name === factory.name
-  );
-  playerState.cardsInHand.splice(cardIndex, 1);
-
-  playerState.reservedFactory = factory;
-
-  // Originally a client side util, but the whole local server here will likely be disposed/refactored once porting into NativeScript.
-  removeActionFromAvailableActions(
-    playerState,
-    PlayerActionEnum.reserveFactory
-  );
+  console.warn("No validation of build factory by the server");
   return {
-    response: {
-      reservedFactory: playerState.reservedFactory,
-      cardsInHand: playerState.cardsInHand,
-      availableActions: playerState.availableActions,
-    },
+    response: { isOK: true },
   };
 }
 
@@ -434,17 +313,9 @@ export function assignEmployee(
   // Validate action
   console.warn("No validation of assignment");
 
-  // create assignment
-  const assignedEmployee: AssignedEmployee = {
-    assignment: factory,
-    name: employee.name,
-    mode,
-    unassignmentCost: employee.unassignmentCost,
-  };
-  playerState.assignedEmployees.push(assignedEmployee);
   return {
     response: {
-      assignedEmployees: playerState.assignedEmployees,
+      isOK: true,
     },
   };
 }
