@@ -5,7 +5,7 @@ import {
   GameState,
   Card,
 } from "../../types";
-import { sortBy, sumBy, shuffle } from "lodash";
+import { sortBy, sumBy, shuffle, differenceBy } from "lodash";
 
 export function filterCardsToAffordable<T>(
   cards: Array<T>,
@@ -49,6 +49,30 @@ export function verifyResources(
   const isExcessive = selectionValue - cheapestResource.value >= costOfPurchase;
 
   return isAffordable && !isExcessive;
+}
+
+export function spendResources(
+  reservedCards: GameState["reservedCards"],
+  cardsInDiscard: GameState["cardsInDiscard"],
+  resources: PlayerState["resources"],
+  resourcePayment: Array<Resource>
+): void {
+  if (resourcePayment.length > reservedCards.length)
+    throw new Error("not enough cards reserved for resource selection");
+
+  const resourcesAfterPayment = differenceBy(
+    resources,
+    resourcePayment,
+    "type"
+  );
+  const isSufficientResources =
+    resources.length - resourcesAfterPayment.length === resourcePayment.length;
+  if (!isSufficientResources)
+    throw new Error("not enough resources for the payment");
+
+  const usedResources = reservedCards.splice(0, resourcePayment.length);
+  cardsInDiscard.push(...usedResources);
+  resources.splice(0, resources.length, ...resourcesAfterPayment);
 }
 
 function shuffleDiscard(

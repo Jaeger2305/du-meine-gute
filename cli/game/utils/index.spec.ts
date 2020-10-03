@@ -2,12 +2,13 @@ import {
   filterCardsToAffordable,
   verifyResources,
   removeActionFromAvailableActions,
+  spendResources,
 } from "./index";
 import { playerActions } from "../index";
-import { bakery, bakeryWithChain } from "../cards";
 import { bread, coal, wheat, leather, butter } from "../../resources";
 import { Card, PlayerActionEnum } from "../../types";
 import { defaultGame } from "../../__mocks__/game";
+import { bakery, bakeryWithChain, tannery } from "../../__mocks__/card";
 
 describe("filter to affordable cards", () => {
   it("should limit the options to only those affordable", () => {
@@ -65,5 +66,52 @@ describe("remove build action from available actions", () => {
     expect(() =>
       removeActionFromAvailableActions(player, PlayerActionEnum.buildFactory)
     ).toThrow();
+  });
+});
+
+describe("spend resources", () => {
+  it("throws if there aren't enough cards in the reserve", () => {
+    const reservedCards = [bakery];
+    const cardsInDiscard = [];
+    const resources = [coal, bread, coal];
+    const resourcePayment = [coal, coal];
+    expect(() =>
+      spendResources(reservedCards, cardsInDiscard, resources, resourcePayment)
+    ).toThrow();
+
+    expect(reservedCards).toEqual([bakery]);
+    expect(cardsInDiscard).toEqual([]);
+    expect(resources).toEqual([coal, bread, coal]);
+    expect(resourcePayment).toEqual([coal, coal]);
+  });
+  it("throws if there aren't enough resources in the supplied resources", () => {
+    const reservedCards = [bakery, tannery, bakeryWithChain];
+    const cardsInDiscard = [];
+    const resources = [coal, bread];
+    const resourcePayment = [coal, coal];
+    expect(() =>
+      spendResources(reservedCards, cardsInDiscard, resources, resourcePayment)
+    ).toThrow();
+
+    expect(reservedCards).toEqual([bakery, tannery, bakeryWithChain]);
+    expect(cardsInDiscard).toEqual([]);
+    expect(resources).toEqual([coal, bread]);
+    expect(resourcePayment).toEqual([coal, coal]);
+  });
+  it("moves cards into the discard", () => {
+    const reservedCards = [bakery, tannery, bakeryWithChain];
+    const cardsInDiscard = [];
+    const resources = [coal, bread, coal];
+    const resourcePayment = [coal, coal];
+    spendResources(reservedCards, cardsInDiscard, resources, resourcePayment);
+    expect(cardsInDiscard).toEqual([bakery, tannery]);
+  });
+  it("removes cards from the resources", () => {
+    const reservedCards = [bakery, tannery, bakeryWithChain];
+    const cardsInDiscard = [];
+    const resources = [coal, bread, coal];
+    const resourcePayment = [coal, coal];
+    spendResources(reservedCards, cardsInDiscard, resources, resourcePayment);
+    expect(resources).toEqual([bread]);
   });
 });
