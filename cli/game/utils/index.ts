@@ -94,7 +94,7 @@ export function drawFromDeck(
     const shuffledDiscard = shuffleDiscard(cardsInDeck, cardsInDiscard);
     cardsInDeck.splice(0, cardsInDeck.length, ...shuffledDiscard);
     cardsInDiscard.splice(0, cardsInDiscard.length);
-  } else {
+  } else if (!cardsInDeck.length) {
     return null;
   }
 

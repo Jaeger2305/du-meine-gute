@@ -2,6 +2,7 @@ import {
   filterCardsToAffordable,
   verifyResources,
   removeActionFromAvailableActions,
+  drawFromDeck,
   spendResources,
 } from "./index";
 import { playerActions } from "../index";
@@ -66,6 +67,41 @@ describe("remove build action from available actions", () => {
     expect(() =>
       removeActionFromAvailableActions(player, PlayerActionEnum.buildFactory)
     ).toThrow();
+  });
+});
+
+describe("draw from deck", () => {
+  it("returns no card if the deck and discard are empty", () => {
+    const cardsInDeck = [];
+    const cardsInDiscard = [];
+    const drawnCard = drawFromDeck(cardsInDeck, cardsInDiscard);
+    expect(drawnCard).toBe(null);
+  });
+  xit("shuffles the discard", () => {}); // Lazily, this isn't mocking lodash's shuffle.
+  it("moves the discard into the deck if the deck is empty", () => {
+    const cardsInDeck = [];
+    const cardsInDiscard = [bakery, bakeryWithChain];
+    const potentialDrawnCards = cardsInDiscard.slice();
+    const drawnCard = drawFromDeck(cardsInDeck, cardsInDiscard);
+    expect(potentialDrawnCards.includes(drawnCard)).toBe(true);
+    expect(cardsInDeck.length).toBe(1);
+    expect(cardsInDiscard.length).toBe(0);
+  });
+  it("draws the top card from the deck", () => {
+    const cardsInDeck = [bakery, bakeryWithChain];
+    const cardsInDiscard = [];
+    const potentialDrawnCard = cardsInDeck[0];
+    const drawnCard = drawFromDeck(cardsInDeck, cardsInDiscard);
+    expect(drawnCard).toBe(potentialDrawnCard);
+  });
+  it("draws from the deck and doesn't affect the discard", () => {
+    const cardsInDeck = [bakery, bakeryWithChain];
+    const cardsInDiscard = [tannery];
+    const startingDiscard = cardsInDiscard.slice();
+    const drawnCard = drawFromDeck(cardsInDeck, cardsInDiscard);
+    expect(drawnCard).toBeTruthy();
+    expect(cardsInDeck.length).toBe(1);
+    expect(cardsInDiscard).toEqual(startingDiscard);
   });
 });
 
