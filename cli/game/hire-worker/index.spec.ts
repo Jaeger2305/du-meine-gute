@@ -11,7 +11,7 @@ const mockServerActions = {
 };
 jest.doMock("../utils", () => mockActions);
 jest.doMock("./hire-worker-utils", () => mockUtils);
-jest.doMock("../../local-server", () => mockServerActions);
+jest.doMock("../../local-server/actions/hire-worker", () => mockServerActions);
 
 import * as prompts from "prompts";
 import { hireWorker } from "./index";

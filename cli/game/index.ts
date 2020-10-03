@@ -6,7 +6,7 @@ import { produceAtFactory } from "./production";
 import { hireWorker } from "./hire-worker";
 import { unassignEmployee } from "./unassign-employee";
 import { GameState, PlayerActionEnum, PlayerState } from "../types";
-import { drawCard } from "../local-server";
+import { drawCard } from "../local-server/actions/draw-card";
 
 export const playerActions = {
   endStep: {

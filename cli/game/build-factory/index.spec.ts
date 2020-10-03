@@ -10,7 +10,10 @@ const mockUtils = {
   payForFactory: jest.fn(),
 };
 jest.doMock("../utils", () => mockActions);
-jest.doMock("../../local-server", () => mockServerActions);
+jest.doMock(
+  "../../local-server/actions/build-factory",
+  () => mockServerActions
+);
 jest.doMock("./build-factory-utils", () => mockUtils);
 
 import * as prompts from "prompts";

@@ -2,7 +2,7 @@ import * as prompts from "prompts";
 import { GameState, PlayerActionEnum, Card, PlayerState } from "../../types";
 import { removeActionFromAvailableActions } from "../utils";
 import { reserveFactory as clientReserveFactory } from "./reserve-factory-utils";
-import { reserveFactory as serverReserveFactory } from "../../local-server";
+import { reserveFactory as serverReserveFactory } from "../../local-server/actions/reserve-factory";
 
 export async function reserveFactory(
   gameState: GameState,

@@ -6,7 +6,7 @@ import {
   verifyResources,
 } from "../utils";
 import { payForFactory } from "./build-factory-utils";
-import { buildFactory as serverBuildFactory } from "../../local-server";
+import { buildFactory as serverBuildFactory } from "../../local-server/actions/build-factory";
 
 export async function buildFactory(
   gameState: GameState,

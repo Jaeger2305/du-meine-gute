@@ -1,5 +1,5 @@
 import * as prompts from "prompts";
-import { produceGood as serverProduceGood } from "../../local-server";
+import { produceGood as serverProduceGood } from "../../local-server/actions/produce-good";
 import {
   AssignedEmployee,
   GameState,

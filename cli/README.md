@@ -27,15 +27,19 @@ The client should use or await the server response when something is hidden info
 The idea is that the client controls most of the state, and sends messages to sync up to the server / communicate those updates to other players
 In case of connection dropping, or failed validation, the server can restore the client and dismiss any messages sent after the point of failure.
 
+## Mocking message queue
+
+A set timeout which uses a callback to update the state should mock the asynchronous nature, allowing for testing of hidden information like drawing a card.
+
+This callback is exactly what would be called by an onmessage event for the client's websocket
+
+The vast majority of requests can be done optimistically. The trickier ones are those with imperfect information.
+
 ## TODO
 
 Next
 
-- [x] remove request response inside of playcard, hire worker, etc. These are all known quantities and can be done optimistically
-- [ ] route requests to local or remote server depending on mode (stored in game state)
-- [x] refactor shuffle function
-- [x] refactor payment function (worker vs factory)
-- [ ] split out server requests/validation into separate files
+- [ ] allow hidden information from other players, and the server (ie when drawing cards/shuffle deck)
 
 Integrating the server side tasks
 
@@ -43,7 +47,6 @@ Integrating the server side tasks
 - [ ] allow multiple players in clientside types/architecture
 - [ ] allow serverside verification/checkpoints/reversions
 - [ ] ensuring clear separation of server and client
-- [ ] allow hidden information from other players, and the server (ie when drawing cards/shuffle deck)
 - [ ] convert from server state to point in time client state
 
 Also, there are some quality of life tasks:
@@ -51,7 +54,6 @@ Also, there are some quality of life tasks:
 - [x] pull game options into a config (suns require for market, victory building count, starting cost, starting cards, etc.)
 - [ ] tests
 - [ ] refactoring player actions into separate files
-- [ ] abstract card shuffle to separate function
 - [ ] avoid mutation where possible (although it might make sense in some places, when transferring into Vue)
 - [ ] production is complicated, there might be a better way of doing it (the loops and mutations aren't nice)
 

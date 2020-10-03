@@ -12,7 +12,7 @@ import {
   verifyResources,
 } from "../utils";
 import { unassignWorker as clientUnassignWorker } from "./unassign-employee-utils";
-import { unassignWorker as serverUnassignWorker } from "../../local-server";
+import { unassignWorker as serverUnassignWorker } from "../../local-server/actions/unassign-worker";
 
 export async function unassignEmployee(
   gameState: GameState,

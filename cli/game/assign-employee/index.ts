@@ -8,7 +8,7 @@ import {
   AssignedEmployee,
   Card,
 } from "../../types";
-import { assignEmployee as serverAssignEmployee } from "../../local-server";
+import { assignEmployee as serverAssignEmployee } from "../../local-server/actions/assign-employee";
 import { removeActionFromAvailableActions } from "../utils";
 
 function getUnassignedEmployees(

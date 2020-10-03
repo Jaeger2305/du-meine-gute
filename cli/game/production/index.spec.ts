@@ -7,7 +7,7 @@ const mockServerActions = {
   produceGood: jest.fn(),
 };
 jest.doMock("./production-utils", () => mockActions);
-jest.doMock("../../local-server", () => mockServerActions);
+jest.doMock("../../local-server/actions/produce-good", () => mockServerActions);
 import * as prompts from "prompts";
 import { wood, wheat, bread, butter, coal } from "../../resources";
 import { playerActions } from "../index";
