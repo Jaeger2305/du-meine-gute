@@ -33,7 +33,7 @@ Next
 
 - [x] remove request response inside of playcard, hire worker, etc. These are all known quantities and can be done optimistically
 - [ ] route requests to local or remote server depending on mode (stored in game state)
-- [ ] refactor shuffle function
+- [x] refactor shuffle function
 - [ ] refactor payment function (worker vs factory)
 - [ ] split out server requests/validation into separate files
 

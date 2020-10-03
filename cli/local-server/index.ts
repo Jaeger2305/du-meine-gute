@@ -29,7 +29,7 @@ import {
   coalMineWool,
   coalMineWheat,
 } from "../game/cards";
-import { removeActionFromAvailableActions } from "../game/utils";
+import { drawFromDeck, removeActionFromAvailableActions } from "../game/utils";
 
 type ServerResponse = {
   response: any;
@@ -71,15 +71,14 @@ function revealMarket(
   // Draw cards until 3 suns.
   while (
     marketCards.filter((card) => card.isSunny).length <
-    gameState.config.marketSuns
+      gameState.config.marketSuns &&
+    (gameState.cardsInDeck.length || gameState.cardsInDiscard.length)
   ) {
-    // If no cards, shuffle discard
-    if (!gameState.cardsInDeck.length) {
-      gameState.cardsInDeck = gameState.cardsInDiscard.slice();
-      gameState.cardsInDiscard = [];
-    }
-    const drawnCard = gameState.cardsInDeck.splice(0, 1);
-    marketCards.push(...drawnCard);
+    const drawnCard = drawFromDeck(
+      gameState.cardsInDeck,
+      gameState.cardsInDiscard
+    );
+    marketCards.push(drawnCard);
   }
   gameState.marketCards.push(...marketCards);
 
@@ -100,15 +99,15 @@ export function drawCard(
   gameState: GameState,
   playerState: PlayerState
 ): ServerResponse {
-  // If there are no cards to draw from, shuffle the discard.
-  if (!gameState.cardsInDeck.length) {
-    gameState.cardsInDeck = gameState.cardsInDiscard.slice().reverse();
-    gameState.cardsInDiscard = [];
-  }
+  // If network game, submit the socket and return.
+  // this.gameSocket.send("drawCard")
 
   // Draw the card
-  const drawnCard = gameState.cardsInDeck.splice(0, 1);
-  playerState.cardsInHand.splice(0, 0, ...drawnCard);
+  const drawnCard = drawFromDeck(
+    gameState.cardsInDeck,
+    gameState.cardsInDiscard
+  );
+  if (drawnCard) playerState.cardsInHand.splice(0, 0, drawnCard);
 
   // Find the event and delete it
   removeActionFromAvailableActions(playerState, PlayerActionEnum.drawCard);

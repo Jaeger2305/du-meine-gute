@@ -9,6 +9,7 @@ import {
   GameState,
   PlayerState,
 } from "../../types";
+import { drawFromDeck } from "../utils";
 
 export function checkOutstandingResources(
   requiredResources: Array<Resource>,
@@ -204,7 +205,9 @@ export function produceGood(
   }
 
   // Draw the card into the reserved card space
-  const drawnCard = cardsInDeck.splice(0, 1);
-  reservedCards.push(...drawnCard);
-  resources.push(resource);
+  const drawnCard = drawFromDeck(cardsInDeck, cardsInDiscard);
+  if (drawnCard) {
+    reservedCards.push(drawnCard);
+    resources.push(resource);
+  }
 }

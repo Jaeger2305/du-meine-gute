@@ -1,5 +1,11 @@
-import { PlayerState, Resource, PlayerActionEnum } from "../../types";
-import { sortBy, sumBy } from "lodash";
+import {
+  PlayerState,
+  Resource,
+  PlayerActionEnum,
+  GameState,
+  Card,
+} from "../../types";
+import { sortBy, sumBy, shuffle } from "lodash";
 
 export function filterCardsToAffordable<T>(
   cards: Array<T>,
@@ -43,4 +49,31 @@ export function verifyResources(
   const isExcessive = selectionValue - cheapestResource.value >= costOfPurchase;
 
   return isAffordable && !isExcessive;
+}
+
+function shuffleDiscard(
+  cardsInDeck: Array<Card>,
+  cardsInDiscard: Array<Card>
+): Array<Card> {
+  if (cardsInDeck.length) {
+    throw new Error("The deck is expected to be empty");
+  }
+
+  return shuffle(cardsInDiscard);
+}
+
+export function drawFromDeck(
+  cardsInDeck: Array<Card>,
+  cardsInDiscard: Array<Card>
+): Card | null {
+  if (!cardsInDeck.length && cardsInDiscard.length) {
+    const shuffledDiscard = shuffleDiscard(cardsInDeck, cardsInDiscard);
+    cardsInDeck.splice(0, cardsInDeck.length, ...shuffledDiscard);
+    cardsInDiscard.splice(0, cardsInDiscard.length);
+  } else {
+    return null;
+  }
+
+  const drawnCards = cardsInDeck.splice(0, 1);
+  return drawnCards[0];
 }

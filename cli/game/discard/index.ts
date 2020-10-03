@@ -1,6 +1,6 @@
 import * as prompts from "prompts";
 import { Card, GameState, PlayerActionEnum, PlayerState } from "../../types";
-import { removeActionFromAvailableActions } from "../utils";
+import { drawFromDeck, removeActionFromAvailableActions } from "../utils";
 
 export async function discard(gameState: GameState, playerState: PlayerState) {
   const cardChoice: {
@@ -17,11 +17,11 @@ export async function discard(gameState: GameState, playerState: PlayerState) {
   for (const card of cardChoice.cards) {
     playerState.cardsInHand.splice(card.index, 1);
     gameState.cardsInDiscard.push(card.card);
-    if (!gameState.cardsInDeck.length) {
-      gameState.cardsInDeck = gameState.cardsInDiscard.slice();
-      gameState.cardsInDiscard = [];
-    }
-    playerState.cardsInHand.push(gameState.cardsInDeck.pop());
+    const drawnCard = drawFromDeck(
+      gameState.cardsInDeck,
+      gameState.cardsInDiscard
+    );
+    playerState.cardsInHand.push(drawnCard);
   }
   removeActionFromAvailableActions(playerState, PlayerActionEnum.discardCard);
 }
