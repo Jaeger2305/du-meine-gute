@@ -47,8 +47,7 @@ export async function unassignEmployee(
   const resourcesChoice: {
     resources: Array<Resource & { index: number }>;
   } = employeeChoice.employee.unassignmentCost
-    ? { resources: [] }
-    : await prompts({
+    ? await prompts({
         type: "multiselect",
         message: `pick resources to spend`,
         name: "resources",
@@ -57,8 +56,9 @@ export async function unassignEmployee(
             title: `${resource.type} - ${resource.value}`,
             value: { ...resource, originalIndex: index },
           }))
-          .filter((resource) => resource.value),
-      });
+          .filter((resource) => resource.value.value),
+      })
+    : { resources: [] };
 
   // Verify resources are not under or wasted
   if (
