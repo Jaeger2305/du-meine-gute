@@ -4,6 +4,7 @@ import {
   removeActionFromAvailableActions,
   drawFromDeck,
   spendResources,
+  differenceResources,
 } from "./index";
 import { playerActions } from "../index";
 import { bread, coal, wheat, leather, butter } from "../../resources";
@@ -149,5 +150,45 @@ describe("spend resources", () => {
     const resourcePayment = [coal, coal];
     spendResources(reservedCards, cardsInDiscard, resources, resourcePayment);
     expect(resources).toEqual([bread]);
+  });
+});
+
+describe("difference resources", () => {
+  it("filters to a non-unique list", () => {
+    const originalResources = [bread, coal, coal, wheat, butter];
+    const resourcesToRemove = [coal, wheat];
+    const result = differenceResources(originalResources, resourcesToRemove);
+    expect(result).toEqual([bread, coal, butter]);
+  });
+  it("does nothing to the original array, despite filtering", () => {
+    const originalResources = [bread, coal, coal, wheat, butter];
+    const resourcesToRemove = [coal, wheat];
+    differenceResources(originalResources, resourcesToRemove);
+    expect(originalResources).toEqual([bread, coal, coal, wheat, butter]);
+    expect(resourcesToRemove).toEqual([coal, wheat]);
+  });
+  it("outputs no difference to the original array when nothing to remove", () => {
+    const originalResources = [bread, coal, coal, wheat, butter];
+    const resourcesToRemove = [];
+    const result = differenceResources(originalResources, resourcesToRemove);
+    expect(result).toEqual(originalResources);
+  });
+  it("outputs nothing when no original input supplied", () => {
+    const originalResources = [];
+    const resourcesToRemove = [coal, wheat];
+    const result = differenceResources(originalResources, resourcesToRemove);
+    expect(result).toEqual([]);
+  });
+  it("outputs nothing when no original input supplied and nothing to remove", () => {
+    const originalResources = [];
+    const resourcesToRemove = [];
+    const result = differenceResources(originalResources, resourcesToRemove);
+    expect(result).toEqual([]);
+  });
+  it("outputs nothing when no overlap with resources", () => {
+    const originalResources = [bread, coal, coal, wheat, butter];
+    const resourcesToRemove = [leather, leather];
+    const result = differenceResources(originalResources, resourcesToRemove);
+    expect(result).toEqual(originalResources);
   });
 });

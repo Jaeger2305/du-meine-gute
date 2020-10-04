@@ -5,7 +5,7 @@ import {
   GameState,
   Card,
 } from "../../types";
-import { sortBy, sumBy, shuffle, differenceBy } from "lodash";
+import { sortBy, sumBy, shuffle } from "lodash";
 
 export function filterCardsToAffordable<T>(
   cards: Array<T>,
@@ -60,11 +60,7 @@ export function spendResources(
   if (resourcePayment.length > reservedCards.length)
     throw new Error("not enough cards reserved for resource selection");
 
-  const resourcesAfterPayment = differenceBy(
-    resources,
-    resourcePayment,
-    "type"
-  );
+  const resourcesAfterPayment = differenceResources(resources, resourcePayment);
   const isSufficientResources =
     resources.length - resourcesAfterPayment.length === resourcePayment.length;
   if (!isSufficientResources)
@@ -100,4 +96,26 @@ export function drawFromDeck(
 
   const drawnCards = cardsInDeck.splice(0, 1);
   return drawnCards[0];
+}
+
+/**
+ * Lodash's difference creates a unique array, which isn't always desired.
+ * So, roll a custom implementation that does a true difference.
+ * Simplest to use a for loop filter, but this isn't particularly optimised for efficiency or readability, just speed of code.
+ * @param originalResources
+ * @param resourcesToRemove
+ */
+export function differenceResources(
+  originalResources: Array<Resource>,
+  resourcesToRemove: Array<Resource>
+): Array<Resource> {
+  // [1,2,2,3,5], [2,4] -> [1,2,3,5]
+  const copyOriginalResources = originalResources.slice();
+  resourcesToRemove.forEach((resource) => {
+    const indexToDelete = copyOriginalResources.findIndex(
+      (originalResource) => originalResource.type === resource.type
+    );
+    if (indexToDelete > -1) copyOriginalResources.splice(indexToDelete, 1);
+  });
+  return copyOriginalResources;
 }

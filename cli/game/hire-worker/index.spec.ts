@@ -2,6 +2,7 @@ const mockActions = {
   filterCardsToAffordable: jest.fn(),
   verifyResources: jest.fn(),
   removeActionFromAvailableActions: jest.fn(),
+  differenceResources: jest.fn(),
 };
 const mockUtils = {
   payForWorker: jest.fn(),
@@ -17,7 +18,7 @@ import * as prompts from "prompts";
 import { hireWorker } from "./index";
 import { playerActions } from "../index";
 import { bakery, apprentice, sawmill } from "../cards";
-import { bread, coal } from "../../resources";
+import { bread, coal, wood } from "../../resources";
 import { defaultGame } from "../../__mocks__/game";
 
 beforeEach(() => {
@@ -46,6 +47,7 @@ describe("hire worker", () => {
     mockActions.removeActionFromAvailableActions.mockImplementation(
       () => (player.availableActions = [playerActions.endStep])
     );
+    mockActions.differenceResources.mockReturnValue([]);
     mockServerActions.hireWorker.mockReturnValue({
       response: {
         isOK: true,
@@ -85,6 +87,7 @@ describe("hire worker", () => {
     mockActions.removeActionFromAvailableActions.mockImplementation(
       () => (player.availableActions = [playerActions.endStep])
     );
+    mockActions.differenceResources.mockReturnValue([]);
     mockServerActions.hireWorker.mockReturnValue({
       response: {
         isOK: true,
@@ -122,6 +125,7 @@ describe("hire worker", () => {
     mockActions.removeActionFromAvailableActions.mockImplementation(
       () => (player.availableActions = [playerActions.endStep])
     );
+    mockActions.differenceResources.mockReturnValue([]);
     mockServerActions.hireWorker.mockReturnValue({
       response: {
         isOK: true,
@@ -205,6 +209,7 @@ describe("hire worker", () => {
     mockActions.removeActionFromAvailableActions.mockImplementation(
       () => (player.availableActions = [playerActions.endStep])
     );
+    mockActions.differenceResources.mockReturnValue([]);
     mockServerActions.hireWorker.mockReturnValue({
       response: {
         isOK: true,
@@ -240,6 +245,7 @@ describe("hire worker", () => {
     mockActions.removeActionFromAvailableActions.mockImplementation(
       () => (player.availableActions = [playerActions.endStep])
     );
+    mockActions.differenceResources.mockReturnValue([wood]);
 
     await hireWorker(game, player);
     expect(player.employees).toEqual([]);

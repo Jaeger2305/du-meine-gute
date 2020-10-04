@@ -6,6 +6,7 @@ import {
   PlayerState,
 } from "../../types";
 import {
+  differenceResources,
   filterCardsToAffordable,
   removeActionFromAvailableActions,
   verifyResources,
@@ -31,7 +32,7 @@ export async function hireWorker(
   );
   const availableCards = affordableCards.filter(
     (card) =>
-      !differenceBy(card.resourceSpecialty, factoryTypesInPlay, "type").length
+      !differenceResources(card.resourceSpecialty, factoryTypesInPlay).length
   );
 
   // Short circuit if nothing found
@@ -61,9 +62,9 @@ export async function hireWorker(
     message: `pick resources to spend`,
     name: "resources",
     choices: playerState.resources
-      .map((resource, index) => ({
+      .map((resource) => ({
         title: `${resource.type} - ${resource.value}`,
-        value: { ...resource, originalIndex: index },
+        value: resource,
       }))
       .filter((resource) => resource.value),
   });

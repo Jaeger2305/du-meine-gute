@@ -9,7 +9,7 @@ import {
   GameState,
   PlayerState,
 } from "../../types";
-import { drawFromDeck } from "../utils";
+import { differenceResources, drawFromDeck } from "../utils";
 
 export function checkOutstandingResources(
   requiredResources: Array<Resource>,
@@ -27,10 +27,9 @@ export function checkOutstandingResources(
   const requiredSecondaryResources = requiredResources.filter(
     (resource) => !resource.baseResource
   );
-  const extraRequiredSecondaryResources = differenceBy(
+  const extraRequiredSecondaryResources = differenceResources(
     requiredSecondaryResources,
-    inputSecondaryResources,
-    "type"
+    inputSecondaryResources
   );
 
   // Check the known base resources are sufficient
@@ -42,10 +41,9 @@ export function checkOutstandingResources(
     (resource) =>
       resource.baseResource && resource.type !== ResourceType.placeholder
   );
-  const extraRequiredKnownBaseResources = differenceBy(
+  const extraRequiredKnownBaseResources = differenceResources(
     requiredKnownBaseResources,
-    inputKnownBaseResources,
-    "type"
+    inputKnownBaseResources
   );
 
   // Check capacity for placeholders
@@ -56,10 +54,9 @@ export function checkOutstandingResources(
   );
 
   // if extra inputKnownBaseResources are left over, they can fill the place holder requirement
-  const extraInputUnknownBaseResources = differenceBy(
+  const extraInputUnknownBaseResources = differenceResources(
     inputKnownBaseResources,
-    requiredKnownBaseResources,
-    "type"
+    requiredKnownBaseResources
   );
   const extraRequiredUnknownBaseResources = new Array(
     Math.max(
@@ -149,13 +146,20 @@ export async function fallbackProduction(
         requiredExtraResourceTypes.includes(ResourceType.placeholder)
     );
 
-  const choice = await prompts({
+  if (!allRelevantCardsInHand.length) {
+    console.info("no cards to discard");
+    return { fallbackSuccess: false, cardIndexesToDelete: [] };
+  }
+
+  const choice: {
+    cards: Array<Card & { originalIndex: number }>;
+  } = await prompts({
     type: "multiselect",
     message: `pick the card(s) to discard for their resources`,
     name: "cards",
-    choices: allRelevantCardsInHand.map((card) => ({
+    choices: allRelevantCardsInHand.map((card, index) => ({
       title: card.name,
-      value: card,
+      value: { ...card, originalIndex: index },
     })),
   });
 
