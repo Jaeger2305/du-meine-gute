@@ -16,7 +16,7 @@ export type PlayerAction = {
 };
 
 export type Card = {
-  type: string;
+  type: BuildingType;
   name: string;
   resource: Resource;
   productionConfig?: ProductionConfig;
@@ -115,6 +115,28 @@ export enum ResourceType {
   leather = "leather",
   documents = "documents",
   glass = "glass",
+}
+
+export enum BuildingType {
+  bakery,
+  brickMaker,
+  butcher,
+  cattleRanch,
+  charburner,
+  cooperage,
+  foodFactory,
+  glassmaker,
+  ironSmelter,
+  marketOffice,
+  mill,
+  sawmill,
+  shoeMaker,
+  tailor,
+  tannery,
+  toolMaker,
+  unknown,
+  weavingMill,
+  windowMaker,
 }
 
 // We can couple the card to the resource, or we can keep track of the cards reserved as goods separately. that's probably better too.

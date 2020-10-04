@@ -1,4 +1,4 @@
-import { Card } from "../types";
+import { BuildingType, Card } from "../types";
 import {
   wood,
   wool,
@@ -21,7 +21,7 @@ import {
 
 export const coalMineWheat: Card = {
   name: "coal-mine-wheat",
-  type: "test",
+  type: BuildingType.charburner,
   resource: wood,
   productionConfig: {
     output: [coal],
@@ -34,7 +34,7 @@ export const coalMineWheat: Card = {
 
 export const coalMineWool: Card = {
   name: "coal-mine-wool",
-  type: "test",
+  type: BuildingType.charburner,
   resource: wood,
   productionConfig: {
     output: [coal],
@@ -47,7 +47,7 @@ export const coalMineWool: Card = {
 
 export const coalMineBrick: Card = {
   name: "coal-mine-brick",
-  type: "test",
+  type: BuildingType.charburner,
   resource: wood,
   productionConfig: {
     output: [coal],
@@ -60,7 +60,7 @@ export const coalMineBrick: Card = {
 
 export const coalMineMetal: Card = {
   name: "coal-mine-metal",
-  type: "test",
+  type: BuildingType.charburner,
   resource: wood,
   productionConfig: {
     output: [coal],
@@ -73,7 +73,7 @@ export const coalMineMetal: Card = {
 
 export const sawmill: Card = {
   name: "sawmill-1",
-  type: "test",
+  type: BuildingType.sawmill,
   resource: wood,
   productionConfig: {
     output: [plank],
@@ -85,7 +85,7 @@ export const sawmill: Card = {
 
 export const bakery: Card = {
   name: "bakery-1",
-  type: "test",
+  type: BuildingType.bakery,
   resource: wheat,
   productionConfig: {
     output: [bread],
@@ -97,7 +97,7 @@ export const bakery: Card = {
 
 export const altBakery: Card = {
   name: "bakery-2",
-  type: "test",
+  type: BuildingType.bakery,
   resource: wheat,
   productionConfig: {
     output: [bread],
@@ -110,7 +110,7 @@ export const altBakery: Card = {
 
 export const bakeryWithChain: Card = {
   name: "bakery-3",
-  type: "test",
+  type: BuildingType.bakery,
   resource: wheat,
   productionConfig: {
     output: [bread],
@@ -122,7 +122,7 @@ export const bakeryWithChain: Card = {
 };
 
 export const breadCard: Card = {
-  type: "test",
+  type: BuildingType.bakery,
   name: "test-bread",
   resource: wheat,
   productionConfig: {
@@ -135,7 +135,7 @@ export const breadCard: Card = {
 
 export const bakeryWithSecondaryChain: Card = {
   name: "bakery-4",
-  type: "test",
+  type: BuildingType.bakery,
   resource: wheat,
   productionConfig: {
     output: [bread],
@@ -148,7 +148,7 @@ export const bakeryWithSecondaryChain: Card = {
 
 export const tannery: Card = {
   name: "tannery-1",
-  type: "test",
+  type: BuildingType.tannery,
   resource: brick,
   productionConfig: {
     output: [leather],
@@ -162,7 +162,7 @@ export const tannery: Card = {
 
 export const altTannery: Card = {
   name: "tannery-1",
-  type: "test",
+  type: BuildingType.tannery,
   resource: wood,
   productionConfig: {
     output: [leather],
@@ -176,7 +176,7 @@ export const altTannery: Card = {
 
 export const office: Card = {
   name: "office-1",
-  type: "test",
+  type: BuildingType.marketOffice,
   resource: wood,
   cost: 4,
   isSunny: true,
@@ -186,7 +186,7 @@ export const office: Card = {
 
 export const tradingPost: Card = {
   name: "trading-post-1",
-  type: "test",
+  type: BuildingType.marketOffice,
   resource: wood,
   productionConfig: {
     output: [documents],
@@ -201,7 +201,7 @@ export const tradingPost: Card = {
 
 export const glassblower: Card = {
   name: "glassblower-1",
-  type: "test",
+  type: BuildingType.glassmaker,
   resource: stone,
   productionConfig: {
     output: [glass],
