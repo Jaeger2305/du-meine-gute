@@ -3,7 +3,7 @@ import {
   drawFromDeck,
   removeActionFromAvailableActions,
 } from "../../game/utils";
-import { GameState, PlayerActionEnum, PlayerState } from "../../types";
+import { Card, GameState, PlayerActionEnum, PlayerState } from "../../types";
 
 /**
  * Reveals a card from the deck after the user has requested drawing a card.
@@ -11,7 +11,8 @@ import { GameState, PlayerActionEnum, PlayerState } from "../../types";
  */
 export function drawCard(
   gameState: GameState,
-  playerState: PlayerState
+  playerState: PlayerState,
+  unknownCard: Card
 ): ServerResponse {
   // If network game, submit the socket and return.
   // this.gameSocket.send("drawCard")
@@ -21,18 +22,10 @@ export function drawCard(
     gameState.cardsInDeck,
     gameState.cardsInDiscard
   );
-  if (drawnCard) playerState.cardsInHand.splice(0, 0, drawnCard);
-
-  // Find the event and delete it
-  removeActionFromAvailableActions(playerState, PlayerActionEnum.drawCard);
+  if (drawnCard) Object.assign(unknownCard, drawnCard);
 
   // Send the response back
-  const response = {
-    drawnCard,
-    cardsInDiscard: gameState.cardsInDiscard,
-    cardsInDeck: gameState.cardsInDeck,
-    cardsInHand: playerState.cardsInHand,
-  };
+  const response = { isOK: true };
   return {
     response,
   };

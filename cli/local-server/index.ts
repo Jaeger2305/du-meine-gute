@@ -13,6 +13,9 @@ import {
   coalMineMetal,
   coalMineWool,
   coalMineWheat,
+  bakery,
+  sawmill,
+  tradingPost,
 } from "../game/cards";
 import { generateTestCards } from "./utils";
 
@@ -23,6 +26,7 @@ export { roundSteps } from "./round-steps";
  * Returns valid actions that can be performed, which is just acknowledgements
  */
 export function setupGame(game: GameState): void {
+  game.reservedCards.push(tannery, glassblower, bakery, sawmill, tradingPost);
   game.cardsInDeck.push(...generateTestCards());
   game.availableEmployees = [skilledApprentice, apprentice, master];
 
@@ -35,7 +39,7 @@ export function setupGame(game: GameState): void {
       employees: [boss, master],
       cardsInHand: [office, tannery],
       cardsInPlay: [chosenCoalMine, glassblower],
-      resources: [bread, leather, bread, bread, leather, coal],
+      resources: [bread, leather, bread, leather, coal],
       availableActions: [playerActions.endStep],
       assignedEmployees: [],
       reservedFactory: null,

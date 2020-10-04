@@ -95,8 +95,10 @@ export type PlayerState = {
 };
 
 export enum ResourceType {
-  placeholder = "placeholder",
+  unknown = "unknown", // the resource isn't identified yet
+  placeholder = "placeholder", // the resource can be any base value
 
+  // base resources
   wood = "wood",
   wool = "wool",
   metal = "metal",
@@ -105,6 +107,7 @@ export enum ResourceType {
   stone = "stone",
   cattle = "cattle",
 
+  // secondary resources
   coal = "coal",
   butter = "butter",
   bread = "bread",

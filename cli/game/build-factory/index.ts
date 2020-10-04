@@ -46,9 +46,9 @@ export async function buildFactory(
     message: `pick resources to spend`,
     name: "resources",
     choices: playerState.resources
-      .map((resource, index) => ({
+      .map((resource) => ({
         title: `${resource.type} - ${resource.value}`,
-        value: { ...resource, originalIndex: index },
+        value: resource,
       }))
       .filter((resource) => resource.value),
   });

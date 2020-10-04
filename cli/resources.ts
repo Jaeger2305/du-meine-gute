@@ -1,5 +1,11 @@
 import { Resource, ResourceType } from "./types";
 
+export const unknown: Resource = {
+  type: ResourceType.unknown,
+  value: 0,
+  baseResource: true,
+};
+
 export const placeholder: Resource = {
   type: ResourceType.placeholder,
   value: 0,

@@ -39,7 +39,8 @@ The vast majority of requests can be done optimistically. The trickier ones are 
 
 Next
 
-- [ ] allow hidden information from other players, and the server (ie when drawing cards/shuffle deck)
+- Add all cards
+- Begin integration into app
 
 Integrating the server side tasks
 

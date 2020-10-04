@@ -1,11 +1,17 @@
 import { drawCard as serverDrawCard } from "../../local-server/actions/draw-card";
-import { GameState, PlayerState } from "../../types";
+import { Card, GameState, PlayerActionEnum, PlayerState } from "../../types";
+import { unknown } from "../cards";
+import { removeActionFromAvailableActions } from "../utils";
+
+function createUnknownCard(baseCard: Card = unknown): Card {
+  return { ...unknown, ...baseCard };
+}
 
 export function drawCard(gameState: GameState, playerState: PlayerState) {
-  const {
-    response: { cardsInDeck, cardsInHand, cardsInDiscard },
-  } = serverDrawCard(gameState, playerState);
-  playerState.cardsInHand = cardsInHand;
-  gameState.cardsInDeck = cardsInDeck;
-  gameState.cardsInDiscard = cardsInDiscard;
+  const unknownCard = createUnknownCard();
+
+  playerState.cardsInHand.push(unknownCard);
+  // Find the event and delete it
+  removeActionFromAvailableActions(playerState, PlayerActionEnum.drawCard);
+  setTimeout(() => serverDrawCard(gameState, playerState, unknownCard), 3000);
 }

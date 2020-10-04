@@ -13,8 +13,19 @@ import {
   plank,
   documents,
   placeholder,
+  unknown as unknownResource,
   glass,
 } from "../resources";
+
+// Placeholders
+
+export const unknown: Card = {
+  name: "placeholder",
+  type: "test",
+  resource: unknownResource,
+  cost: 0,
+  points: 0,
+};
 
 // Factories
 
