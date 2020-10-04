@@ -6,25 +6,17 @@ import { produceAtFactory } from "./production";
 import { hireWorker } from "./hire-worker";
 import { unassignEmployee } from "./unassign-employee";
 import { GameState, PlayerActionEnum, PlayerState } from "../types";
-import { drawCard } from "../local-server/actions/draw-card";
+import { drawCard } from "./draw-card";
+import { endStep } from "./end-step";
 
 export const playerActions = {
   endStep: {
     type: PlayerActionEnum.endStep,
-    handler: (gameState: GameState, playerState: PlayerState) => {
-      playerState.availableActions = [];
-    },
+    handler: endStep,
   },
   drawCard: {
     type: PlayerActionEnum.drawCard,
-    handler: (gameState: GameState, playerState: PlayerState) => {
-      const {
-        response: { cardsInDeck, cardsInHand, cardsInDiscard },
-      } = drawCard(gameState, playerState);
-      playerState.cardsInHand = cardsInHand;
-      gameState.cardsInDeck = cardsInDeck;
-      gameState.cardsInDiscard = cardsInDiscard;
-    },
+    handler: drawCard,
   },
   discardCard: {
     type: PlayerActionEnum.discardCard,
