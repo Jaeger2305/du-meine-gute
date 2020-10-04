@@ -1,6 +1,5 @@
 import { Employee } from "../types";
-import { wood, wool, brick, wheat, metal } from "../resources";
-import { builtinModules } from "module";
+import { wood, wool, clay, wheat, metal } from "../resources";
 import { shuffle } from "lodash";
 
 // Employees
@@ -17,7 +16,7 @@ const actor: Employee = {
 const banker: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "banker",
-  resourceSpecialty: [brick, wood, metal, metal],
+  resourceSpecialty: [clay, wood, metal, metal],
   cost: 6,
   points: 3,
   unassignmentCost: 2,
@@ -26,7 +25,7 @@ const banker: Employee = {
 const brickLayer: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "brick-layer",
-  resourceSpecialty: [brick, brick],
+  resourceSpecialty: [clay, clay],
   cost: 4,
   points: 2,
   unassignmentCost: 2,
@@ -35,7 +34,7 @@ const brickLayer: Employee = {
 const builder: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "builder",
-  resourceSpecialty: [brick, brick, brick, brick],
+  resourceSpecialty: [clay, clay, clay, clay],
   cost: 2,
   points: 3,
   unassignmentCost: 2,
@@ -89,7 +88,7 @@ const officeManager: Employee = {
 const overseer: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "overseer",
-  resourceSpecialty: [wool, metal, brick, wood, wheat],
+  resourceSpecialty: [wool, metal, clay, wood, wheat],
   cost: 2,
   points: 3,
   unassignmentCost: 2,
@@ -116,7 +115,7 @@ const shopOwner: Employee = {
 const supervisor: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "supervisor",
-  resourceSpecialty: [wool, brick, wood, wheat],
+  resourceSpecialty: [wool, clay, wood, wheat],
   cost: 4,
   points: 3,
   unassignmentCost: 2,

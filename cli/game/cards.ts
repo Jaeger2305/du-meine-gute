@@ -1,17 +1,15 @@
-import { BuildingType, Card, Employee } from "../types";
+import { BuildingType, Card } from "../types";
 import {
   wood,
   wool,
-  brick,
+  clay,
   bread,
   wheat,
-  stone,
   metal,
   cattle,
   leather,
   coal,
   plank,
-  documents,
   placeholder,
   unknown as unknownResource,
   glass,
@@ -27,7 +25,7 @@ export const unknown: Card = {
   points: 0,
 };
 
-// Factories
+// Buildings
 
 export const coalMineWheat: Card = {
   name: "coal-mine-wheat",
@@ -55,13 +53,13 @@ export const coalMineWool: Card = {
   points: 0,
 };
 
-export const coalMineBrick: Card = {
-  name: "coal-mine-brick",
+export const coalMineClay: Card = {
+  name: "coal-mine-clay",
   type: BuildingType.charburner,
   resource: wood,
   productionConfig: {
     output: [coal],
-    input: [wood, brick, brick],
+    input: [wood, clay, clay],
     chainInput: [wood],
   },
   cost: 0,
@@ -87,7 +85,7 @@ export const sawmill: Card = {
   resource: wood,
   productionConfig: {
     output: [plank],
-    input: [wood, stone],
+    input: [wood, clay],
   },
   cost: 3,
   points: 2,
@@ -111,7 +109,7 @@ export const altBakery: Card = {
   resource: wheat,
   productionConfig: {
     output: [bread],
-    input: [stone, wheat],
+    input: [clay, wheat],
   },
   cost: 2,
   isSunny: true,
@@ -134,10 +132,10 @@ export const bakeryWithChain: Card = {
 export const tannery: Card = {
   name: "tannery-1",
   type: BuildingType.tannery,
-  resource: brick,
+  resource: clay,
   productionConfig: {
     output: [leather],
-    input: [cattle, stone],
+    input: [cattle, clay],
     chainInput: [wood],
   },
   cost: 4,
@@ -151,8 +149,8 @@ export const altTannery: Card = {
   resource: wood,
   productionConfig: {
     output: [leather],
-    input: [cattle, brick],
-    chainInput: [brick],
+    input: [cattle, clay],
+    chainInput: [clay],
   },
   cost: 4,
   points: 3,
@@ -174,9 +172,9 @@ export const tradingPost: Card = {
   type: BuildingType.marketOffice,
   resource: wood,
   productionConfig: {
-    output: [documents],
-    input: [cattle, brick],
-    chainInput: [brick],
+    output: [glass],
+    input: [cattle, clay],
+    chainInput: [clay],
   },
   cost: 4,
   points: 2,
@@ -187,7 +185,7 @@ export const tradingPost: Card = {
 export const glassblower: Card = {
   name: "glassblower-1",
   type: BuildingType.glassmaker,
-  resource: stone,
+  resource: clay,
   productionConfig: {
     output: [glass],
     input: [placeholder, placeholder, placeholder],

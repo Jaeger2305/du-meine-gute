@@ -1,14 +1,9 @@
-import { differenceBy, intersection } from "lodash";
+import { intersection } from "lodash";
 import * as prompts from "prompts";
 import { placeholder } from "../../resources";
-import {
-  Resource,
-  Card,
-  AssignedEmployee,
-  ResourceType,
-  GameState,
-  PlayerState,
-} from "../../types";
+import { Card, AssignedEmployee, GameState, PlayerState } from "../../types";
+
+import { Resource, ResourceType } from "../../resources";
 import { differenceResources, drawFromDeck } from "../utils";
 
 export function checkOutstandingResources(

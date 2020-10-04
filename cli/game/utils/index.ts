@@ -1,10 +1,6 @@
-import {
-  PlayerState,
-  Resource,
-  PlayerActionEnum,
-  GameState,
-  Card,
-} from "../../types";
+import { PlayerState, PlayerActionEnum, GameState, Card } from "../../types";
+
+import { Resource } from "../../resources";
 import { sortBy, sumBy, shuffle } from "lodash";
 
 export function filterCardsToAffordable<T>(

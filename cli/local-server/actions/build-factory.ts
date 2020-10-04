@@ -1,4 +1,5 @@
-import { GameState, PlayerState, Resource } from "../../types";
+import { GameState, PlayerState } from "../../types";
+import { Resource } from "../../resources";
 import { ServerResponse } from "../types";
 
 /**

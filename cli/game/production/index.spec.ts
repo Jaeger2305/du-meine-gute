@@ -9,7 +9,7 @@ const mockServerActions = {
 jest.doMock("./production-utils", () => mockActions);
 jest.doMock("../../local-server/actions/produce-good", () => mockServerActions);
 import * as prompts from "prompts";
-import { wood, wheat, bread, butter, coal } from "../../resources";
+import { wood, wheat, bread, grain, coal } from "../../resources";
 import { playerActions } from "../index";
 import { altBakery, bakery, sawmill } from "../cards";
 import { produceAtFactory } from "./index";
@@ -317,7 +317,7 @@ describe("produce at factory", () => {
       ...defaultGame.players[0],
       availableActions: [playerActions.produceAtFactory],
       assignedEmployees: [defaultSecondaryChainedAssignedEmployee],
-      resources: [butter, coal],
+      resources: [grain, coal],
     };
     const game = {
       ...defaultGame,
@@ -338,12 +338,12 @@ describe("produce at factory", () => {
       .mockReturnValueOnce({
         isEnoughToProduce: false,
         isExactToProduce: false,
-        requiredExtraResources: [butter, coal],
+        requiredExtraResources: [grain, coal],
       })
       .mockReturnValueOnce({
         isEnoughToProduce: false,
         isExactToProduce: false,
-        requiredExtraResources: [butter, coal],
+        requiredExtraResources: [grain, coal],
       });
 
     mockActions.fallbackProduction

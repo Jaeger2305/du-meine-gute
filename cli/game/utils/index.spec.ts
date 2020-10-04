@@ -7,7 +7,7 @@ import {
   differenceResources,
 } from "./index";
 import { playerActions } from "../index";
-import { bread, coal, wheat, leather, butter } from "../../resources";
+import { bread, coal, wheat, leather, grain } from "../../resources";
 import { Card, PlayerActionEnum } from "../../types";
 import { defaultGame } from "../../__mocks__/game";
 import { bakery, bakeryWithChain, tannery } from "../../__mocks__/card";
@@ -41,7 +41,7 @@ describe("verify resource choice", () => {
     expect(isValidSelection).toBe(true);
   });
   it("should allow picking exact amount", async () => {
-    const isValidSelection = verifyResources([butter], 2);
+    const isValidSelection = verifyResources([grain], 2);
     expect(isValidSelection).toBe(true);
   });
   it("should not allow an excessive pick", async () => {
@@ -155,20 +155,20 @@ describe("spend resources", () => {
 
 describe("difference resources", () => {
   it("filters to a non-unique list", () => {
-    const originalResources = [bread, coal, coal, wheat, butter];
+    const originalResources = [bread, coal, coal, wheat, grain];
     const resourcesToRemove = [coal, wheat];
     const result = differenceResources(originalResources, resourcesToRemove);
-    expect(result).toEqual([bread, coal, butter]);
+    expect(result).toEqual([bread, coal, grain]);
   });
   it("does nothing to the original array, despite filtering", () => {
-    const originalResources = [bread, coal, coal, wheat, butter];
+    const originalResources = [bread, coal, coal, wheat, grain];
     const resourcesToRemove = [coal, wheat];
     differenceResources(originalResources, resourcesToRemove);
-    expect(originalResources).toEqual([bread, coal, coal, wheat, butter]);
+    expect(originalResources).toEqual([bread, coal, coal, wheat, grain]);
     expect(resourcesToRemove).toEqual([coal, wheat]);
   });
   it("outputs no difference to the original array when nothing to remove", () => {
-    const originalResources = [bread, coal, coal, wheat, butter];
+    const originalResources = [bread, coal, coal, wheat, grain];
     const resourcesToRemove = [];
     const result = differenceResources(originalResources, resourcesToRemove);
     expect(result).toEqual(originalResources);
@@ -186,7 +186,7 @@ describe("difference resources", () => {
     expect(result).toEqual([]);
   });
   it("outputs nothing when no overlap with resources", () => {
-    const originalResources = [bread, coal, coal, wheat, butter];
+    const originalResources = [bread, coal, coal, wheat, grain];
     const resourcesToRemove = [leather, leather];
     const result = differenceResources(originalResources, resourcesToRemove);
     expect(result).toEqual(originalResources);

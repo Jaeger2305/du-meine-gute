@@ -1,5 +1,6 @@
 import { playerActions } from "..";
-import { Employee, GameState, PlayerState, Resource } from "../../types";
+import { Employee, GameState, PlayerState } from "../../types";
+import { Resource } from "../../resources";
 import { spendResources } from "../utils";
 
 /**

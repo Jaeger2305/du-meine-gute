@@ -5,9 +5,8 @@ import {
   GameState,
   PlayerActionEnum,
   PlayerState,
-  Resource,
-  ResourceType,
 } from "../../types";
+import { Resource, ResourceType } from "../../resources";
 import { removeActionFromAvailableActions } from "../utils";
 import {
   checkOutstandingResources,

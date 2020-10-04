@@ -5,7 +5,7 @@ import {
   tannery,
   office,
   glassblower,
-  coalMineBrick,
+  coalMineClay,
   coalMineMetal,
   coalMineWool,
   coalMineWheat,
@@ -27,7 +27,7 @@ export function setupGame(game: GameState): void {
   game.cardsInDeck.push(...generateTestCards());
   game.availableEmployees.push(...seedWorkers(game.config.workerCount));
 
-  const coalMines = [coalMineWheat, coalMineBrick, coalMineMetal, coalMineWool];
+  const coalMines = [coalMineWheat, coalMineClay, coalMineMetal, coalMineWool];
   const chosenCoalMine = coalMines[Math.floor(Math.random() * 4)];
   const players: Array<PlayerState> = [
     {

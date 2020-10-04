@@ -1,10 +1,6 @@
 import { playerActions } from "..";
-import {
-  AssignedEmployee,
-  GameState,
-  PlayerState,
-  Resource,
-} from "../../types";
+import { AssignedEmployee, GameState, PlayerState } from "../../types";
+import { Resource } from "../../resources";
 import { spendResources } from "../utils";
 
 export function unassignWorker(

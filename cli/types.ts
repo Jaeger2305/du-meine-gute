@@ -1,3 +1,5 @@
+import { Resource } from "./resources";
+
 export enum PlayerActionEnum {
   endStep = "endStep",
   drawCard = "drawCard",
@@ -95,29 +97,6 @@ export type PlayerState = {
   score: number;
 };
 
-export enum ResourceType {
-  unknown = "unknown", // the resource isn't identified yet
-  placeholder = "placeholder", // the resource can be any base value
-
-  // base resources
-  wood = "wood",
-  wool = "wool",
-  metal = "metal",
-  brick = "brick",
-  wheat = "wheat",
-  stone = "stone",
-  cattle = "cattle",
-
-  // secondary resources
-  coal = "coal",
-  butter = "butter",
-  bread = "bread",
-  plank = "plank",
-  leather = "leather",
-  documents = "documents",
-  glass = "glass",
-}
-
 export enum BuildingType {
   bakery,
   brickMaker,
@@ -139,13 +118,6 @@ export enum BuildingType {
   weavingMill,
   windowMaker,
 }
-
-// We can couple the card to the resource, or we can keep track of the cards reserved as goods separately. that's probably better too.
-export type Resource = {
-  type: ResourceType;
-  value: number;
-  baseResource: boolean;
-};
 
 enum Steps {
   startRound = "start",

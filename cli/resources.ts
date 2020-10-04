@@ -1,4 +1,42 @@
-import { Resource, ResourceType } from "./types";
+// We can couple the card to the resource, or we can keep track of the cards reserved as goods separately. that's probably better too.
+export type Resource = {
+  type: ResourceType;
+  value: number;
+  baseResource: boolean;
+};
+
+export enum ResourceType {
+  placeholder = "placeholder", // the resource can be any base value
+  unknown = "unknown", // the resource isn't identified yet
+
+  // base resources
+  clay = "clay",
+  metal = "metal",
+  wheat = "wheat",
+  wood = "wood",
+  wool = "wool",
+
+  // secondary resources
+  barrel = "barrel",
+  bread = "bread",
+  brick = "brick",
+  cattle = "cattle",
+  cloth = "cloth",
+  coal = "coal",
+  feast = "feast",
+  glass = "glass",
+  grain = "grain",
+  ingot = "ingot",
+  leather = "leather",
+  meat = "meat",
+  plank = "plank",
+  shirt = "shirt",
+  shoe = "shoe",
+  tools = "tools",
+  window = "window",
+}
+
+// Special
 
 export const unknown: Resource = {
   type: ResourceType.unknown,
@@ -11,6 +49,8 @@ export const placeholder: Resource = {
   value: 0,
   baseResource: true,
 };
+
+// Base
 
 export const wheat: Resource = {
   type: ResourceType.wheat,
@@ -36,33 +76,17 @@ export const wood: Resource = {
   baseResource: true,
 };
 
-export const brick: Resource = {
-  type: ResourceType.brick,
+export const clay: Resource = {
+  type: ResourceType.clay,
   value: 0,
   baseResource: true,
 };
 
-export const stone: Resource = {
-  type: ResourceType.stone,
-  value: 0,
-  baseResource: true,
-};
+// Secondary
 
-export const cattle: Resource = {
-  type: ResourceType.cattle,
-  value: 0,
-  baseResource: true,
-};
-
-export const coal: Resource = {
-  type: ResourceType.coal,
-  value: 1,
-  baseResource: false,
-};
-
-export const plank: Resource = {
-  type: ResourceType.plank,
-  value: 3,
+export const barrel: Resource = {
+  type: ResourceType.barrel,
+  value: 5,
   baseResource: false,
 };
 
@@ -72,9 +96,51 @@ export const bread: Resource = {
   baseResource: false,
 };
 
-export const butter: Resource = {
-  type: ResourceType.butter,
+export const brick: Resource = {
+  type: ResourceType.brick,
   value: 2,
+  baseResource: false,
+};
+
+export const cattle: Resource = {
+  type: ResourceType.cattle,
+  value: 3,
+  baseResource: false,
+};
+
+export const cloth: Resource = {
+  type: ResourceType.cloth,
+  value: 3,
+  baseResource: false,
+};
+
+export const coal: Resource = {
+  type: ResourceType.coal,
+  value: 1,
+  baseResource: false,
+};
+
+export const feast: Resource = {
+  type: ResourceType.feast,
+  value: 8,
+  baseResource: false,
+};
+
+export const glass: Resource = {
+  type: ResourceType.glass,
+  value: 4,
+  baseResource: false,
+};
+
+export const grain: Resource = {
+  type: ResourceType.grain,
+  value: 2,
+  baseResource: false,
+};
+
+export const ingot: Resource = {
+  type: ResourceType.ingot,
+  value: 3,
   baseResource: false,
 };
 
@@ -84,14 +150,70 @@ export const leather: Resource = {
   baseResource: false,
 };
 
-export const documents: Resource = {
-  type: ResourceType.documents,
+export const meat: Resource = {
+  type: ResourceType.meat,
+  value: 6,
+  baseResource: false,
+};
+
+export const plank: Resource = {
+  type: ResourceType.plank,
   value: 3,
   baseResource: false,
 };
 
-export const glass: Resource = {
-  type: ResourceType.glass,
+export const shirt: Resource = {
+  type: ResourceType.shirt,
   value: 4,
   baseResource: false,
+};
+
+export const tools: Resource = {
+  type: ResourceType.tools,
+  value: 6,
+  baseResource: false,
+};
+
+export const window: Resource = {
+  type: ResourceType.window,
+  value: 5,
+  baseResource: false,
+};
+
+export const shoe: Resource = {
+  type: ResourceType.shoe,
+  value: 8,
+  baseResource: false,
+};
+
+export const resourceRecords: Record<ResourceType, Resource> = {
+  // special
+  [ResourceType.unknown]: unknown,
+  [ResourceType.placeholder]: placeholder,
+
+  // base
+  [ResourceType.clay]: clay,
+  [ResourceType.metal]: metal,
+  [ResourceType.wheat]: wheat,
+  [ResourceType.wood]: wood,
+  [ResourceType.wool]: wool,
+
+  // secondary
+  [ResourceType.barrel]: barrel,
+  [ResourceType.bread]: bread,
+  [ResourceType.brick]: brick,
+  [ResourceType.cattle]: cattle,
+  [ResourceType.cloth]: cloth,
+  [ResourceType.coal]: coal,
+  [ResourceType.feast]: feast,
+  [ResourceType.glass]: glass,
+  [ResourceType.grain]: grain,
+  [ResourceType.ingot]: ingot,
+  [ResourceType.leather]: leather,
+  [ResourceType.meat]: meat,
+  [ResourceType.plank]: plank,
+  [ResourceType.shirt]: shirt,
+  [ResourceType.shoe]: shoe,
+  [ResourceType.tools]: tools,
+  [ResourceType.window]: window,
 };

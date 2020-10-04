@@ -4,8 +4,8 @@ import {
   GameState,
   PlayerActionEnum,
   PlayerState,
-  Resource,
 } from "../../types";
+import { Resource } from "../../resources";
 import {
   filterCardsToAffordable,
   removeActionFromAvailableActions,

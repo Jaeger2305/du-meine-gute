@@ -1,9 +1,5 @@
-import {
-  GameState,
-  PlayerState,
-  AssignedEmployee,
-  Resource,
-} from "../../types";
+import { GameState, PlayerState, AssignedEmployee } from "../../types";
+import { Resource } from "../../resources";
 import { ServerResponse } from "../types";
 
 export function unassignWorker(
