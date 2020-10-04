@@ -3,10 +3,6 @@ import { bread, leather, coal } from "../resources";
 import { playerActions } from "../game";
 import {
   tannery,
-  skilledApprentice,
-  apprentice,
-  master,
-  boss,
   office,
   glassblower,
   coalMineBrick,
@@ -17,6 +13,7 @@ import {
   sawmill,
   tradingPost,
 } from "../game/cards";
+import { seedWorkers, boss } from "../game/worker";
 import { generateTestCards } from "./utils";
 
 export { roundSteps } from "./round-steps";
@@ -28,7 +25,7 @@ export { roundSteps } from "./round-steps";
 export function setupGame(game: GameState): void {
   game.reservedCards.push(tannery, glassblower, bakery, sawmill, tradingPost);
   game.cardsInDeck.push(...generateTestCards());
-  game.availableEmployees = [skilledApprentice, apprentice, master];
+  game.availableEmployees.push(...seedWorkers(game.config.workerCount));
 
   const coalMines = [coalMineWheat, coalMineBrick, coalMineMetal, coalMineWool];
   const chosenCoalMine = coalMines[Math.floor(Math.random() * 4)];
@@ -36,7 +33,7 @@ export function setupGame(game: GameState): void {
     {
       id: "test-player-id-1",
       playerNumber: 0,
-      employees: [boss, master],
+      employees: [boss],
       cardsInHand: [office, tannery],
       cardsInPlay: [chosenCoalMine, glassblower],
       resources: [bread, leather, bread, leather, coal],

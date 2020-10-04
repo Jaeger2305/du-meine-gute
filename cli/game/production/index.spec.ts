@@ -20,7 +20,7 @@ import {
   defaultSecondaryChainedAssignedEmployee,
   discountedAssignedEmployee,
   discountedChainedAssignedEmployee,
-} from "../../__mocks__/employee";
+} from "../../__mocks__/worker";
 
 beforeEach(() => {
   Object.values(mockActions).forEach((mock) => mock.mockClear());

@@ -5,7 +5,7 @@ import {
   fallbackProduction,
 } from "./production-utils";
 import { tannery, breadCard } from "../../__mocks__/card";
-import { bossAssigned } from "../../__mocks__/employee";
+import { bossAssigned } from "../../__mocks__/worker";
 
 describe("fallback production", () => {
   it("fails production if there aren't enough available cards when using the cards in hand", async () => {

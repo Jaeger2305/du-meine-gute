@@ -7,6 +7,7 @@ export const emptyGame: GameState = {
     buildCountForEndGame: 8,
     drawCount: 2,
     pointsPerResource: 0.25,
+    workerCount: 4,
   },
   cardsInDeck: [],
   cardsInDiscard: [],

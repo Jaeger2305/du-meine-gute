@@ -17,8 +17,9 @@ jest.doMock("../../local-server/actions/hire-worker", () => mockServerActions);
 import * as prompts from "prompts";
 import { hireWorker } from "./index";
 import { playerActions } from "../index";
-import { bakery, apprentice, sawmill } from "../cards";
 import { bread, coal, wood } from "../../resources";
+import { bakery, sawmill } from "../../__mocks__/card";
+import { apprentice } from "../../__mocks__/worker";
 import { defaultGame } from "../../__mocks__/game";
 
 beforeEach(() => {

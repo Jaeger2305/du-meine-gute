@@ -55,6 +55,7 @@ export function newGame(): GameState {
       buildCountForEndGame: 4,
       drawCount: 2,
       pointsPerResource: 0.25,
+      workerCount: 4, // should be dependent on number of players
     },
     cardsInDeck: [],
     cardsInDiscard: [],
