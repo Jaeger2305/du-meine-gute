@@ -34,6 +34,15 @@
       "preLaunchTask": "tsc: build - cli/tsconfig.json",
       "outFiles": ["${workspaceFolder}/cli/dist/**/*.js"],
       "console": "externalTerminal"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch card generator",
+      "program": "${workspaceFolder}/cli/card-generator.ts",
+      "preLaunchTask": "tsc: build - cli/tsconfig-generator.json",
+      "outFiles": ["${workspaceFolder}/cli/dist/**/*.js"],
+      "console": "externalTerminal"
     }
   ]
 }
