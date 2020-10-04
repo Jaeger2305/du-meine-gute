@@ -12,7 +12,6 @@ import {
   verifyResources,
 } from "../utils";
 import { hireWorker as serverHireWorker } from "../../local-server/actions/hire-worker";
-import { differenceBy } from "lodash";
 import { payForWorker } from "./hire-worker-utils";
 
 export async function hireWorker(

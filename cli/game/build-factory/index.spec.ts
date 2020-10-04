@@ -19,7 +19,7 @@ jest.doMock("./build-factory-utils", () => mockUtils);
 import * as prompts from "prompts";
 import { buildFactory } from "./index";
 import { playerActions } from "../index";
-import { bakery, tannery } from "../cards";
+import { cardRecords } from "../cards";
 import { bread, coal } from "../../resources";
 import { defaultGame } from "../../__mocks__/game";
 
@@ -37,16 +37,18 @@ describe("build factory", () => {
       ...defaultGame.players[0],
       availableActions: [playerActions.buildFactory, playerActions.endStep],
       resources: [coal, coal, bread, coal],
-      reservedFactory: bakery,
+      reservedFactory: cardRecords.BAKERY_CLAY,
     };
     const game = {
       ...defaultGame,
-      cardsInDeck: [tannery],
+      cardsInDeck: [cardRecords.TANNERY_METAL_WOOD],
       players: [player],
     };
-    prompts.inject([bakery, [coal, bread]]);
+    prompts.inject([cardRecords.BAKERY_CLAY, [coal, bread]]);
     mockActions.verifyResources.mockReturnValue(true);
-    mockActions.filterCardsToAffordable.mockReturnValue([bakery]);
+    mockActions.filterCardsToAffordable.mockReturnValue([
+      cardRecords.BAKERY_CLAY,
+    ]);
     mockActions.removeActionFromAvailableActions.mockImplementation(
       () => (player.availableActions = [playerActions.endStep])
     );
@@ -56,7 +58,7 @@ describe("build factory", () => {
       },
     });
     mockUtils.payForFactory.mockImplementation(() => {
-      player.cardsInPlay = [bakery];
+      player.cardsInPlay = [cardRecords.BAKERY_CLAY];
       player.reservedFactory = null;
       player.availableActions = [playerActions.endStep];
       player.resources = [coal, coal];
@@ -66,7 +68,7 @@ describe("build factory", () => {
     await buildFactory(game, player);
 
     // Assert
-    expect(player.cardsInPlay).toEqual([bakery]);
+    expect(player.cardsInPlay).toEqual([cardRecords.BAKERY_CLAY]);
     expect(player.reservedFactory).toEqual(null);
     expect(player.resources).toEqual([coal, coal]);
     expect(player.availableActions).toEqual([playerActions.endStep]);
@@ -77,16 +79,18 @@ describe("build factory", () => {
       ...defaultGame.players[0],
       availableActions: [playerActions.buildFactory, playerActions.endStep],
       resources: [coal, coal, bread, coal],
-      reservedFactory: bakery,
+      reservedFactory: cardRecords.BAKERY_CLAY,
     };
     const game = {
       ...defaultGame,
-      cardsInDeck: [tannery],
+      cardsInDeck: [cardRecords.TANNERY_METAL_WOOD],
       players: [player],
     };
-    prompts.inject([bakery, [coal, coal]]);
+    prompts.inject([cardRecords.BAKERY_CLAY, [coal, coal]]);
     mockActions.verifyResources.mockReturnValue(true);
-    mockActions.filterCardsToAffordable.mockReturnValue([bakery]);
+    mockActions.filterCardsToAffordable.mockReturnValue([
+      cardRecords.BAKERY_CLAY,
+    ]);
     mockActions.removeActionFromAvailableActions.mockImplementation(
       () => (player.availableActions = [playerActions.endStep])
     );
@@ -96,7 +100,7 @@ describe("build factory", () => {
       },
     });
     mockUtils.payForFactory.mockImplementation(() => {
-      player.cardsInPlay = [bakery];
+      player.cardsInPlay = [cardRecords.BAKERY_CLAY];
       player.reservedFactory = null;
       player.availableActions = [playerActions.endStep];
       player.resources = [bread, coal];
@@ -106,7 +110,7 @@ describe("build factory", () => {
     await buildFactory(game, player);
 
     // Assert
-    expect(player.cardsInPlay).toEqual([bakery]);
+    expect(player.cardsInPlay).toEqual([cardRecords.BAKERY_CLAY]);
   });
   it("should allow picking a variety of resources", async () => {
     // Arrange
@@ -114,16 +118,18 @@ describe("build factory", () => {
       ...defaultGame.players[0],
       availableActions: [playerActions.buildFactory, playerActions.endStep],
       resources: [coal, coal, bread, coal],
-      reservedFactory: bakery,
+      reservedFactory: cardRecords.BAKERY_CLAY,
     };
     const game = {
       ...defaultGame,
-      cardsInDeck: [tannery],
+      cardsInDeck: [cardRecords.TANNERY_METAL_WOOD],
       players: [player],
     };
-    prompts.inject([bakery, [coal, bread]]);
+    prompts.inject([cardRecords.BAKERY_CLAY, [coal, bread]]);
     mockActions.verifyResources.mockReturnValue(true);
-    mockActions.filterCardsToAffordable.mockReturnValue([bakery]);
+    mockActions.filterCardsToAffordable.mockReturnValue([
+      cardRecords.BAKERY_CLAY,
+    ]);
     mockActions.removeActionFromAvailableActions.mockImplementation(
       () => (player.availableActions = [playerActions.endStep])
     );
@@ -133,7 +139,7 @@ describe("build factory", () => {
       },
     });
     mockUtils.payForFactory.mockImplementation(() => {
-      player.cardsInPlay = [bakery];
+      player.cardsInPlay = [cardRecords.BAKERY_CLAY];
       player.reservedFactory = null;
       player.availableActions = [playerActions.endStep];
       player.resources = [coal, coal];
@@ -143,7 +149,7 @@ describe("build factory", () => {
     await buildFactory(game, player);
 
     // Assert
-    expect(player.cardsInPlay).toEqual([bakery]);
+    expect(player.cardsInPlay).toEqual([cardRecords.BAKERY_CLAY]);
   });
 
   xit("should re-ask if failing validation", async () => {}); // probably not needed, because the action won't be run and can be re-done anyway
@@ -162,7 +168,7 @@ describe("build factory", () => {
     };
     const game = {
       ...defaultGame,
-      cardsInDeck: [tannery],
+      cardsInDeck: [cardRecords.TANNERY_METAL_WOOD],
       players: [player],
     };
     mockActions.filterCardsToAffordable.mockReturnValue([]);
@@ -175,8 +181,8 @@ describe("build factory", () => {
     );
     mockServerActions.buildFactory.mockReturnValue({
       response: {
-        playedCard: bakery,
-        cardsInPlay: [bakery],
+        playedCard: cardRecords.BAKERY_CLAY,
+        cardsInPlay: [cardRecords.BAKERY_CLAY],
         reservedFactory: null,
         availableActions: [playerActions.endStep],
         resources: [coal, coal],
@@ -201,16 +207,18 @@ describe("build factory", () => {
         playerActions.endStep,
       ],
       resources: [coal, coal, bread, coal],
-      reservedFactory: bakery,
+      reservedFactory: cardRecords.BAKERY_CLAY,
     };
     const game = {
       ...defaultGame,
-      cardsInDeck: [tannery],
+      cardsInDeck: [cardRecords.TANNERY_METAL_WOOD],
       players: [player],
     };
-    prompts.inject([bakery, [coal, bread]]);
+    prompts.inject([cardRecords.BAKERY_CLAY, [coal, bread]]);
     mockActions.verifyResources.mockReturnValue(true);
-    mockActions.filterCardsToAffordable.mockReturnValue([bakery]);
+    mockActions.filterCardsToAffordable.mockReturnValue([
+      cardRecords.BAKERY_CLAY,
+    ]);
     mockActions.removeActionFromAvailableActions.mockImplementation(
       () => (player.availableActions = [playerActions.endStep])
     );
@@ -220,7 +228,7 @@ describe("build factory", () => {
       },
     });
     mockUtils.payForFactory.mockImplementation(() => {
-      player.cardsInPlay = [bakery];
+      player.cardsInPlay = [cardRecords.BAKERY_CLAY];
       player.reservedFactory = null;
       player.availableActions = [playerActions.endStep];
       player.resources = [coal, coal];

@@ -39,7 +39,6 @@ The vast majority of requests can be done optimistically. The trickier ones are 
 
 Next
 
-- Add all cards
 - Begin integration into app
 
 Integrating the server side tasks
@@ -57,12 +56,6 @@ Also, there are some quality of life tasks:
 - [ ] refactoring player actions into separate files
 - [ ] avoid mutation where possible (although it might make sense in some places, when transferring into Vue)
 - [ ] production is complicated, there might be a better way of doing it (the loops and mutations aren't nice)
-
-And laborious tasks:
-
-- [ ] add all the cards from the game
-- [ ] add all the workers to the game
-- [ ] add all the resource types to the game
 
 And the final TODO:
 

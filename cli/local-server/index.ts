@@ -2,16 +2,11 @@ import { GameState, PlayerState } from "../types";
 import { bread, leather, coal } from "../resources";
 import { playerActions } from "../game";
 import {
-  tannery,
-  office,
-  glassblower,
   coalMineClay,
   coalMineMetal,
   coalMineWool,
   coalMineWheat,
-  bakery,
-  sawmill,
-  tradingPost,
+  cardRecords,
 } from "../game/cards";
 import { seedWorkers, boss } from "../game/worker";
 import { generateTestCards } from "./utils";
@@ -23,7 +18,13 @@ export { roundSteps } from "./round-steps";
  * Returns valid actions that can be performed, which is just acknowledgements
  */
 export function setupGame(game: GameState): void {
-  game.reservedCards.push(tannery, glassblower, bakery, sawmill, tradingPost);
+  game.reservedCards.push(
+    cardRecords.TANNERY_METAL_WOOD,
+    cardRecords.GLASSMAKER,
+    cardRecords.BAKERY_CLAY,
+    cardRecords.SAWMILL_CLAY_METAL,
+    cardRecords.MARKET_OFFICE_CLAY1
+  );
   game.cardsInDeck.push(...generateTestCards());
   game.availableEmployees.push(...seedWorkers(game.config.workerCount));
 
@@ -34,8 +35,11 @@ export function setupGame(game: GameState): void {
       id: "test-player-id-1",
       playerNumber: 0,
       employees: [boss],
-      cardsInHand: [office, tannery],
-      cardsInPlay: [chosenCoalMine, glassblower],
+      cardsInHand: [
+        cardRecords.MARKET_OFFICE_CLAY2,
+        cardRecords.TANNERY_WHEAT_WOOL,
+      ],
+      cardsInPlay: [chosenCoalMine, cardRecords.GLASSMAKER_SUN],
       resources: [bread, leather, bread, leather, coal],
       availableActions: [playerActions.endStep],
       assignedEmployees: [],

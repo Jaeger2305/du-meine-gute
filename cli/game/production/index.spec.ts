@@ -9,9 +9,9 @@ const mockServerActions = {
 jest.doMock("./production-utils", () => mockActions);
 jest.doMock("../../local-server/actions/produce-good", () => mockServerActions);
 import * as prompts from "prompts";
-import { wood, wheat, bread, grain, coal } from "../../resources";
+import { wheat, bread, grain, coal } from "../../resources";
 import { playerActions } from "../index";
-import { altBakery, bakery, sawmill } from "../cards";
+import { cardRecords } from "../cards";
 import { produceAtFactory } from "./index";
 import { defaultGame } from "../../__mocks__/game";
 import {
@@ -36,7 +36,7 @@ describe("produce at factory", () => {
     };
     const game = {
       ...defaultGame,
-      marketCards: [sawmill, altBakery],
+      marketCards: [cardRecords.SAWMILL_CLAY_METAL, cardRecords.BAKERY_CLAY],
     };
     const factoryWorker = {
       ...player.assignedEmployees[0],
@@ -69,7 +69,7 @@ describe("produce at factory", () => {
     };
     const game = {
       ...defaultGame,
-      marketCards: [sawmill],
+      marketCards: [cardRecords.SAWMILL_CLAY_METAL],
     };
     const factoryWorker = {
       ...player.assignedEmployees[0],
@@ -99,11 +99,11 @@ describe("produce at factory", () => {
       ...defaultGame.players[0],
       availableActions: [playerActions.produceAtFactory],
       assignedEmployees: [defaultAssignedEmployee],
-      cardsInHand: [bakery],
+      cardsInHand: [cardRecords.BAKERY_CLAY],
     };
     const game = {
       ...defaultGame,
-      marketCards: [sawmill],
+      marketCards: [cardRecords.SAWMILL_CLAY_METAL],
     };
     const factoryWorker = {
       ...player.assignedEmployees[0],
@@ -129,23 +129,28 @@ describe("produce at factory", () => {
     mockActions.produceGood.mockImplementation(() => {
       player.resources = [bread];
       game.cardsInDeck = [];
-      game.cardsInDiscard = [bakery];
+      game.cardsInDiscard = [cardRecords.BAKERY_CLAY];
     });
     await produceAtFactory(game, player);
     expect(player.resources).toEqual([bread]);
     expect(player.cardsInHand).toEqual([]);
-    expect(game.cardsInDiscard).toEqual([bakery]);
+    expect(game.cardsInDiscard).toEqual([cardRecords.BAKERY_CLAY]);
   });
   it("should produce several resources if can chain production, relying only on the market", async () => {
     const player = {
       ...defaultGame.players[0],
       availableActions: [playerActions.produceAtFactory],
       assignedEmployees: [defaultChainedAssignedEmployee],
-      cardsInHand: [bakery],
+      cardsInHand: [cardRecords.BAKERY_CLAY],
     };
     const game = {
       ...defaultGame,
-      marketCards: [sawmill, altBakery, altBakery, altBakery],
+      marketCards: [
+        cardRecords.SAWMILL_CLAY_METAL,
+        cardRecords.BAKERY_METAL,
+        cardRecords.BAKERY_METAL,
+        cardRecords.BAKERY_METAL,
+      ],
     };
     // This isn't actually in the official rules! Surprisingly, players can only chain using cards from their hand.
     const factoryWorker = {
@@ -198,11 +203,16 @@ describe("produce at factory", () => {
       ...defaultGame.players[0],
       availableActions: [playerActions.produceAtFactory],
       assignedEmployees: [discountedChainedAssignedEmployee],
-      cardsInHand: [bakery],
+      cardsInHand: [cardRecords.BAKERY_CLAY],
     };
     const game = {
       ...defaultGame,
-      marketCards: [sawmill, altBakery, altBakery, altBakery],
+      marketCards: [
+        cardRecords.SAWMILL_CLAY_METAL,
+        cardRecords.BAKERY_METAL,
+        cardRecords.BAKERY_METAL,
+        cardRecords.BAKERY_METAL,
+      ],
     };
     const factoryWorker = {
       ...player.assignedEmployees[0],
@@ -259,11 +269,11 @@ describe("produce at factory", () => {
       ...defaultGame.players[0],
       availableActions: [playerActions.produceAtFactory],
       assignedEmployees: [defaultChainedAssignedEmployee],
-      cardsInHand: [bakery],
+      cardsInHand: [cardRecords.BAKERY_CLAY],
     };
     const game = {
       ...defaultGame,
-      marketCards: [sawmill, altBakery],
+      marketCards: [cardRecords.SAWMILL_CLAY_METAL, cardRecords.BAKERY_METAL],
     };
     const factoryWorker = {
       ...player.assignedEmployees[0],
@@ -306,7 +316,7 @@ describe("produce at factory", () => {
     mockActions.produceGood.mockImplementation(() => {
       player.resources = [bread, bread];
       game.cardsInDeck = [];
-      game.cardsInDiscard = [bakery];
+      game.cardsInDiscard = [cardRecords.BAKERY_CLAY];
     });
 
     await produceAtFactory(game, player);
@@ -321,7 +331,7 @@ describe("produce at factory", () => {
     };
     const game = {
       ...defaultGame,
-      marketCards: [sawmill, altBakery],
+      marketCards: [cardRecords.SAWMILL_CLAY_METAL, cardRecords.BAKERY_METAL],
     };
     const factoryWorker = {
       ...player.assignedEmployees[0],
@@ -364,7 +374,7 @@ describe("produce at factory", () => {
     mockActions.produceGood.mockImplementation(() => {
       player.resources = [bread, bread, bread];
       game.cardsInDeck = [];
-      game.cardsInDiscard = [bakery];
+      game.cardsInDiscard = [cardRecords.BAKERY_CLAY];
     });
     await produceAtFactory(game, player);
     expect(player.resources).toEqual([bread, bread, bread]);
@@ -377,7 +387,7 @@ describe("produce at factory", () => {
     };
     const game = {
       ...defaultGame,
-      marketCards: [sawmill, altBakery],
+      marketCards: [cardRecords.SAWMILL_CLAY_METAL, cardRecords.BAKERY_METAL],
     };
     const factoryWorker = {
       ...player.assignedEmployees[0],
