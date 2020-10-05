@@ -1,11 +1,17 @@
 <template>
   <Page actionBarHidden="true">
-    <GridLayout columns="*, *" rows="*, *, 5*">
+    <GridLayout columns="*, *, *" rows="*, *, 5*">
       <Label column="0" row="0" :text="`welcome ${savedUsername}`" />
       <Button column="1" row="0" text="logout" @tap="logout" />
       <Button column="0" row="1" text="fetchGames" @tap="fetchGames" />
       <Button column="1" row="1" text="createGame" @tap="createGame" />
-      <ListView row="2" colSpan="2" for="game in games">
+      <Button
+        column="2"
+        row="1"
+        text="createLocalGame"
+        @tap="createLocalGame"
+      />
+      <ListView row="2" colSpan="3" for="game in games">
         <v-template>
           <GameListItem :game="game" />
         </v-template>
@@ -17,6 +23,7 @@
 <script lang="ts">
 import { getString, setString } from "@nativescript/core/application-settings";
 import Login from "./Login.vue";
+import GameLocal from "./GameLocal.vue";
 
 export default {
   data() {
@@ -67,6 +74,9 @@ export default {
       } catch (error) {
         console.error("the localhost fetch failed.", error);
       }
+    },
+    async createLocalGame() {
+      this.$navigateTo(GameLocal);
     },
   },
 };

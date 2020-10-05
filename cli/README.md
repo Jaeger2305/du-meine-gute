@@ -39,7 +39,15 @@ The vast majority of requests can be done optimistically. The trickier ones are 
 
 Next
 
-- Begin integration into app
+- Begin integration of CLI game logic into actual app
+  - [ ] disable, or toggle the websocket connection within the main game component
+  - [x] add available actions as buttons that do nothing except remove the action
+  - [x] allow a local version of the server to populate the available actions
+  - [x] draw a card with the local version
+  - [x] draw a card with the local version, but delayed and using callbacks
+  - [ ] integrate the websocket drawCard with the app
+  - [ ] tidyup mixed references to CLI/local files
+  - [ ] perform available actions for specific components, rather than globally
 
 Integrating the server side tasks
 
