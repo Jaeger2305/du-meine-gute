@@ -29,7 +29,7 @@ import {
 // Placeholders
 
 export const unknown: Card = {
-  name: "placeholder",
+  name: "unknown",
   type: BuildingType.unknown,
   resource: unknownResource,
   cost: 0,
