@@ -1,5 +1,5 @@
 <template>
-  <Page>
+  <Page actionBarHidden="true">
     <!-- The overall grid -->
     <!-- | ---- | --------------------history------------------ | sett | -->
     <!-- | ---- | -----card--------card--------card------------ | ---- | -->

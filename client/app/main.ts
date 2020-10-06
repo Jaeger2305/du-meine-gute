@@ -1,6 +1,7 @@
 import Vue from "nativescript-vue";
 import App from "./components/App";
 import VueDevtools from "nativescript-vue-devtools";
+const app = require("tns-core-modules/application");
 
 if (TNS_ENV !== "production") {
   Vue.use(VueDevtools);
@@ -17,4 +18,11 @@ Vue.component("Card", Card);
 new Vue({
   store,
   render: (h) => h("frame", [h(App)]),
+  mounted() {
+    if (app.android) {
+      const activity = app.android.startActivity;
+      const win = activity.getWindow();
+      win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
+  },
 }).$start();
