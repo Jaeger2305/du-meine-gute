@@ -13,7 +13,7 @@
       </ScrollView>
 
       <!-- Settings -->
-      <Button column="2" row="0" text="ready?" @tap="playerReady" />
+      <!-- <Button column="2" row="0" text="ready?" @tap="playerReady" /> -->
 
       <!-- Event space (e.g. the market) -->
       <!-- For now though, this is available actions -->
@@ -24,10 +24,11 @@
             :key="action.type"
             :name="action.type"
             @click="
-              () => {
-                console.log(`clicked ${action.type}`);
-                action.handler(gameState, playerState);
-              }
+              () =>
+                action.type === 'drawCard'
+                  ? requestDrawCard()
+                  : action.handler(gameState, playerState) &&
+                    action.handler(serverState, playerState)
             "
           />
         </StackLayout>
@@ -37,7 +38,7 @@
       <Card
         column="0"
         row="2"
-        :name="`draw${cardsInDeck.length}`"
+        :name="`draw${gameState.cardsInDeck.length}`"
         @click="requestDrawCard"
       />
 
@@ -63,43 +64,44 @@
 import { getString, setString } from "@nativescript/core/application-settings";
 import Lobby from "./Lobby.vue";
 import { setTimeout, clearTimeout } from "tns-core-modules/timer";
-import { newGame, playerActions } from "../game";
-import { setupGame, roundSteps } from "../local-server";
+import { newGame, newPlayer, playerActions } from "../game";
+import { setupGame, roundSteps, serverActions } from "../local-server";
+import { serverResponse } from "../server-response";
+import { GameState, PlayerState } from "../../../cli/types";
+import { cloneDeep } from "lodash";
 
 export default {
   props: {},
-  data() {
+  data(): {
+    playerState: PlayerState;
+    serverState: GameState; // We should have separate types for server/game state, where one permits unknown cards but the other does not.
+    gameState: GameState; // The UI should use only the gameState, and the serverState is used for local games. Keeping these in sync will be a challenge.
+    messages: Array<any>;
+    isLocal: boolean;
+    playerActions: typeof playerActions;
+    step: number;
+  } {
     return {
+      isLocal: true,
+      serverState: newGame(),
       gameState: newGame(),
       messages: [],
-      cardsInDeck: [],
-      playerState: {
-        id: "",
-        playerNumber: 0,
-        player: {},
-        cardsInHand: [],
-        cardsInPlay: [],
-        availableActions: [],
-        employees: [],
-        assignedEmployees: [],
-        resources: [],
-        reservedFactory: null,
-      },
+      playerState: newPlayer(),
       playerActions,
       step: 0,
-      console,
     };
   },
   created() {
     setupGame(this.gameState);
+    this.serverState = cloneDeep(this.gameState); // just to test
     this.playerState = this.gameState.players[0];
   },
   async destroyed() {},
   computed: {},
   watch: {
     "playerState.availableActions"() {
-      if (!this.playerState.availableActions.length) {
-        console.log("triggering next step in round");
+      if (!this.playerState.availableActions.length && this.isLocal) {
+        // This should be a server action with a server response, rather than handled here. But, PoC phase.
         roundSteps[this.step++ % roundSteps.length](
           this.gameState,
           this.playerState
@@ -108,7 +110,44 @@ export default {
     },
   },
   methods: {
-    requestDrawCard() {},
+    sendMessage(payload) {
+      // There's still a question here of whether child components will be responsible for sending/receiving messages.
+      // Current architecture is no, everything is done in the global Game component. But not much thought has gone into that, other than keeping it simple.
+      // This could even be a mixin though.
+      if (this.isLocal) {
+        // Perform local server action immediately
+        const response = serverActions[payload.type].handler(
+          this.gameState,
+          this.serverState,
+          this.playerState
+        );
+        this.receiveMessage(response);
+      } else {
+        // There's no socket integration with this yet - PoC phase.
+        console.error(
+          "No socket integration set up yet - Go server isn't feature complete like the local server"
+        );
+        // this.socket.send(JSON.stringify(message));
+      }
+    },
+    receiveMessage(payload) {
+      // Should be using enums here, and the separate game logic folders
+      if (payload.response.type === "drawCard") {
+        serverResponse.drawCard.handler(
+          this.gameState,
+          this.serverState,
+          this.playerState,
+          payload.response.drawnCard,
+          payload.response.cardsInDiscard,
+          payload.response.cardsInDeck
+        );
+      }
+      console.warn("unrecognised type - game logic not fully implemented yet");
+    },
+    requestDrawCard() {
+      playerActions.drawCard.handler(this.gameState, this.playerState);
+      this.sendMessage({ type: "drawCard" });
+    },
     requestPlayCard() {},
     playerEndRound() {},
     async leaveGame() {

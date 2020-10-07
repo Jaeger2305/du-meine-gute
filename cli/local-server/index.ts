@@ -12,6 +12,7 @@ import { seedWorkers, boss } from "../game/worker";
 import { generateTestCards } from "./utils";
 
 export { roundSteps } from "./round-steps";
+import { drawCard } from "./actions/draw-card";
 
 /**
  * Initialises the deck of cards
@@ -51,3 +52,10 @@ export function setupGame(game: GameState): void {
   game.players = players;
   return;
 }
+
+export const serverActions = {
+  drawCard: {
+    type: "drawCard",
+    handler: drawCard,
+  },
+};

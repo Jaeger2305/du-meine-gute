@@ -18,5 +18,4 @@ export function drawCard(gameState: GameState, playerState: PlayerState) {
   playerState.cardsInHand.push(unknownCard);
   // Find the event and delete it
   removeActionFromAvailableActions(playerState, PlayerActionEnum.drawCard);
-  setTimeout(() => serverDrawCard(gameState, playerState, unknownCard), 3000);
 }

@@ -1,29 +1,48 @@
 import { ServerResponse } from "../types";
 import { drawFromDeck } from "../../../../cli/game/utils";
 import { Card, GameState, PlayerState } from "../../../../cli/types";
+import { unknown } from "../../../../cli/game/cards";
 
 /**
  * Reveals a card from the deck after the user has requested drawing a card.
  * Returns the function to update the client game state
+ * The gameState or playerState should not be modified here.
  */
 export function drawCard(
   gameState: GameState,
-  playerState: PlayerState,
-  unknownCard: Card
+  serverState: GameState,
+  playerState: PlayerState
 ): ServerResponse {
-  // If network game, submit the socket and return.
-  // this.gameSocket.send("drawCard")
-
+  debugger;
   // Draw the card
   const drawnCard = drawFromDeck(
-    gameState.cardsInDeck,
-    gameState.cardsInDiscard
+    serverState.cardsInDeck,
+    serverState.cardsInDiscard
   );
-  if (drawnCard) Object.assign(unknownCard, drawnCard);
+
+  if (drawnCard)
+    serverState.players[playerState.playerNumber].cardsInHand.push(drawnCard);
 
   // Send the response back
-  const response = { isOK: true };
+  const response = {
+    type: "drawCard",
+    isOK: true,
+    drawnCard,
+    cardsInDiscard: serverState.cardsInDiscard,
+    cardsInDeck: obfuscateDeck(serverState.cardsInDeck),
+  };
   return {
     response,
   };
+}
+
+// This should be a shared util function, but quick for now whilst PoC
+function createUnknownCard(baseCard: Card = unknown): Card {
+  return { ...unknown, ...baseCard };
+}
+
+function obfuscateDeck(
+  cardsInDeck: GameState["cardsInDeck"]
+): GameState["cardsInDeck"] {
+  return cardsInDeck.map(createUnknownCard);
 }

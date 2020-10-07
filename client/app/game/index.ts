@@ -1,4 +1,4 @@
-import { GameState, PlayerActionEnum } from "../../../cli/types";
+import { GameState, PlayerActionEnum, PlayerState } from "../../../cli/types";
 import { drawCard } from "./draw-card";
 import { endStep } from "./end-step";
 
@@ -32,4 +32,21 @@ export function newGame(): GameState {
     score: 0,
   };
   return gameState;
+}
+
+export function newPlayer(): PlayerState {
+  const playerState: PlayerState = {
+    id: "",
+    playerNumber: 0,
+    player: { name: "test" },
+    cardsInHand: [],
+    cardsInPlay: [],
+    availableActions: [],
+    employees: [],
+    assignedEmployees: [],
+    resources: [],
+    reservedFactory: null,
+    score: 0,
+  };
+  return playerState;
 }

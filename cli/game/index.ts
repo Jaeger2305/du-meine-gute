@@ -68,3 +68,20 @@ export function newGame(): GameState {
   };
   return gameState;
 }
+
+export function newPlayer(): PlayerState {
+  const playerState: PlayerState = {
+    id: "",
+    playerNumber: 0,
+    player: { name: "test" },
+    cardsInHand: [],
+    cardsInPlay: [],
+    availableActions: [],
+    employees: [],
+    assignedEmployees: [],
+    resources: [],
+    reservedFactory: null,
+    score: 0,
+  };
+  return playerState;
+}
