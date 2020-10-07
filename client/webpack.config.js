@@ -180,6 +180,7 @@ module.exports = (env) => {
       timers: false,
       setImmediate: false,
       fs: "empty",
+      module: "empty",
       __dirname: false,
     },
     devtool: hiddenSourceMap
@@ -233,6 +234,7 @@ module.exports = (env) => {
     module: {
       rules: [
         {
+          // exclude: [join(appFullPath, entryPath + ".spec.ts")],
           include: [
             join(appFullPath, entryPath + ".js"),
             join(appFullPath, entryPath + ".ts"),
