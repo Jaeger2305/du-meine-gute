@@ -1,5 +1,5 @@
-import { cardRecords } from "../../../cli/game/cards";
-import { Card } from "../../../cli/types";
+import { cardRecords } from "../cards";
+import { Card } from "../types";
 
 /**
  *

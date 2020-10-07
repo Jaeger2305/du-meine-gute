@@ -1,4 +1,4 @@
-import { GameState, PlayerActionEnum, PlayerState } from "../../../cli/types";
+import { GameState, PlayerActionEnum, PlayerState } from "../types";
 import { drawCard } from "./draw-card";
 import { endStep } from "./end-step";
 

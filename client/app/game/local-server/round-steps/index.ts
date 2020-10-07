@@ -1,4 +1,4 @@
-import { GameState, PlayerState } from "../../../../cli/types";
+import { GameState, PlayerState } from "../../types";
 import { revealMarket } from "./reveal-market";
 import { ServerResponse } from "../types";
 import { draw } from "./draw";

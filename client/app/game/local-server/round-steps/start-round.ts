@@ -1,5 +1,5 @@
-import { playerActions } from "../../game";
-import { GameState, PlayerState } from "../../../../cli/types";
+import { playerActions } from "../../client";
+import { GameState, PlayerState } from "../../types";
 import { ServerResponse } from "../types";
 
 /**

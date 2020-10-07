@@ -1,7 +1,7 @@
 import { ServerResponse } from "../types";
-import { drawFromDeck } from "../../../../cli/game/utils";
-import { Card, GameState, PlayerState } from "../../../../cli/types";
-import { unknown } from "../../../../cli/game/cards";
+import { drawFromDeck } from "../../utils";
+import { Card, GameState, PlayerState } from "../../types";
+import { unknown } from "../../cards";
 
 /**
  * Reveals a card from the deck after the user has requested drawing a card.

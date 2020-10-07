@@ -1,12 +1,7 @@
 import { drawCard as serverDrawCard } from "../../local-server/actions/draw-card";
-import {
-  Card,
-  GameState,
-  PlayerActionEnum,
-  PlayerState,
-} from "../../../../cli/types";
-import { unknown } from "../../../../cli/game/cards";
-import { removeActionFromAvailableActions } from "../../../../cli/game/utils";
+import { Card, GameState, PlayerActionEnum, PlayerState } from "../../types";
+import { unknown } from "../../cards";
+import { removeActionFromAvailableActions } from "../../utils";
 
 function createUnknownCard(baseCard: Card = unknown): Card {
   return { ...unknown, ...baseCard };

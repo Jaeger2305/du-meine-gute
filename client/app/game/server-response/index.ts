@@ -4,7 +4,7 @@ import {
   GameState,
   PlayerActionEnum,
   PlayerState,
-} from "../../../cli/types";
+} from "../types";
 
 const endStep = () => {};
 

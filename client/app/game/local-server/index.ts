@@ -1,14 +1,14 @@
-import { GameState, PlayerState } from "../../../cli/types";
-import { bread, leather, coal } from "../../../cli/resources";
-import { playerActions } from "../game";
+import { GameState, PlayerState } from "../types";
+import { bread, leather, coal } from "../resources";
+import { playerActions } from "../client";
 import {
   coalMineClay,
   coalMineMetal,
   coalMineWool,
   coalMineWheat,
   cardRecords,
-} from "../../../cli/game/cards";
-import { seedWorkers, boss } from "../../../cli/game/worker";
+} from "../cards";
+import { seedWorkers, boss } from "../worker";
 import { generateTestCards } from "./utils";
 
 export { roundSteps } from "./round-steps";

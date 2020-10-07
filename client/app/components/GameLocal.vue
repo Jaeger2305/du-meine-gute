@@ -64,10 +64,10 @@
 import { getString, setString } from "@nativescript/core/application-settings";
 import Lobby from "./Lobby.vue";
 import { setTimeout, clearTimeout } from "tns-core-modules/timer";
-import { newGame, newPlayer, playerActions } from "../game";
-import { setupGame, roundSteps, serverActions } from "../local-server";
-import { serverResponse } from "../server-response";
-import { GameState, PlayerState } from "../../../cli/types";
+import { newGame, newPlayer, playerActions } from "../game/client";
+import { setupGame, roundSteps, serverActions } from "../game/local-server";
+import { serverResponse } from "../game/server-response";
+import { GameState, PlayerState } from "../game/types";
 import { cloneDeep } from "lodash";
 
 export default {
@@ -141,8 +141,11 @@ export default {
           payload.response.cardsInDiscard,
           payload.response.cardsInDeck
         );
+      } else {
+        console.warn(
+          "unrecognised type - game logic not fully implemented yet"
+        );
       }
-      console.warn("unrecognised type - game logic not fully implemented yet");
     },
     requestDrawCard() {
       playerActions.drawCard.handler(this.gameState, this.playerState);

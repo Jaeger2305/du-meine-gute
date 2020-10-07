@@ -1,6 +1,6 @@
-import { playerActions } from "../../game";
-import { drawFromDeck } from "../../../../cli/game/utils";
-import { GameState, PlayerState, Card } from "../../../../cli/types";
+import { playerActions } from "../../client";
+import { drawFromDeck } from "../../utils";
+import { GameState, PlayerState, Card } from "../../types";
 import { ServerResponse } from "../types";
 
 /**

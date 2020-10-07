@@ -1,10 +1,6 @@
 import { sum } from "lodash";
-import { playerActions } from "../../game";
-import {
-  AssignedEmployee,
-  GameState,
-  PlayerState,
-} from "../../../../cli/types";
+import { playerActions } from "../../client";
+import { AssignedEmployee, GameState, PlayerState } from "../../types";
 import { ServerResponse } from "../types";
 
 /**
