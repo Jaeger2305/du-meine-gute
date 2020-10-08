@@ -115,3 +115,12 @@ export function differenceResources(
   });
   return copyOriginalResources;
 }
+
+export function isActionAvailable(
+  availableActions: PlayerState["availableActions"],
+  action: PlayerActionEnum
+) {
+  return Boolean(
+    availableActions.find((availableAction) => availableAction.type === action)
+  );
+}

@@ -1,4 +1,3 @@
-import { drawCard as serverDrawCard } from "../../local-server/actions/draw-card";
 import { Card, GameState, PlayerActionEnum, PlayerState } from "../../types";
 import { unknown } from "../../cards";
 import { removeActionFromAvailableActions } from "../../utils";

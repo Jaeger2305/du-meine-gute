@@ -13,6 +13,7 @@ import { generateTestCards } from "./utils";
 
 export { roundSteps } from "./round-steps";
 import { drawCard } from "./actions/draw-card";
+import { endStep } from "./actions/end-step";
 
 /**
  * Initialises the deck of cards
@@ -57,5 +58,9 @@ export const serverActions = {
   drawCard: {
     type: ServerActionEnum.drawCard,
     handler: drawCard,
+  },
+  endStep: {
+    type: ServerActionEnum.endStep,
+    handler: endStep,
   },
 };

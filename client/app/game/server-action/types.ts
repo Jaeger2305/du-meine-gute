@@ -13,3 +13,9 @@ export type DrawCardResponse = {
     cardsInDeck: Array<Card>;
   };
 };
+
+export type EndStepResponse = {
+  type: ServerActionEnum.endStep;
+  isOK: boolean;
+  response: {};
+};

@@ -23,6 +23,7 @@
             v-for="action in playerState.availableActions"
             :key="action.type"
             :name="action.type"
+            :isEnabled="false"
             @click="
               () =>
                 action.type === 'drawCard'
@@ -35,11 +36,12 @@
       </ScrollView>
 
       <!-- Draw -->
-      <Card
+      <Deck
         column="0"
         row="2"
-        :name="`dsdfsdsdraw${gameState.cardsInDeck.length}`"
-        @click="drawCard"
+        :cardsInDeck="gameState.cardsInDeck"
+        :availableActions="playerState.availableActions"
+        @player-action="playerAction"
       />
 
       <!-- Player hand -->
@@ -55,7 +57,13 @@
       </ScrollView>
 
       <!-- Discard -->
-      <Card column="2" row="2" name="end step" @click="playerEndStep" />
+      <Card
+        column="2"
+        row="2"
+        name="end step"
+        @click="endStep"
+        :isEnabled="isEndStepPossible"
+      />
     </GridLayout>
   </Page>
 </template>
@@ -63,6 +71,7 @@
 <script lang="ts">
 import { getString, setString } from "@nativescript/core/application-settings";
 import Lobby from "./Lobby.vue";
+import Deck from "./Deck.vue";
 import { setTimeout, clearTimeout } from "tns-core-modules/timer";
 import { newGame, newPlayer, playerActions } from "../game/client";
 import { setupGame, roundSteps, serverActions } from "../game/server-action";
@@ -74,6 +83,7 @@ import {
   ServerActionEnum,
 } from "../game/types";
 import { cloneDeep } from "lodash";
+import { isActionAvailable } from "../game/utils";
 
 export default {
   props: {},
@@ -102,11 +112,19 @@ export default {
     this.playerState = this.gameState.players[0];
   },
   async destroyed() {},
-  computed: {},
+  computed: {
+    isEndStepPossible(): boolean {
+      return isActionAvailable(
+        this.playerState.availableActions,
+        PlayerActionEnum.endStep
+      );
+    },
+  },
   watch: {
     "playerState.availableActions"() {
       if (!this.playerState.availableActions.length && this.isLocal) {
         // This should be a server action with a server response, rather than handled here. But, PoC phase.
+        // That would need storing the game step in the Game state, rather than just in Vue state.
         roundSteps[this.step++ % roundSteps.length](
           this.gameState,
           this.playerState
@@ -115,6 +133,10 @@ export default {
     },
   },
   methods: {
+    playerAction(type: PlayerActionEnum) {
+      playerActions[type].handler(this.gameState, this.playerState);
+      this.sendMessage({ type });
+    },
     sendMessage(payload) {
       // There's still a question here of whether child components will be responsible for sending/receiving messages.
       // Current architecture is no, everything is done in the global Game component. But not much thought has gone into that, other than keeping it simple.
@@ -137,8 +159,9 @@ export default {
     },
     receiveMessage(payload) {
       // Should be using enums here, and the separate game logic folders
-      if (payload.type === ServerActionEnum.drawCard) {
-        serverResponse.drawCard.handler(
+      const handler = serverResponse[payload.type]?.handler;
+      if (handler) {
+        handler(
           this.gameState,
           this.serverState,
           this.playerState,
@@ -150,12 +173,12 @@ export default {
         );
       }
     },
-    drawCard() {
-      playerActions.drawCard.handler(this.gameState, this.playerState);
-      this.sendMessage({ type: PlayerActionEnum.drawCard });
-    },
     requestPlayCard() {},
-    playerEndStep() {},
+    endStep() {
+      playerActions.endStep.handler(this.gameState, this.playerState);
+      playerActions.endStep.handler(this.serverState, this.playerState); // something is buggy here, but maybe it was caching
+      this.sendMessage({ type: PlayerActionEnum.endStep });
+    },
     async leaveGame() {
       this.$navigateTo(Lobby);
     },

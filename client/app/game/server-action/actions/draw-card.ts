@@ -1,5 +1,5 @@
 import { DrawCardResponse } from "../types";
-import { drawFromDeck } from "../../utils";
+import { drawFromDeck, removeActionFromAvailableActions } from "../../utils";
 import { Card, GameState, ServerActionEnum, PlayerState } from "../../types";
 import { unknown } from "../../cards";
 
@@ -21,6 +21,15 @@ export function drawCard(
   );
 
   if (drawnCard) serverState.players[playerNumber].cardsInHand.push(drawnCard);
+
+  // This is done optimistically on the client, so we don't need to send this info back.
+  console.warn(
+    "Server isn't managing the available actions, like it should be. This will fail because the game state and server state are out of sync"
+  );
+  // removeActionFromAvailableActions(
+  //   serverState.players[playerNumber],
+  //   PlayerActionEnum.drawCard
+  // );
 
   // Send the response back
   return {
