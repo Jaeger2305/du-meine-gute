@@ -1,4 +1,4 @@
-import { GameState, PlayerState } from "../types";
+import { GameState, ServerActionEnum, PlayerState } from "../types";
 import { bread, leather, coal } from "../resources";
 import { playerActions } from "../client";
 import {
@@ -55,7 +55,7 @@ export function setupGame(game: GameState): void {
 
 export const serverActions = {
   drawCard: {
-    type: "drawCard",
+    type: ServerActionEnum.drawCard,
     handler: drawCard,
   },
 };

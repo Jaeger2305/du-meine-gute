@@ -1,3 +1,4 @@
+import { DrawCardResponse } from "../server-action/types";
 import {
   BuildingType,
   Card,
@@ -12,9 +13,7 @@ const drawCard = (
   gameState: GameState,
   serverState: GameState,
   playerState: PlayerState,
-  drawnCard: Card,
-  cardsInDiscard: GameState["cardsInDiscard"],
-  cardsInDeck: GameState["cardsInDeck"]
+  { drawnCard, cardsInDiscard, cardsInDeck }: DrawCardResponse["response"]
 ) => {
   if (gameState.cardsInDiscard.length !== cardsInDiscard.length) {
     gameState.cardsInDiscard.splice(
@@ -33,6 +32,11 @@ const drawCard = (
   const unknownCard = playerState.cardsInHand.find(
     (card) => card.type === BuildingType.unknown
   );
+  if (!unknownCard) {
+    throw new Error(
+      "An unknown card was expected here to populate - maybe it already completed."
+    );
+  }
   Object.assign(unknownCard, drawnCard);
 };
 

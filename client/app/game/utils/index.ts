@@ -24,7 +24,7 @@ export function removeActionFromAvailableActions(
   );
   if (index === -1)
     throw new Error(
-      "the build factory action wasn't available, but this shouldn't be possible yet."
+      `the ${actionToRemove} action wasn't available, but this shouldn't be possible yet.`
     );
 
   availableActions.splice(index, 1);

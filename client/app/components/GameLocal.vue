@@ -26,7 +26,7 @@
             @click="
               () =>
                 action.type === 'drawCard'
-                  ? requestDrawCard()
+                  ? drawCard()
                   : action.handler(gameState, playerState) &&
                     action.handler(serverState, playerState)
             "
@@ -38,8 +38,8 @@
       <Card
         column="0"
         row="2"
-        :name="`draw${gameState.cardsInDeck.length}`"
-        @click="requestDrawCard"
+        :name="`dsdfsdsdraw${gameState.cardsInDeck.length}`"
+        @click="drawCard"
       />
 
       <!-- Player hand -->
@@ -55,7 +55,7 @@
       </ScrollView>
 
       <!-- Discard -->
-      <Card column="2" row="2" name="end round" @click="playerEndRound" />
+      <Card column="2" row="2" name="end step" @click="playerEndStep" />
     </GridLayout>
   </Page>
 </template>
@@ -65,16 +65,21 @@ import { getString, setString } from "@nativescript/core/application-settings";
 import Lobby from "./Lobby.vue";
 import { setTimeout, clearTimeout } from "tns-core-modules/timer";
 import { newGame, newPlayer, playerActions } from "../game/client";
-import { setupGame, roundSteps, serverActions } from "../game/local-server";
+import { setupGame, roundSteps, serverActions } from "../game/server-action";
 import { serverResponse } from "../game/server-response";
-import { GameState, PlayerState } from "../game/types";
+import {
+  GameState,
+  PlayerState,
+  PlayerActionEnum,
+  ServerActionEnum,
+} from "../game/types";
 import { cloneDeep } from "lodash";
 
 export default {
   props: {},
   data(): {
     playerState: PlayerState;
-    serverState: GameState; // We should have separate types for server/game state, where one permits unknown cards but the other does not.
+    serverState: GameState | null; // We should have separate types for server/game state, where one permits unknown cards but the other does not.
     gameState: GameState; // The UI should use only the gameState, and the serverState is used for local games. Keeping these in sync will be a challenge.
     messages: Array<any>;
     isLocal: boolean;
@@ -93,7 +98,7 @@ export default {
   },
   created() {
     setupGame(this.gameState);
-    this.serverState = cloneDeep(this.gameState); // just to test
+    this.serverState = this.isLocal ? cloneDeep(this.gameState) : null; // just to test
     this.playerState = this.gameState.players[0];
   },
   async destroyed() {},
@@ -119,7 +124,7 @@ export default {
         const response = serverActions[payload.type].handler(
           this.gameState,
           this.serverState,
-          this.playerState
+          this.playerState.playerNumber
         );
         this.receiveMessage(response);
       } else {
@@ -132,14 +137,12 @@ export default {
     },
     receiveMessage(payload) {
       // Should be using enums here, and the separate game logic folders
-      if (payload.response.type === "drawCard") {
+      if (payload.type === ServerActionEnum.drawCard) {
         serverResponse.drawCard.handler(
           this.gameState,
           this.serverState,
           this.playerState,
-          payload.response.drawnCard,
-          payload.response.cardsInDiscard,
-          payload.response.cardsInDeck
+          payload.response
         );
       } else {
         console.warn(
@@ -147,12 +150,12 @@ export default {
         );
       }
     },
-    requestDrawCard() {
+    drawCard() {
       playerActions.drawCard.handler(this.gameState, this.playerState);
-      this.sendMessage({ type: "drawCard" });
+      this.sendMessage({ type: PlayerActionEnum.drawCard });
     },
     requestPlayCard() {},
-    playerEndRound() {},
+    playerEndStep() {},
     async leaveGame() {
       this.$navigateTo(Lobby);
     },

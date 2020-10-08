@@ -12,6 +12,18 @@ export enum PlayerActionEnum {
   hireWorker = "hireWorker",
 }
 
+export enum ServerActionEnum {
+  endStep = "endStep",
+  drawCard = "drawCard",
+  discardCard = "discardCard",
+  assignEmployee = "assignEmployee",
+  reserveFactory = "reserveFactory",
+  unassignEmployee = "unassignEmployee",
+  produceAtFactory = "produceAtFactory",
+  buildFactory = "buildFactory",
+  hireWorker = "hireWorker",
+}
+
 export type PlayerAction = {
   type: PlayerActionEnum;
   handler: (...rest: any) => any;

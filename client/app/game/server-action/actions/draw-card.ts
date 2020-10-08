@@ -1,6 +1,6 @@
-import { ServerResponse } from "../types";
+import { DrawCardResponse } from "../types";
 import { drawFromDeck } from "../../utils";
-import { Card, GameState, PlayerState } from "../../types";
+import { Card, GameState, ServerActionEnum, PlayerState } from "../../types";
 import { unknown } from "../../cards";
 
 /**
@@ -11,8 +11,8 @@ import { unknown } from "../../cards";
 export function drawCard(
   gameState: GameState,
   serverState: GameState,
-  playerState: PlayerState
-): ServerResponse {
+  playerNumber: PlayerState["playerNumber"]
+): DrawCardResponse {
   debugger;
   // Draw the card
   const drawnCard = drawFromDeck(
@@ -20,19 +20,17 @@ export function drawCard(
     serverState.cardsInDiscard
   );
 
-  if (drawnCard)
-    serverState.players[playerState.playerNumber].cardsInHand.push(drawnCard);
+  if (drawnCard) serverState.players[playerNumber].cardsInHand.push(drawnCard);
 
   // Send the response back
-  const response = {
-    type: "drawCard",
-    isOK: true,
-    drawnCard,
-    cardsInDiscard: serverState.cardsInDiscard,
-    cardsInDeck: obfuscateDeck(serverState.cardsInDeck),
-  };
   return {
-    response,
+    type: ServerActionEnum.drawCard,
+    isOK: true,
+    response: {
+      drawnCard,
+      cardsInDiscard: serverState.cardsInDiscard,
+      cardsInDeck: obfuscateDeck(serverState.cardsInDeck),
+    },
   };
 }
 
