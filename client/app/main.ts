@@ -12,12 +12,14 @@ import store from "./store";
 Vue.config.silent = TNS_ENV === "production";
 import GameListItem from "./components/GameListItem.vue";
 import Card from "./components/Card.vue";
-import Deck from "./components/Deck.vue";
-import Discard from "./components/Discard.vue";
+import Deck from "./components/game/Deck.vue";
+import Discard from "./components/game/Discard.vue";
+import PlayerHand from "./components/game/PlayerHand.vue";
 Vue.component("GameListItem", GameListItem); // Locally registering inside of the Lobby didn't seem to work. Maybe it needs a different frame.
 Vue.component("Card", Card);
 Vue.component("Deck", Deck);
 Vue.component("Discard", Discard);
+Vue.component("PlayerHand", PlayerHand);
 
 new Vue({
   store,

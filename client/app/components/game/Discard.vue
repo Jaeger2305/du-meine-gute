@@ -8,10 +8,10 @@
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
-import { CustomEvents } from "../types";
-import { PlayerActionEnum } from "../game/types";
-import { isActionAvailable } from "../game/utils";
-import { GameState, PlayerState } from "../../../cli/types";
+import { CustomEvents } from "../../types";
+import { PlayerActionEnum } from "../../game/types";
+import { isActionAvailable } from "../../game/utils";
+import { GameState, PlayerState } from "../../game/types";
 
 export default Vue.extend({
   // There's no intellisense on "this.zzz". Tutorials seem to specify using decorator syntax - https://nativescripting.com/posts/typescript-class-components-in-nativescript-vue

@@ -23,7 +23,7 @@
 <script lang="ts">
 import { getString, setString } from "@nativescript/core/application-settings";
 import Login from "./Login.vue";
-import GameLocal from "./GameLocal.vue";
+import GameLocal from "./game/GameLocal.vue";
 
 export default {
   data() {

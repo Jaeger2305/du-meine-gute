@@ -38,13 +38,12 @@
       />
 
       <!-- Player hand -->
+
       <ScrollView column="1" row="2" orientation="horizontal">
         <StackLayout orientation="horizontal">
-          <Card
-            v-for="card in playerState.cardsInHand"
-            :key="card.name"
-            :name="card.name"
-            @click="requestPlayCard(card)"
+          <PlayerHand
+            :cards="playerState.cardsInHand"
+            :availableActions="playerState.availableActions"
           />
         </StackLayout>
       </ScrollView>
@@ -64,23 +63,22 @@
 
 <script lang="ts">
 import { getString, setString } from "@nativescript/core/application-settings";
-import Lobby from "./Lobby.vue";
-import Deck from "./Deck.vue";
+import Lobby from "../Lobby.vue";
 import { setTimeout, clearTimeout } from "tns-core-modules/timer";
-import { newGame, newPlayer, playerActions } from "../game/client";
-import { setupGame, roundSteps, serverActions } from "../game/server-action";
-import { serverResponse } from "../game/server-response";
+import { newGame, newPlayer, playerActions } from "../../game/client";
+import { setupGame, roundSteps, serverActions } from "../../game/server-action";
+import { serverResponse } from "../../game/server-response";
 import {
   GameState,
   PlayerState,
   PlayerActionEnum,
   ServerActionEnum,
   ServerActionRequest,
-} from "../game/types";
+} from "../../game/types";
 import { cloneDeep } from "lodash";
-import { isActionAvailable } from "../game/utils";
-import { ServerActionResponse } from "../game/server-action/types";
-import { PlayerAction } from "../../../cli/types";
+import { isActionAvailable } from "../../game/utils";
+import { ServerActionResponse } from "../../game/server-action/types";
+import { PlayerAction } from "../../game/types";
 
 export default {
   props: {},
