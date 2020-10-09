@@ -7,15 +7,25 @@
 </template>
 
 <script lang="ts">
+import Vue, { PropType } from "vue";
 import { CustomEvents } from "../types";
 import { PlayerActionEnum } from "../game/types";
 import { isActionAvailable } from "../game/utils";
+import { GameState, PlayerState } from "../../../cli/types";
 
-export default {
-  props: [
-    "availableActions", // this needs testing with the class based syntax - https://vuejs.org/v2/guide/typescript.html#Annotating-Props
-    "cardsInDeck",
-  ],
+export default Vue.extend({
+  // There's no intellisense on "this.zzz". Tutorials seem to specify using decorator syntax - https://nativescripting.com/posts/typescript-class-components-in-nativescript-vue
+  // But this syntax seems to work in a normal web dev project. To revisit.
+  props: {
+    availableActions: {
+      type: Object as PropType<PlayerState["availableActions"]>,
+      required: true,
+    },
+    cardsInDeck: {
+      type: Object as PropType<GameState["cardsInDeck"]>,
+      required: true,
+    },
+  },
   computed: {
     isDrawCardPossible(): boolean {
       return isActionAvailable(
@@ -29,7 +39,7 @@ export default {
       this.$emit(CustomEvents.PLAYER_ACTION, PlayerActionEnum.drawCard);
     },
   },
-};
+});
 </script>
 
 <style scoped></style>
