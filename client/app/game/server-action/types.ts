@@ -1,21 +1,20 @@
 import { Card, ServerActionEnum } from "../types";
 
-export type ServerResponse = {
-  response: any;
-};
-
-export type DrawCardResponse = {
-  type: ServerActionEnum.drawCard;
+export interface ServerActionResponse {
+  type: ServerActionEnum;
   isOK: boolean;
+  response: any;
+}
+
+export interface DrawCardResponse extends ServerActionResponse {
+  type: ServerActionEnum.drawCard;
   response: {
     drawnCard: Card;
     cardsInDiscard: Array<Card>;
     cardsInDeck: Array<Card>;
   };
-};
+}
 
-export type EndStepResponse = {
+export interface EndStepResponse extends ServerActionResponse {
   type: ServerActionEnum.endStep;
-  isOK: boolean;
-  response: {};
-};
+}

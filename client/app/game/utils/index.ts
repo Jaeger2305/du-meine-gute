@@ -20,7 +20,7 @@ export function removeActionFromAvailableActions(
   actionToRemove: PlayerActionEnum
 ): void {
   const index = availableActions.findIndex(
-    (action) => action.type === actionToRemove
+    (action) => action === actionToRemove
   );
   if (index === -1)
     throw new Error(
@@ -121,6 +121,6 @@ export function isActionAvailable(
   action: PlayerActionEnum
 ) {
   return Boolean(
-    availableActions.find((availableAction) => availableAction.type === action)
+    availableActions.find((availableAction) => availableAction === action)
   );
 }

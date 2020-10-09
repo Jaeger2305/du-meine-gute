@@ -1,7 +1,12 @@
 import { sum } from "lodash";
-import { playerActions } from "../../client";
-import { AssignedEmployee, GameState, PlayerState } from "../../types";
-import { ServerResponse } from "../types";
+import {
+  AssignedEmployee,
+  GameState,
+  PlayerActionEnum,
+  PlayerState,
+  ServerActionEnum,
+} from "../../types";
+import { ServerActionResponse } from "../types";
 
 /**
  * Initiate the final step in the round
@@ -12,11 +17,11 @@ import { ServerResponse } from "../types";
 export function endRound(
   gameState: GameState,
   playerState: PlayerState
-): ServerResponse {
+): ServerActionResponse {
   const isGameEnd = gameState.isGameEnding; // if marked as game ending last round, mark as finished here.
   gameState.isGameEnding =
     playerState.cardsInPlay.length >= gameState.config.buildCountForEndGame;
-  playerState.availableActions = isGameEnd ? [] : [playerActions.endStep];
+  playerState.availableActions = isGameEnd ? [] : [PlayerActionEnum.endStep];
   gameState.winner = isGameEnd ? playerState.player : null;
   const resourcesScore = Math.floor(
     sum(playerState.resources.map((resource) => resource.value)) *
@@ -64,6 +69,8 @@ export function endRound(
   gameState.marketCards = [];
 
   return {
+    type: ServerActionEnum.endStep,
+    isOK: true,
     response: {
       assignedEmployees: playerState.assignedEmployees,
       availableActions: playerState.availableActions,

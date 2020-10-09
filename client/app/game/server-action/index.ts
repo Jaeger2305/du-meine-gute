@@ -1,6 +1,10 @@
-import { GameState, ServerActionEnum, PlayerState } from "../types";
+import {
+  GameState,
+  ServerActionEnum,
+  PlayerState,
+  PlayerActionEnum,
+} from "../types";
 import { bread, leather, coal } from "../resources";
-import { playerActions } from "../client";
 import {
   coalMineClay,
   coalMineMetal,
@@ -43,7 +47,7 @@ export function setupGame(game: GameState): void {
       ],
       cardsInPlay: [chosenCoalMine, cardRecords.GLASSMAKER_SUN],
       resources: [bread, leather, bread, leather, coal],
-      availableActions: [playerActions.endStep],
+      availableActions: [PlayerActionEnum.endStep],
       assignedEmployees: [],
       reservedFactory: null,
       score: 0,
@@ -53,14 +57,16 @@ export function setupGame(game: GameState): void {
   game.players = players;
   return;
 }
+type ServerActionHandler = (
+  gameState: GameState,
+  serverState: GameState,
+  playerNumber: PlayerState["playerNumber"],
+  ...payload: any
+) => void;
 
-export const serverActions = {
-  drawCard: {
-    type: ServerActionEnum.drawCard,
-    handler: drawCard,
-  },
-  endStep: {
-    type: ServerActionEnum.endStep,
-    handler: endStep,
-  },
+export const serverActions: Record<ServerActionEnum, ServerActionHandler> = {
+  [ServerActionEnum.drawCard]: drawCard,
+  [ServerActionEnum.endStep]: endStep,
+  [ServerActionEnum.revealMarket]: () => {},
+  [ServerActionEnum.startRound]: () => {},
 };

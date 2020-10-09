@@ -2,15 +2,22 @@ import { GameState, PlayerActionEnum, PlayerState } from "../types";
 import { drawCard } from "./draw-card";
 import { endStep } from "./end-step";
 
-export const playerActions = {
-  endStep: {
-    type: PlayerActionEnum.endStep,
-    handler: endStep,
-  },
-  drawCard: {
-    type: PlayerActionEnum.drawCard,
-    handler: drawCard,
-  },
+type PlayerActionHandler = (
+  gameState: GameState,
+  playerState: PlayerState,
+  ...payload
+) => void;
+
+export const playerActions: Record<PlayerActionEnum, PlayerActionHandler> = {
+  [PlayerActionEnum.endStep]: endStep,
+  [PlayerActionEnum.drawCard]: drawCard,
+  [PlayerActionEnum.discardCard]: () => {},
+  [PlayerActionEnum.assignEmployee]: () => {},
+  [PlayerActionEnum.reserveFactory]: () => {},
+  [PlayerActionEnum.unassignEmployee]: () => {},
+  [PlayerActionEnum.produceAtFactory]: () => {},
+  [PlayerActionEnum.buildFactory]: () => {},
+  [PlayerActionEnum.hireWorker]: () => {},
 };
 
 export function newGame(): GameState {

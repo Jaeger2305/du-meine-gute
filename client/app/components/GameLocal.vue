@@ -21,16 +21,9 @@
         <StackLayout column="1" orientation="horizontal">
           <Card
             v-for="action in playerState.availableActions"
-            :key="action.type"
-            :name="action.type"
+            :key="action"
+            :name="action"
             :isEnabled="false"
-            @click="
-              () =>
-                action.type === 'drawCard'
-                  ? drawCard()
-                  : action.handler(gameState, playerState) &&
-                    action.handler(serverState, playerState)
-            "
           />
         </StackLayout>
       </ScrollView>
@@ -81,9 +74,12 @@ import {
   PlayerState,
   PlayerActionEnum,
   ServerActionEnum,
+  ServerActionRequest,
 } from "../game/types";
 import { cloneDeep } from "lodash";
 import { isActionAvailable } from "../game/utils";
+import { ServerActionResponse } from "../game/server-action/types";
+import { PlayerAction } from "../../../cli/types";
 
 export default {
   props: {},
@@ -134,16 +130,16 @@ export default {
   },
   methods: {
     playerAction(type: PlayerActionEnum) {
-      playerActions[type].handler(this.gameState, this.playerState);
+      playerActions[type](this.gameState, this.playerState);
       this.sendMessage({ type });
     },
-    sendMessage(payload) {
+    sendMessage(payload: ServerActionRequest) {
       // There's still a question here of whether child components will be responsible for sending/receiving messages.
       // Current architecture is no, everything is done in the global Game component. But not much thought has gone into that, other than keeping it simple.
       // This could even be a mixin though.
       if (this.isLocal) {
         // Perform local server action immediately
-        const response = serverActions[payload.type].handler(
+        const response = serverActions[payload.type](
           this.gameState,
           this.serverState,
           this.playerState.playerNumber
@@ -157,9 +153,9 @@ export default {
         // this.socket.send(JSON.stringify(message));
       }
     },
-    receiveMessage(payload) {
+    receiveMessage(payload: ServerActionResponse) {
       // Should be using enums here, and the separate game logic folders
-      const handler = serverResponse[payload.type]?.handler;
+      const handler = serverResponse[payload.type];
       if (handler) {
         handler(
           this.gameState,
@@ -175,8 +171,11 @@ export default {
     },
     requestPlayCard() {},
     endStep() {
-      playerActions.endStep.handler(this.gameState, this.playerState);
-      playerActions.endStep.handler(this.serverState, this.playerState); // something is buggy here, but maybe it was caching
+      playerActions[PlayerActionEnum.endStep](this.gameState, this.playerState);
+      playerActions[PlayerActionEnum.endStep](
+        this.serverState,
+        this.playerState
+      ); // something is buggy here, but maybe it was caching
       this.sendMessage({ type: PlayerActionEnum.endStep });
     },
     async leaveGame() {

@@ -7,6 +7,7 @@
 </template>
 
 <script lang="ts">
+import { CustomEvents } from "../types";
 import { PlayerActionEnum } from "../game/types";
 import { isActionAvailable } from "../game/utils";
 
@@ -25,7 +26,7 @@ export default {
   },
   methods: {
     drawCard() {
-      this.$emit("player-action", PlayerActionEnum.drawCard);
+      this.$emit(CustomEvents.PLAYER_ACTION, PlayerActionEnum.drawCard);
     },
   },
 };

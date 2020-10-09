@@ -7,7 +7,6 @@ import {
   spendResources,
   differenceResources,
 } from "./index";
-import { playerActions } from "../client";
 import { bread, coal, wheat, leather, grain } from "../resources";
 import { Card, PlayerActionEnum } from "../types";
 import { defaultGame } from "../__mocks__/game";
@@ -55,15 +54,15 @@ describe("remove an action from available actions", () => {
   it("should remove the action from the available actions", () => {
     const player = {
       ...defaultGame.players[0],
-      availableActions: [playerActions.drawCard, playerActions.endStep],
+      availableActions: [PlayerActionEnum.drawCard, PlayerActionEnum.endStep],
     };
     removeActionFromAvailableActions(player, PlayerActionEnum.drawCard);
-    expect(player.availableActions).toEqual([playerActions.endStep]);
+    expect(player.availableActions).toEqual([PlayerActionEnum.endStep]);
   });
   it("should throw if there is no action found", () => {
     const player = {
       ...defaultGame.players[0],
-      availableActions: [playerActions.endStep],
+      availableActions: [PlayerActionEnum.endStep],
     };
 
     expect(() =>

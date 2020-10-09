@@ -15,13 +15,12 @@ export enum PlayerActionEnum {
 export enum ServerActionEnum {
   endStep = "endStep",
   drawCard = "drawCard",
-  discardCard = "discardCard",
-  assignEmployee = "assignEmployee",
-  reserveFactory = "reserveFactory",
-  unassignEmployee = "unassignEmployee",
-  produceAtFactory = "produceAtFactory",
-  buildFactory = "buildFactory",
-  hireWorker = "hireWorker",
+  revealMarket = "revealMarket",
+  startRound = "startRound",
+}
+
+export interface ServerActionRequest {
+  type: ServerActionEnum;
 }
 
 export type PlayerAction = {
@@ -101,7 +100,7 @@ export type PlayerState = {
   player: Player;
   cardsInHand: Array<Card>;
   cardsInPlay: Array<Card>;
-  availableActions: Array<PlayerAction>;
+  availableActions: Array<PlayerActionEnum>;
   employees: Array<Employee>;
   assignedEmployees: Array<AssignedEmployee>;
   resources: Array<Resource>;

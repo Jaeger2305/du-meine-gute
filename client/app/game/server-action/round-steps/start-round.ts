@@ -1,6 +1,10 @@
-import { playerActions } from "../../client";
-import { GameState, PlayerState } from "../../types";
-import { ServerResponse } from "../types";
+import {
+  GameState,
+  PlayerActionEnum,
+  PlayerState,
+  ServerActionEnum,
+} from "../../types";
+import { ServerActionResponse } from "../types";
 
 /**
  * Returns valid actions that can be performed, which is drawing 3 cards.
@@ -9,10 +13,12 @@ import { ServerResponse } from "../types";
 export function startRound(
   gameState: GameState,
   playerState: PlayerState
-): ServerResponse {
-  playerState.availableActions = [playerActions.endStep];
+): ServerActionResponse {
+  playerState.availableActions = [PlayerActionEnum.endStep];
   gameState.marketCards = [];
   return {
+    type: ServerActionEnum.startRound,
+    isOK: true,
     response: {
       availableActions: playerState.availableActions,
     },

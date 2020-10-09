@@ -1,7 +1,11 @@
 import { sum } from "lodash";
-import { playerActions } from "../../client";
-import { GameState, PlayerState } from "../../types";
-import { ServerResponse } from "../types";
+import {
+  GameState,
+  PlayerActionEnum,
+  PlayerState,
+  ServerActionEnum,
+} from "../../types";
+import { ServerActionResponse } from "../types";
 
 /**
  * Returns valid actions that can be performed, which is drawing 3 cards.
@@ -10,15 +14,19 @@ import { ServerResponse } from "../types";
 export function draw(
   gameState: GameState,
   playerState: PlayerState
-): ServerResponse {
+): ServerActionResponse {
   const drawCardCount =
     gameState.config.drawCount +
     sum(
       playerState.cardsInPlay.map((card) => card.boostDrawCount).filter(Boolean)
     );
-  const drawCardActions = new Array(drawCardCount).fill(playerActions.drawCard);
-  playerState.availableActions = [...drawCardActions, playerActions.endStep];
+  const drawCardActions = new Array(drawCardCount).fill(
+    PlayerActionEnum.drawCard
+  );
+  playerState.availableActions = [...drawCardActions, PlayerActionEnum.endStep];
   return {
+    type: ServerActionEnum.drawCard,
+    isOK: true,
     response: {
       availableActions: playerState.availableActions,
     },
