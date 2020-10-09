@@ -1,8 +1,8 @@
 <template>
   <Button
-    :text="`draw (${cardsInDeck.length})`"
-    :isEnabled="isDrawCardPossible"
-    @tap="drawCard"
+    :text="`discard (${cardsInDiscard.length})`"
+    :isEnabled="isEndStepPossible"
+    @tap="endStep"
   />
 </template>
 
@@ -14,19 +14,16 @@ import { isActionAvailable } from "../game/utils";
 export default {
   props: [
     "availableActions", // this needs testing with the class based syntax - https://vuejs.org/v2/guide/typescript.html#Annotating-Props
-    "cardsInDeck",
+    "cardsInDiscard",
   ],
   computed: {
-    isDrawCardPossible(): boolean {
-      return isActionAvailable(
-        this.availableActions,
-        PlayerActionEnum.drawCard
-      );
+    isEndStepPossible(): boolean {
+      return isActionAvailable(this.availableActions, PlayerActionEnum.endStep);
     },
   },
   methods: {
-    drawCard() {
-      this.$emit(CustomEvents.PLAYER_ACTION, PlayerActionEnum.drawCard);
+    endStep() {
+      this.$emit(CustomEvents.PLAYER_ACTION, PlayerActionEnum.endStep);
     },
   },
 };

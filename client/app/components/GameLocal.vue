@@ -50,12 +50,13 @@
       </ScrollView>
 
       <!-- Discard -->
-      <Card
+      <Discard
         column="2"
         row="2"
         name="end step"
-        @click="endStep"
-        :isEnabled="isEndStepPossible"
+        :cardsInDiscard="gameState.cardsInDiscard"
+        :availableActions="playerState.availableActions"
+        @player-action="playerAction"
       />
     </GridLayout>
   </Page>
@@ -108,14 +109,7 @@ export default {
     this.playerState = this.gameState.players[0];
   },
   async destroyed() {},
-  computed: {
-    isEndStepPossible(): boolean {
-      return isActionAvailable(
-        this.playerState.availableActions,
-        PlayerActionEnum.endStep
-      );
-    },
-  },
+  computed: {},
   watch: {
     "playerState.availableActions"() {
       if (!this.playerState.availableActions.length && this.isLocal) {
@@ -170,14 +164,6 @@ export default {
       }
     },
     requestPlayCard() {},
-    endStep() {
-      playerActions[PlayerActionEnum.endStep](this.gameState, this.playerState);
-      playerActions[PlayerActionEnum.endStep](
-        this.serverState,
-        this.playerState
-      ); // something is buggy here, but maybe it was caching
-      this.sendMessage({ type: PlayerActionEnum.endStep });
-    },
     async leaveGame() {
       this.$navigateTo(Lobby);
     },
