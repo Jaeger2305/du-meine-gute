@@ -19,7 +19,7 @@ export { roundSteps } from "./round-steps";
 import { drawCard } from "./actions/draw-card";
 import { endStep } from "./actions/end-step";
 import { reserveFactory } from "./actions/reserve-factory";
-import { assignWorkers } from "./round-steps/assign-workers";
+import { assignmentStep } from "./round-steps/assignment-step";
 
 /**
  * Initialises the deck of cards
@@ -68,7 +68,7 @@ type ServerActionHandler = (
 export const serverActions: Record<ServerActionEnum, ServerActionHandler> = {
   [ServerActionEnum.drawCard]: drawCard,
   [ServerActionEnum.endStep]: endStep,
-  [ServerActionEnum.assignWorkers]: assignWorkers,
+  [ServerActionEnum.assignWorkers]: assignmentStep,
   [ServerActionEnum.reserveFactory]: reserveFactory,
   [ServerActionEnum.revealMarket]: () => {},
   [ServerActionEnum.startRound]: () => {},

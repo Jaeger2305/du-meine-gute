@@ -1,8 +1,8 @@
 import { GameState, PlayerState } from "../../types";
 import { revealMarket } from "./reveal-market";
-import { assignWorkers } from "./assign-workers";
+import { assignmentStep } from "./assignment-step";
 import { ServerActionResponse } from "../types";
-import { draw } from "./draw";
+import { drawStep } from "./draw-step";
 import { startRound } from "./start-round";
 import { endRound } from "./end-round";
 
@@ -11,9 +11,9 @@ export const roundSteps: Array<(
   playerNumber: number
 ) => ServerActionResponse> = [
   startRound,
-  draw,
+  drawStep,
   revealMarket,
-  assignWorkers,
+  assignmentStep,
   revealMarket,
   endRound,
 ];

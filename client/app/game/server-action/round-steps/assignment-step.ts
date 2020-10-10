@@ -1,6 +1,5 @@
 import {
   GameState,
-  PlayerState,
   ServerActionEnum,
   PlayerActionEnum,
 } from "../../types";
@@ -10,7 +9,7 @@ import { ServerActionResponse } from "../types";
  * Initiate the assignment step in the round
  * The returns valid actions that can be performed specific for this round.
  */
-export function assignWorkers(
+export function assignmentStep(
   serverState: GameState,
   playerNumber: number
 ): ServerActionResponse {

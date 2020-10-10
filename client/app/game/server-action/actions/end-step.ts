@@ -20,6 +20,8 @@ export function endStep(
   serverState.activeStep = (serverState.activeStep + 1)  % roundSteps.length
 
   // In multiple player games, we wouldn't immediately populate the available actions. But we're not there yet, so immediately send back the next round.
+  // This explains why the roundsteps are actions, but actions that are only called from this action.
+  // Eventually, calling end step will mark a player as ready, and when all players are ready, the next step action will be triggered.
   roundSteps[serverState.activeStep](serverState, playerNumber)
 
   // Send the response back

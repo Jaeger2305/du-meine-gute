@@ -67,7 +67,7 @@ import { getString, setString } from "@nativescript/core/application-settings";
 import Lobby from "../Lobby.vue";
 import { setTimeout, clearTimeout } from "tns-core-modules/timer";
 import { newGame, newPlayer, playerActions } from "../../game/client";
-import { setupGame, roundSteps, serverActions } from "../../game/server-action";
+import { setupGame, serverActions } from "../../game/server-action";
 import { serverResponse } from "../../game/server-response";
 import {
   GameState,
