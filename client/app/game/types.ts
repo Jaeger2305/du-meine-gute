@@ -15,12 +15,15 @@ export enum PlayerActionEnum {
 export enum ServerActionEnum {
   endStep = "endStep",
   drawCard = "drawCard",
+  assignWorkers = "assignWorkers",
+  reserveFactory = "reserveFactory",
   revealMarket = "revealMarket",
   startRound = "startRound",
 }
 
 export interface ServerActionRequest {
   type: ServerActionEnum;
+  playerActionResponse?: any;
 }
 
 export type PlayerAction = {
@@ -83,6 +86,7 @@ export type GameState = {
   marketCards: Array<Card>;
   score: number;
   isGameEnding?: boolean;
+  activeStep: number;
 };
 
 // A good place to add flexible features like hand count or play card limit in the future.

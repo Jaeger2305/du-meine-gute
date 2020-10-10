@@ -1,13 +1,14 @@
 import { GameState, PlayerActionEnum, PlayerState } from "../types";
 import { drawCard } from "./draw-card";
 import { endStep } from "./end-step";
+import { reserveFactory } from "./reserve-factory";
 
 type PlayerActionResponse = any;
 
 type PlayerActionHandler = (
   gameState: GameState,
   playerState: PlayerState,
-  ...payload
+  payload: any
 ) => PlayerActionResponse;
 
 export const playerActions: Record<PlayerActionEnum, PlayerActionHandler> = {
@@ -15,7 +16,7 @@ export const playerActions: Record<PlayerActionEnum, PlayerActionHandler> = {
   [PlayerActionEnum.drawCard]: drawCard,
   [PlayerActionEnum.discardCard]: () => {},
   [PlayerActionEnum.assignEmployee]: () => {},
-  [PlayerActionEnum.reserveFactory]: () => {},
+  [PlayerActionEnum.reserveFactory]: reserveFactory,
   [PlayerActionEnum.unassignEmployee]: () => {},
   [PlayerActionEnum.produceAtFactory]: () => {},
   [PlayerActionEnum.buildFactory]: () => {},

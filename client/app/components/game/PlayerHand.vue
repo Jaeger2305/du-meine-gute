@@ -1,6 +1,12 @@
 <template>
   <FlexboxLayout backgroundColor="#3c495e">
-    <Card v-for="card in cards" :key="card.name" :name="card.name" />
+    <Card
+      v-for="card in cards"
+      :key="card.name"
+      :name="card.name"
+      :is-enabled="isReserveFactoryPossible"
+      @click="reserveFactory(card)"
+    />
   </FlexboxLayout>
 </template>
 
@@ -24,8 +30,23 @@ export default Vue.extend({
       required: true,
     },
   },
-  computed: {},
-  methods: {},
+  computed: {
+    isReserveFactoryPossible(): boolean {
+      return isActionAvailable(
+        this.availableActions,
+        PlayerActionEnum.reserveFactory
+      );
+    },
+  },
+  methods: {
+    reserveFactory(factory) {
+      this.$emit(
+        CustomEvents.PLAYER_ACTION,
+        PlayerActionEnum.reserveFactory,
+        factory
+      );
+    },
+  },
 });
 </script>
 

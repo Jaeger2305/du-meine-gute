@@ -44,6 +44,7 @@
           <PlayerHand
             :cards="playerState.cardsInHand"
             :availableActions="playerState.availableActions"
+            @player-action="playerAction"
           />
         </StackLayout>
       </ScrollView>
@@ -89,7 +90,6 @@ export default {
     messages: Array<any>;
     isLocal: boolean;
     playerActions: typeof playerActions;
-    step: number;
   } {
     return {
       isLocal: true,
@@ -98,7 +98,6 @@ export default {
       messages: [],
       playerState: newPlayer(),
       playerActions,
-      step: 0,
     };
   },
   created() {
@@ -108,22 +107,14 @@ export default {
   },
   async destroyed() {},
   computed: {},
-  watch: {
-    "playerState.availableActions"() {
-      if (!this.playerState.availableActions.length && this.isLocal) {
-        // This should be a server action with a server response, rather than handled here. But, PoC phase.
-        // That would need storing the game step in the Game state, rather than just in Vue state.
-        roundSteps[this.step++ % roundSteps.length](
-          this.gameState,
-          this.playerState
-        );
-      }
-    },
-  },
   methods: {
-    playerAction(type: PlayerActionEnum) {
-      playerActions[type](this.gameState, this.playerState);
-      this.sendMessage({ type });
+    playerAction(type: PlayerActionEnum, payload: any) {
+      const playerActionResponse = playerActions[type](
+        this.gameState,
+        this.playerState,
+        payload
+      );
+      this.sendMessage({ type, playerActionResponse });
     },
     sendMessage(payload: ServerActionRequest) {
       // There's still a question here of whether child components will be responsible for sending/receiving messages.
@@ -131,12 +122,13 @@ export default {
       // This could even be a mixin though.
       if (this.isLocal) {
         // Perform local server action immediately
-        const response = serverActions[payload.type](
+        const serverActionResponse = serverActions[payload.type](
           this.gameState,
           this.serverState,
-          this.playerState.playerNumber
+          this.playerState.playerNumber,
+          payload.playerActionResponse
         );
-        this.receiveMessage(response);
+        this.receiveMessage(serverActionResponse);
       } else {
         // There's no socket integration with this yet - PoC phase.
         console.error(
