@@ -9,7 +9,6 @@ import {
 
 const endStep = (
   gameState: GameState,
-  serverState: GameState,
   playerState: PlayerState,
   { availableActions }
 ): void => {
@@ -23,7 +22,6 @@ const endStep = (
 
 const drawCard = (
   gameState: GameState,
-  serverState: GameState,
   playerState: PlayerState,
   { drawnCard, cardsInDiscard, cardsInDeck }: DrawCardResponse["response"]
 ): void => {
@@ -54,7 +52,6 @@ const drawCard = (
 
 type ServerResponseHandler = (
   gameState: GameState,
-  serverState: GameState,
   playerState: PlayerState,
   payload: any
 ) => void;

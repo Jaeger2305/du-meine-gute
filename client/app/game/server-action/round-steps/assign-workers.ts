@@ -11,7 +11,6 @@ import { ServerActionResponse } from "../types";
  * The returns valid actions that can be performed specific for this round.
  */
 export function assignWorkers(
-  gameState: GameState,
   serverState: GameState,
   playerNumber: number
 ): ServerActionResponse {

@@ -7,7 +7,6 @@ import { startRound } from "./start-round";
 import { endRound } from "./end-round";
 
 export const roundSteps: Array<(
-  gameState: GameState,
   serverState: GameState,
   playerNumber: number
 ) => ServerActionResponse> = [

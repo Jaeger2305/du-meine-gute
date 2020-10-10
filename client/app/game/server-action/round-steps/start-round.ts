@@ -11,7 +11,6 @@ import { ServerActionResponse } from "../types";
  * After drawing, the user is allowed to discard 2 cards as well, but that's appended after completing the drawing.
  */
 export function startRound(
-  gameState: GameState,
   serverState: GameState,
   playerNumber: number
 ): ServerActionResponse {

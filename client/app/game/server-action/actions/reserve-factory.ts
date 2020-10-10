@@ -9,7 +9,6 @@ import { unknown } from "../../cards";
  * The gameState or playerState should not be modified here.
  */
 export function reserveFactory(
-  gameState: GameState,
   serverState: GameState,
   playerNumber: PlayerState["playerNumber"],
   factoryToReserve: Card

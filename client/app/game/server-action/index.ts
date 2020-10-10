@@ -60,7 +60,6 @@ export function setupGame(game: GameState): void {
   return;
 }
 type ServerActionHandler = (
-  gameState: GameState,
   serverState: GameState,
   playerNumber: PlayerState["playerNumber"],
   playerActionResponse?: any

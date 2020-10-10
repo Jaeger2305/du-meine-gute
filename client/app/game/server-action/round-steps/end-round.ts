@@ -15,7 +15,6 @@ import { ServerActionResponse } from "../types";
  * Either acknowledge and a return to the startRound action, or nothing, meaning the game has ended and all they can do is leave.
  */
 export function endRound(
-  gameState: GameState,
   serverState: GameState,
   playerNumber: number
 ): ServerActionResponse {

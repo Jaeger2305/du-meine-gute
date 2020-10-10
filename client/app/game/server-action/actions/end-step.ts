@@ -8,7 +8,6 @@ import { GameState, ServerActionEnum, PlayerState } from "../../types";
  * The gameState or playerState should not be modified here.
  */
 export function endStep(
-  gameState: GameState,
   serverState: GameState,
   playerNumber: PlayerState["playerNumber"]
 ): EndStepResponse {
@@ -21,7 +20,7 @@ export function endStep(
   serverState.activeStep = (serverState.activeStep + 1)  % roundSteps.length
 
   // In multiple player games, we wouldn't immediately populate the available actions. But we're not there yet, so immediately send back the next round.
-  roundSteps[serverState.activeStep](gameState, serverState, playerNumber)
+  roundSteps[serverState.activeStep](serverState, playerNumber)
 
   // Send the response back
   return {

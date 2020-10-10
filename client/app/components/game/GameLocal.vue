@@ -123,7 +123,6 @@ export default {
       if (this.isLocal) {
         // Perform local server action immediately
         const serverActionResponse = serverActions[payload.type](
-          this.gameState,
           this.serverState,
           this.playerState.playerNumber,
           payload.playerActionResponse
@@ -141,12 +140,7 @@ export default {
       // Should be using enums here, and the separate game logic folders
       const handler = serverResponse[payload.type];
       if (handler) {
-        handler(
-          this.gameState,
-          this.serverState,
-          this.playerState,
-          payload.response
-        );
+        handler(this.gameState, this.playerState, payload.response);
       } else {
         console.warn(
           "unrecognised type - game logic not fully implemented yet"

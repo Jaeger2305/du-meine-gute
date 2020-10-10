@@ -15,7 +15,6 @@ import { ServerActionResponse } from "../types";
  * This is normally just an acknowledgement, as the players can't choose anything here.
  */
 export function revealMarket(
-  gameState: GameState,
   serverState: GameState,
   playerNumber: number
 ): ServerActionResponse {
