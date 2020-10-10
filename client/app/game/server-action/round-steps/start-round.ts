@@ -12,15 +12,15 @@ import { ServerActionResponse } from "../types";
  */
 export function startRound(
   gameState: GameState,
-  playerState: PlayerState
+  serverState: GameState,
+  playerNumber: number
 ): ServerActionResponse {
+  const playerState = serverState.players[playerNumber]
   playerState.availableActions = [PlayerActionEnum.endStep];
-  gameState.marketCards = [];
+  serverState.marketCards = [];
   return {
     type: ServerActionEnum.startRound,
     isOK: true,
-    response: {
-      availableActions: playerState.availableActions,
-    },
+    response: {},
   };
 }

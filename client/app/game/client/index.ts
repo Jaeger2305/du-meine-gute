@@ -2,11 +2,13 @@ import { GameState, PlayerActionEnum, PlayerState } from "../types";
 import { drawCard } from "./draw-card";
 import { endStep } from "./end-step";
 
+type PlayerActionResponse = any;
+
 type PlayerActionHandler = (
   gameState: GameState,
   playerState: PlayerState,
   ...payload
-) => void;
+) => PlayerActionResponse;
 
 export const playerActions: Record<PlayerActionEnum, PlayerActionHandler> = {
   [PlayerActionEnum.endStep]: endStep,
@@ -37,6 +39,7 @@ export function newGame(): GameState {
     reservedCards: [],
     marketCards: [],
     score: 0,
+    activeStep: 0,
   };
   return gameState;
 }

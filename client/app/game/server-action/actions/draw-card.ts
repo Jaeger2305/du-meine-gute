@@ -13,7 +13,6 @@ export function drawCard(
   serverState: GameState,
   playerNumber: PlayerState["playerNumber"]
 ): DrawCardResponse {
-  debugger;
   // Draw the card
   const drawnCard = drawFromDeck(
     serverState.cardsInDeck,

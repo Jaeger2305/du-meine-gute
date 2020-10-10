@@ -28,7 +28,6 @@ export default Vue.extend({
   },
   computed: {
     isDrawCardPossible(): boolean {
-      console.log(this.availableActions.x);
       return isActionAvailable(
         this.availableActions,
         PlayerActionEnum.drawCard

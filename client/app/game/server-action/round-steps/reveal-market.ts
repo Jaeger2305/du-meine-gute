@@ -16,8 +16,10 @@ import { ServerActionResponse } from "../types";
  */
 export function revealMarket(
   gameState: GameState,
-  playerState: PlayerState
+  serverState: GameState,
+  playerNumber: number
 ): ServerActionResponse {
+  const playerState = serverState.players[playerNumber]
   playerState.availableActions = [PlayerActionEnum.endStep];
 
   const marketCards: Array<Card> = [];
@@ -25,24 +27,22 @@ export function revealMarket(
   // Draw cards until 3 suns.
   while (
     marketCards.filter((card) => card.isSunny).length <
-      gameState.config.marketSuns &&
-    (gameState.cardsInDeck.length || gameState.cardsInDiscard.length)
+      serverState.config.marketSuns &&
+    (serverState.cardsInDeck.length || serverState.cardsInDiscard.length)
   ) {
     const drawnCard = drawFromDeck(
-      gameState.cardsInDeck,
-      gameState.cardsInDiscard
+      serverState.cardsInDeck,
+      serverState.cardsInDiscard
     );
     marketCards.push(drawnCard);
   }
-  gameState.marketCards.push(...marketCards);
+  serverState.marketCards.push(...marketCards);
 
   return {
     type: ServerActionEnum.revealMarket,
     isOK: true,
     response: {
       drawnCards: marketCards,
-      availableActions: playerState.availableActions,
-      marketCards: gameState.marketCards,
     },
   };
 }

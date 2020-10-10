@@ -17,6 +17,7 @@ export const emptyGame: GameState = {
   reservedCards: [],
   marketCards: [],
   score: 0,
+  activeStep: 0,
 };
 
 export const defaultGame = { ...emptyGame, players: [emptyPlayerState] };

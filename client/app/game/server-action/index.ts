@@ -61,7 +61,7 @@ type ServerActionHandler = (
   gameState: GameState,
   serverState: GameState,
   playerNumber: PlayerState["playerNumber"],
-  ...payload: any
+  playerActionResponse?: any
 ) => void;
 
 export const serverActions: Record<ServerActionEnum, ServerActionHandler> = {

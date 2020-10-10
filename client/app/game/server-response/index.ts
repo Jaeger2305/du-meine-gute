@@ -7,7 +7,19 @@ import {
   PlayerState,
 } from "../types";
 
-const endStep = () => {};
+const endStep = (
+  gameState: GameState,
+  serverState: GameState,
+  playerState: PlayerState,
+  { availableActions }
+): void => {
+  // In a multi player game, the end step probably won't immediately return the next steps.
+  playerState.availableActions.splice(
+    0,
+    playerState.availableActions.length,
+    ...availableActions
+  );
+};
 
 const drawCard = (
   gameState: GameState,
@@ -52,6 +64,8 @@ type ServerResponseHandler = (
 export const serverResponse: Record<ServerActionEnum, ServerResponseHandler> = {
   [ServerActionEnum.endStep]: endStep,
   [ServerActionEnum.drawCard]: drawCard,
+  [ServerActionEnum.reserveFactory]: () => {}, // the optimistic response is fine
+  [ServerActionEnum.assignWorkers]: () => {}, // the optimistic response is fine
   [ServerActionEnum.revealMarket]: () => {},
   [ServerActionEnum.startRound]: () => {},
 };

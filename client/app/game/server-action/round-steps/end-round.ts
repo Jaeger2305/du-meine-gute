@@ -16,16 +16,18 @@ import { ServerActionResponse } from "../types";
  */
 export function endRound(
   gameState: GameState,
-  playerState: PlayerState
+  serverState: GameState,
+  playerNumber: number
 ): ServerActionResponse {
-  const isGameEnd = gameState.isGameEnding; // if marked as game ending last round, mark as finished here.
-  gameState.isGameEnding =
-    playerState.cardsInPlay.length >= gameState.config.buildCountForEndGame;
+  const playerState = serverState.players[playerNumber]
+  const isGameEnd = serverState.isGameEnding; // if marked as game ending last round, mark as finished here.
+  serverState.isGameEnding =
+    playerState.cardsInPlay.length >= serverState.config.buildCountForEndGame;
   playerState.availableActions = isGameEnd ? [] : [PlayerActionEnum.endStep];
-  gameState.winner = isGameEnd ? playerState.player : null;
+  serverState.winner = isGameEnd ? playerState.player : null;
   const resourcesScore = Math.floor(
     sum(playerState.resources.map((resource) => resource.value)) *
-      gameState.config.pointsPerResource
+    serverState.config.pointsPerResource
   );
   const factoryScore = sum(playerState.cardsInPlay.map((card) => card.points));
   const employeeScore = sum(
@@ -44,7 +46,7 @@ export function endRound(
   );
 
   // If at the end of the game, assign investors for free.
-  if (gameState.isGameEnding) {
+  if (serverState.isGameEnding) {
     const assignedFactories = playerState.assignedEmployees.map(
       (employee) => employee.assignment.name
     );
@@ -65,16 +67,16 @@ export function endRound(
   }
 
   // Discard the market
-  gameState.cardsInDiscard.push(...gameState.marketCards);
-  gameState.marketCards = [];
+  serverState.cardsInDiscard.push(...serverState.marketCards);
+  serverState.marketCards = [];
 
   return {
     type: ServerActionEnum.endStep,
     isOK: true,
     response: {
+      cardsInDiscard: serverState.cardsInDiscard,
       assignedEmployees: playerState.assignedEmployees,
-      availableActions: playerState.availableActions,
-      winner: gameState.winner,
+      winner: serverState.winner,
     },
   };
 }

@@ -13,22 +13,21 @@ import { ServerActionResponse } from "../types";
  */
 export function draw(
   gameState: GameState,
-  playerState: PlayerState
+  serverState: GameState,
+  playerNumber: number
 ): ServerActionResponse {
   const drawCardCount =
-    gameState.config.drawCount +
+  serverState.config.drawCount +
     sum(
-      playerState.cardsInPlay.map((card) => card.boostDrawCount).filter(Boolean)
+      serverState.players[playerNumber].cardsInPlay.map((card) => card.boostDrawCount).filter(Boolean)
     );
   const drawCardActions = new Array(drawCardCount).fill(
     PlayerActionEnum.drawCard
   );
-  playerState.availableActions = [...drawCardActions, PlayerActionEnum.endStep];
+  serverState.players[playerNumber].availableActions = [...drawCardActions, PlayerActionEnum.endStep];
   return {
     type: ServerActionEnum.drawCard,
     isOK: true,
-    response: {
-      availableActions: playerState.availableActions,
-    },
+    response: {},
   };
 }
