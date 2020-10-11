@@ -1,7 +1,7 @@
 <template>
   <Page actionBarHidden="true">
     <!-- The overall grid -->
-    <!-- | ---- | --------------------history------------------ | sett | -->
+    <!-- | rsrc | --------------------history------------------ | sett | -->
     <!-- | mrkt | -----card--------card--------card------------ | actn | -->
     <!-- | deck | -----card--card--card--card--card--card------ | disc | -->
     <GridLayout columns="*, 4*, *" rows="*, *, *" backgroundColor="#3c495e">
@@ -12,6 +12,7 @@
         </StackLayout>
       </ScrollView>
 
+      <Resources column="0" row="0" :resources="playerState.resources" />
       <Market column="0" row="1" :cards="gameState.marketCards" />
 
       <!-- Settings -->
