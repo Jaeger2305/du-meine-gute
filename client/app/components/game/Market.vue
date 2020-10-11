@@ -1,52 +1,36 @@
 <template>
-  <FlexboxLayout backgroundColor="#3c495e">
-    <Label textWrap>
-      <Span>Metal: {{ metalCount }}</Span>
-      <Span>Clay: {{ clayCount }}</Span>
-      <Span>Wood: {{ woodCount }}</Span>
-      <Span>Wheat: {{ wheatCount }}</Span>
-      <Span>Cloth: {{ woolCount }}</Span>
-    </Label>
+  <FlexboxLayout flexDirection="column" backgroundColor="#3c495e">
+    <Label
+      v-for="{ type, count } in aggregatedResources"
+      :key="type"
+      :text="`${type}: ${count}`"
+    />
   </FlexboxLayout>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
+import { groupBy } from "lodash";
 import { GameState } from "../../game/types";
-import { ResourceType } from "../../game/resources";
+import { ResourceType, Resource } from "../../game/resources";
 
 export default Vue.extend({
   props: {
-    cards: {
+    resources: {
       type: Object as PropType<GameState["marketCards"]>,
       required: true,
     },
   },
   computed: {
-    metalCount(): number {
-      return this.cards.filter(
-        (card) => card.resource.type === ResourceType.metal
-      ).length;
-    },
-    wheatCount(): number {
-      return this.cards.filter(
-        (card) => card.resource.type === ResourceType.wheat
-      ).length;
-    },
-    woodCount(): number {
-      return this.cards.filter(
-        (card) => card.resource.type === ResourceType.wood
-      ).length;
-    },
-    clayCount(): number {
-      return this.cards.filter(
-        (card) => card.resource.type === ResourceType.clay
-      ).length;
-    },
-    woolCount(): number {
-      return this.cards.filter(
-        (card) => card.resource.type === ResourceType.wool
-      ).length;
+    aggregatedResources(): Array<{ type: ResourceType; count: number }> {
+      const groupedResources = groupBy(
+        this.resources as Array<Resource>,
+        "type"
+      ) as { [key in ResourceType]?: Array<Resource> };
+      return Object.entries(groupedResources).map(([key, value]) => ({
+        type: key as ResourceType,
+        count: value.length,
+      }));
     },
   },
 });

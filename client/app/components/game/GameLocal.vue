@@ -13,7 +13,7 @@
       </ScrollView>
 
       <Resources column="0" row="0" :resources="playerState.resources" />
-      <Market column="0" row="1" :cards="gameState.marketCards" />
+      <Market column="0" row="1" :resources="gameState.marketCards" />
 
       <!-- Settings -->
       <!-- <Button column="2" row="0" text="ready?" @tap="playerReady" /> -->
