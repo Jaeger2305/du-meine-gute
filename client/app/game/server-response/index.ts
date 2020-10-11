@@ -6,6 +6,10 @@ import {
 import {endStep} from "./end-step"
 import {drawCard} from "./draw-card"
 import { ServerActionResponse } from "../server-action/types"
+import { revealMarket } from './reveal-market';
+import { assignmentStep } from './assignment-step';
+import { startRound } from './start-round';
+import { drawStep } from './draw-step';
 
 type ServerResponseHandler = (
   gameState: GameState,
@@ -18,8 +22,9 @@ type ServerResponseHandler = (
 export const serverResponse: Record<ServerActionEnum, ServerResponseHandler> = {
   [ServerActionEnum.endStep]: endStep,
   [ServerActionEnum.drawCard]: drawCard,
+  [ServerActionEnum.drawStep]: drawStep,
   [ServerActionEnum.reserveFactory]: () => {}, // the optimistic response is fine
-  [ServerActionEnum.assignWorkers]: () => {}, // the optimistic response is fine
-  [ServerActionEnum.revealMarket]: () => {},
-  [ServerActionEnum.startRound]: () => {},
+  [ServerActionEnum.assignWorkers]: assignmentStep, // the optimistic response is fine
+  [ServerActionEnum.revealMarket]: revealMarket,
+  [ServerActionEnum.startRound]: startRound,
 };

@@ -15,5 +15,4 @@ export const roundSteps: Array<(
   revealMarket,
   assignmentStep,
   revealMarket,
-  endRound,
 ];

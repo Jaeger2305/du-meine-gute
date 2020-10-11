@@ -19,6 +19,8 @@ export function startRound(
   return {
     type: ServerActionEnum.startRound,
     isOK: true,
-    response: {},
+    response: {
+      availableActions: serverState.players[playerNumber].availableActions
+    },
   };
 }

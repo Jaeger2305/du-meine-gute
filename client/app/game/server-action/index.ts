@@ -20,7 +20,10 @@ export { roundSteps } from "./round-steps";
 import { drawCard } from "./actions/draw-card";
 import { endStep } from "./actions/end-step";
 import { reserveFactory } from "./actions/reserve-factory";
+import { drawStep } from "./round-steps/draw-step";
 import { assignmentStep } from "./round-steps/assignment-step";
+import { revealMarket } from './round-steps/reveal-market';
+import { startRound } from './round-steps/start-round';
 
 /**
  * Initialises the deck of cards
@@ -64,27 +67,17 @@ export function setupGame(game: GameState): void {
 export const serverActions: Record<ServerActionEnum, ServerActionHandler> = {
   [ServerActionEnum.drawCard]: drawCard,
   [ServerActionEnum.endStep]: endStep,
+  [ServerActionEnum.drawStep]: drawStep,
   [ServerActionEnum.assignWorkers]: assignmentStep,
   [ServerActionEnum.reserveFactory]: reserveFactory,
-  [ServerActionEnum.revealMarket]: () => {},
-  [ServerActionEnum.startRound]: () => {},
+  [ServerActionEnum.revealMarket]: revealMarket,
+  [ServerActionEnum.startRound]: startRound,
 };
 
-enum Steps {
-  startRound = "start",
-  revealMarket = "reveal market",
-  assignEmployees = "assign",
-  produce = "produce",
-  purchase = "purchase",
-  endRound = "round end",
-}
-
 export const RoundSteps = [
-  Steps.startRound,
-  Steps.revealMarket,
-  Steps.assignEmployees,
-  Steps.revealMarket,
-  Steps.produce,
-  Steps.purchase,
-  Steps.endRound,
+  ServerActionEnum.startRound,
+  ServerActionEnum.drawStep,
+  ServerActionEnum.revealMarket,
+  ServerActionEnum.assignWorkers,
+  ServerActionEnum.revealMarket,
 ];

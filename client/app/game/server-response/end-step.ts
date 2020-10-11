@@ -7,8 +7,9 @@ import {
 export function endStep(
     gameState: GameState,
     playerState: PlayerState,
-    { availableActions }: EndStepResponse["response"]
+    { availableActions, activeStep }: EndStepResponse["response"]
   ): void {
+    gameState.activeStep = activeStep
     // In a multi player game, the end step probably won't immediately return the next steps.
     playerState.availableActions.splice(
       0,

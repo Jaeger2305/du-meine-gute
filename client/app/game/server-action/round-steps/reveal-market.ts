@@ -1,11 +1,11 @@
-import { drawFromDeck } from "../../utils";
+import { drawFromDeck, obfuscateDeck } from "../../utils";
 import {
   GameState,
   Card,
   ServerActionEnum,
 } from "../../types";
 import { PlayerActionEnum } from "../../client";
-import { ServerActionResponse } from "../types";
+import { RevealMarketResponse } from "../types";
 
 /**
  * Called twice, once before assigning workers and once after.
@@ -16,7 +16,7 @@ import { ServerActionResponse } from "../types";
 export function revealMarket(
   serverState: GameState,
   playerNumber: number
-): ServerActionResponse {
+): RevealMarketResponse {
   const playerState = serverState.players[playerNumber]
   playerState.availableActions = [PlayerActionEnum.endStep];
 
@@ -41,6 +41,9 @@ export function revealMarket(
     isOK: true,
     response: {
       drawnCards: marketCards,
+      cardsInDeck: obfuscateDeck(serverState.cardsInDeck),
+      cardsInDiscard: serverState.cardsInDiscard,
+      availableActions: playerState.availableActions,
     },
   };
 }

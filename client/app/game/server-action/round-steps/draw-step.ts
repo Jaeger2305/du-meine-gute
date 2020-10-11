@@ -24,8 +24,10 @@ export function drawStep(
   );
   serverState.players[playerNumber].availableActions = [...drawCardActions, PlayerActionEnum.endStep];
   return {
-    type: ServerActionEnum.drawCard,
+    type: ServerActionEnum.drawStep,
     isOK: true,
-    response: {},
+    response: {
+      availableActions: serverState.players[playerNumber].availableActions
+    },
   };
 }

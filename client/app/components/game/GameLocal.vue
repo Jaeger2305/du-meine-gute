@@ -19,6 +19,7 @@
       <!-- For now though, this is available actions -->
       <ScrollView column="1" row="1" orientation="horizontal">
         <StackLayout column="1" orientation="horizontal">
+          <Market :cards="gameState.marketCards" />
           <Card
             v-for="action in playerState.availableActions"
             :key="action"
@@ -79,6 +80,7 @@ import {
 import { cloneDeep } from "lodash";
 import { isActionAvailable } from "../../game/utils";
 import { ServerActionResponse } from "../../game/server-action/types";
+import { RoundSteps } from "../../game/server-action";
 
 export default {
   props: {},
@@ -105,6 +107,14 @@ export default {
     this.playerState = this.gameState.players[0];
   },
   async destroyed() {},
+  watch: {
+    "gameState.activeStep"() {
+      debugger;
+      if (this.isLocal) {
+        this.sendMessage({ type: RoundSteps[this.gameState.activeStep] });
+      }
+    },
+  },
   computed: {},
   methods: {
     playerAction(type: PlayerActionEnum, payload: any) {

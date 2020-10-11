@@ -23,6 +23,8 @@ export function assignmentStep(
   return {
     type: ServerActionEnum.assignWorkers,
     isOK: true,
-    response: {},
+    response: {
+      availableActions: serverState.players[playerNumber].availableActions
+    },
   };
 }

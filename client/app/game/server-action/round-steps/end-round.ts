@@ -75,6 +75,7 @@ export function endRound(
       cardsInDiscard: serverState.cardsInDiscard,
       assignedEmployees: playerState.assignedEmployees,
       winner: serverState.winner,
+      availableActions: serverState.players[playerNumber].availableActions
     },
   };
 }

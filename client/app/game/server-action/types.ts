@@ -3,6 +3,7 @@ import { Card, GameState, PlayerState } from "../types";
 export enum ServerActionEnum {
   endStep = "endStep",
   drawCard = "drawCard",
+  drawStep = "drawStep",
   assignWorkers = "assignWorkers",
   reserveFactory = "reserveFactory",
   revealMarket = "revealMarket",
@@ -24,7 +25,7 @@ export type ServerActionHandler = (
   serverState: GameState,
   playerNumber: PlayerState["playerNumber"],
   playerActionResponse?: any
-) => void;
+) => any;
 
 export interface DrawCardResponse extends ServerActionResponse {
   type: ServerActionEnum.drawCard;
@@ -35,9 +36,20 @@ export interface DrawCardResponse extends ServerActionResponse {
   };
 }
 
+export interface RevealMarketResponse extends ServerActionResponse {
+  type: ServerActionEnum.revealMarket;
+  response: {
+    drawnCards: Array<Card>;
+    cardsInDiscard: Array<Card>;
+    cardsInDeck: Array<Card>;
+    availableActions: PlayerState["availableActions"]
+  };
+}
+
 export interface EndStepResponse extends ServerActionResponse {
   type: ServerActionEnum.endStep;
   response: {
+    activeStep: GameState["activeStep"]
     availableActions: PlayerState["availableActions"]
   }
 }

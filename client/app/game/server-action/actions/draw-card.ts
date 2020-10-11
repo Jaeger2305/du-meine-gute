@@ -1,7 +1,6 @@
 import { DrawCardResponse } from "../types";
-import { drawFromDeck, removeActionFromAvailableActions } from "../../utils";
-import { Card, GameState, ServerActionEnum, PlayerState } from "../../types";
-import { unknown } from "../../cards";
+import { drawFromDeck, obfuscateDeck } from "../../utils";
+import { GameState, ServerActionEnum, PlayerState } from "../../types";
 
 /**
  * Reveals a card from the deck after the user has requested drawing a card.
@@ -41,13 +40,3 @@ export function drawCard(
   };
 }
 
-// This should be a shared util function, but quick for now whilst PoC
-function createUnknownCard(baseCard: Card = unknown): Card {
-  return { ...unknown, ...baseCard };
-}
-
-function obfuscateDeck(
-  cardsInDeck: GameState["cardsInDeck"]
-): GameState["cardsInDeck"] {
-  return cardsInDeck.map(createUnknownCard);
-}

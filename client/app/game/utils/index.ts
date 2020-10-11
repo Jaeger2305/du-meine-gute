@@ -1,4 +1,5 @@
 import { PlayerState, GameState, Card } from "../types";
+import { unknown } from "../cards";
 import { PlayerActionEnum } from "../client";
 
 import { Resource } from "../resources";
@@ -124,4 +125,15 @@ export function isActionAvailable(
   return Boolean(
     availableActions.find((availableAction) => availableAction === action)
   );
+}
+
+// This should be a shared util function, but quick for now whilst PoC
+function createUnknownCard(baseCard: Card = unknown): Card {
+  return { ...unknown, ...baseCard };
+}
+
+export function obfuscateDeck(
+  cardsInDeck: GameState["cardsInDeck"]
+): GameState["cardsInDeck"] {
+  return cardsInDeck.map(createUnknownCard);
 }
