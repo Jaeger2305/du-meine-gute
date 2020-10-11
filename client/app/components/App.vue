@@ -1,15 +1,16 @@
 <template>
   <Page>
     <ActionBar title="Du Meine Güte" />
-    <GridLayout columns="*" rows="*">
-      <Button text="gotologin" @tap="login" />
+    <GridLayout columns="*, *" rows="*">
+      <Button column="0" text="gotologin" @tap="login" />
+      <Button column="1" text="quickStart" @tap="quickStart" />
     </GridLayout>
   </Page>
 </template>
 
 <script lang="ts">
 import Login from "./Login.vue";
-import Lobby from "./Lobby.vue";
+import GameLocal from "./game/GameLocal.vue";
 import orientation from "nativescript-orientation";
 
 orientation.enableRotation();
@@ -19,6 +20,9 @@ export default {
   methods: {
     login() {
       this.$navigateTo(Login);
+    },
+    quickStart() {
+      this.$navigateTo(GameLocal);
     },
   },
 };

@@ -1,5 +1,5 @@
 import Vue from "nativescript-vue";
-import App from "./components/App";
+import App from "./components/App.vue";
 import VueDevtools from "nativescript-vue-devtools";
 const app = require("tns-core-modules/application");
 
