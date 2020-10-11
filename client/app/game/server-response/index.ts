@@ -23,6 +23,7 @@ export const serverResponse: Record<ServerActionEnum, ServerResponseHandler> = {
   [ServerActionEnum.endStep]: endStep,
   [ServerActionEnum.drawCard]: drawCard,
   [ServerActionEnum.drawStep]: drawStep,
+  [ServerActionEnum.assignEmployee]: () => {}, // the optimistic response is fine
   [ServerActionEnum.reserveFactory]: () => {}, // the optimistic response is fine
   [ServerActionEnum.assignWorkers]: assignmentStep, // the optimistic response is fine
   [ServerActionEnum.revealMarket]: revealMarket,

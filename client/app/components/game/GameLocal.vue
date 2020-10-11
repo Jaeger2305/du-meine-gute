@@ -2,7 +2,7 @@
   <Page actionBarHidden="true">
     <!-- The overall grid -->
     <!-- | ---- | --------------------history------------------ | sett | -->
-    <!-- | ---- | -----card--------card--------card------------ | ---- | -->
+    <!-- | mrkt | -----card--------card--------card------------ | actn | -->
     <!-- | deck | -----card--card--card--card--card--card------ | disc | -->
     <GridLayout columns="*, 4*, *" rows="*, *, *" backgroundColor="#3c495e">
       <!-- History (just websockets for now)  -->
@@ -12,6 +12,8 @@
         </StackLayout>
       </ScrollView>
 
+      <Market column="0" row="1" :cards="gameState.marketCards" />
+
       <!-- Settings -->
       <!-- <Button column="2" row="0" text="ready?" @tap="playerReady" /> -->
 
@@ -19,15 +21,25 @@
       <!-- For now though, this is available actions -->
       <ScrollView column="1" row="1" orientation="horizontal">
         <StackLayout column="1" orientation="horizontal">
-          <Market :cards="gameState.marketCards" />
-          <Card
-            v-for="action in playerState.availableActions"
-            :key="action"
-            :name="action"
-            :isEnabled="false"
+          <Assignment
+            :availableActions="playerState.availableActions"
+            :employees="playerState.employees"
+            :factories="playerState.cardsInPlay"
+            :assignedEmployees="playerState.assignedEmployees"
+            @assign-employee="playerAction"
+          />
+          <Factories
+            :factories="playerState.cardsInPlay"
+            :assignedEmployees="playerState.assignedEmployees"
           />
         </StackLayout>
       </ScrollView>
+
+      <AvailableActions
+        column="2"
+        row="1"
+        :actions="playerState.availableActions"
+      />
 
       <!-- Draw -->
       <Deck
@@ -109,7 +121,6 @@ export default {
   async destroyed() {},
   watch: {
     "gameState.activeStep"() {
-      debugger;
       if (this.isLocal) {
         this.sendMessage({ type: RoundSteps[this.gameState.activeStep] });
       }
@@ -117,8 +128,8 @@ export default {
   },
   computed: {},
   methods: {
-    playerAction(type: PlayerActionEnum, payload: any) {
-      const playerActionResponse = playerActions[type](
+    async playerAction(type: PlayerActionEnum, payload: any) {
+      const playerActionResponse = await playerActions[type](
         this.gameState,
         this.playerState,
         payload
@@ -148,6 +159,9 @@ export default {
     },
     receiveMessage(payload: ServerActionResponse) {
       this.messages.push("RECEIVED:" + JSON.stringify(payload));
+      // If explicitly nothing, do nothing with this message.
+      // This is probably because the optimistic response was sufficient.
+      if (payload.type === null) return;
       // Should be using enums here, and the separate game logic folders
       const handler = serverResponse[payload.type];
       if (handler) {

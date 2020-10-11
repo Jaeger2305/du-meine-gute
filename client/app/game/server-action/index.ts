@@ -24,6 +24,7 @@ import { drawStep } from "./round-steps/draw-step";
 import { assignmentStep } from "./round-steps/assignment-step";
 import { revealMarket } from './round-steps/reveal-market';
 import { startRound } from './round-steps/start-round';
+import { assignEmployee } from './actions/assign-employee';
 
 /**
  * Initialises the deck of cards
@@ -65,11 +66,15 @@ export function setupGame(game: GameState): void {
 }
 
 export const serverActions: Record<ServerActionEnum, ServerActionHandler> = {
+  // Standalone actions
   [ServerActionEnum.drawCard]: drawCard,
+  [ServerActionEnum.reserveFactory]: reserveFactory,
+  [ServerActionEnum.assignEmployee]: assignEmployee,
   [ServerActionEnum.endStep]: endStep,
+
+  // Steps
   [ServerActionEnum.drawStep]: drawStep,
   [ServerActionEnum.assignWorkers]: assignmentStep,
-  [ServerActionEnum.reserveFactory]: reserveFactory,
   [ServerActionEnum.revealMarket]: revealMarket,
   [ServerActionEnum.startRound]: startRound,
 };

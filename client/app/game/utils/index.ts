@@ -1,4 +1,4 @@
-import { PlayerState, GameState, Card } from "../types";
+import { PlayerState, GameState, Card, AssignedEmployee, Employee } from "../types";
 import { unknown } from "../cards";
 import { PlayerActionEnum } from "../client";
 
@@ -136,4 +136,29 @@ export function obfuscateDeck(
   cardsInDeck: GameState["cardsInDeck"]
 ): GameState["cardsInDeck"] {
   return cardsInDeck.map(createUnknownCard);
+}
+
+export function getUnassignedEmployees(
+  employees: Array<Employee>,
+  assignedEmployees: Array<AssignedEmployee>
+): Array<Employee> {
+  return employees.filter(
+    (employee) =>
+      !assignedEmployees
+        .map((assignedEmployee) => assignedEmployee.name)
+        .includes(employee.name)
+  );
+}
+
+export function getUnoccupiedFactories(
+  assignedEmployees: Array<AssignedEmployee>,
+  factories: Array<Card>
+): Array<Card> {
+  return factories.filter(
+    (factory) =>
+      factory.productionConfig &&
+      !assignedEmployees
+        .map((assignedEmployee) => assignedEmployee.assignment.name)
+        .includes(factory.name)
+  );
 }

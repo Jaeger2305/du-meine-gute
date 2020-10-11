@@ -8,6 +8,7 @@ export enum ServerActionEnum {
   reserveFactory = "reserveFactory",
   revealMarket = "revealMarket",
   startRound = "startRound",
+  assignEmployee = "assignEmployee"
 }
 
 export interface ServerActionRequest {

@@ -2,6 +2,7 @@ import { GameState, PlayerState } from "../types";
 import { drawCard } from "./draw-card";
 import { endStep } from "./end-step";
 import { reserveFactory } from "./reserve-factory";
+import { assignEmployee } from "./assign-employee";
 
 export enum PlayerActionEnum {
   endStep = "endStep",
@@ -19,7 +20,7 @@ export const playerActions = {
   [PlayerActionEnum.endStep]: endStep,
   [PlayerActionEnum.drawCard]: drawCard,
   [PlayerActionEnum.discardCard]: () => {},
-  [PlayerActionEnum.assignEmployee]: () => {},
+  [PlayerActionEnum.assignEmployee]: assignEmployee,
   [PlayerActionEnum.reserveFactory]: reserveFactory,
   [PlayerActionEnum.unassignEmployee]: () => {},
   [PlayerActionEnum.produceAtFactory]: () => {},

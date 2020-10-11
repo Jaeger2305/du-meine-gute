@@ -17,6 +17,7 @@ export function assignmentStep(
     "the server actions aren't really used in any meaningful way, but will be good for validation purposes, and rollback"
   );
   serverState.players[playerNumber].availableActions = [
+    PlayerActionEnum.assignEmployee,
     PlayerActionEnum.reserveFactory,
     PlayerActionEnum.endStep,
   ];
