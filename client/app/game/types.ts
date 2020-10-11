@@ -1,35 +1,11 @@
 import { Resource } from "./resources";
+import { PlayerActionEnum as ClientPlayerActionEnum } from "./client";
 
-export enum PlayerActionEnum {
-  endStep = "endStep",
-  drawCard = "drawCard",
-  discardCard = "discardCard",
-  assignEmployee = "assignEmployee",
-  reserveFactory = "reserveFactory",
-  unassignEmployee = "unassignEmployee",
-  produceAtFactory = "produceAtFactory",
-  buildFactory = "buildFactory",
-  hireWorker = "hireWorker",
-}
 
-export enum ServerActionEnum {
-  endStep = "endStep",
-  drawCard = "drawCard",
-  assignWorkers = "assignWorkers",
-  reserveFactory = "reserveFactory",
-  revealMarket = "revealMarket",
-  startRound = "startRound",
-}
+export { RoundSteps } from "./server-action";
+export { ServerActionEnum, ServerActionRequest } from "./server-action/types";
+export { PlayerActionEnum } from "./client";
 
-export interface ServerActionRequest {
-  type: ServerActionEnum;
-  playerActionResponse?: any;
-}
-
-export type PlayerAction = {
-  type: PlayerActionEnum;
-  handler: (...rest: any) => any;
-};
 
 export type Card = {
   type: BuildingType;
@@ -104,7 +80,7 @@ export type PlayerState = {
   player: Player;
   cardsInHand: Array<Card>;
   cardsInPlay: Array<Card>;
-  availableActions: Array<PlayerActionEnum>;
+  availableActions: Array<ClientPlayerActionEnum>;
   employees: Array<Employee>;
   assignedEmployees: Array<AssignedEmployee>;
   resources: Array<Resource>;
@@ -133,22 +109,3 @@ export enum BuildingType {
   weavingMill,
   windowMaker,
 }
-
-enum Steps {
-  startRound = "start",
-  revealMarket = "reveal market",
-  assignEmployees = "assign",
-  produce = "produce",
-  purchase = "purchase",
-  endRound = "round end",
-}
-
-export const RoundSteps = [
-  Steps.startRound,
-  Steps.revealMarket,
-  Steps.assignEmployees,
-  Steps.revealMarket,
-  Steps.produce,
-  Steps.purchase,
-  Steps.endRound,
-];

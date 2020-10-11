@@ -8,7 +8,8 @@ import {
   differenceResources,
 } from "./index";
 import { bread, coal, wheat, leather, grain } from "../resources";
-import { Card, PlayerActionEnum } from "../types";
+import { Card } from "../types";
+import { PlayerActionEnum } from "../client";
 import { defaultGame } from "../__mocks__/game";
 import { bakery, bakeryWithChain, tannery } from "../__mocks__/card";
 

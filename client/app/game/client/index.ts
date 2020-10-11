@@ -1,17 +1,21 @@
-import { GameState, PlayerActionEnum, PlayerState } from "../types";
+import { GameState, PlayerState } from "../types";
 import { drawCard } from "./draw-card";
 import { endStep } from "./end-step";
 import { reserveFactory } from "./reserve-factory";
 
-type PlayerActionResponse = any;
+export enum PlayerActionEnum {
+  endStep = "endStep",
+  drawCard = "drawCard",
+  discardCard = "discardCard",
+  assignEmployee = "assignEmployee",
+  reserveFactory = "reserveFactory",
+  unassignEmployee = "unassignEmployee",
+  produceAtFactory = "produceAtFactory",
+  buildFactory = "buildFactory",
+  hireWorker = "hireWorker",
+}
 
-type PlayerActionHandler = (
-  gameState: GameState,
-  playerState: PlayerState,
-  payload: any
-) => PlayerActionResponse;
-
-export const playerActions: Record<PlayerActionEnum, PlayerActionHandler> = {
+export const playerActions = {
   [PlayerActionEnum.endStep]: endStep,
   [PlayerActionEnum.drawCard]: drawCard,
   [PlayerActionEnum.discardCard]: () => {},

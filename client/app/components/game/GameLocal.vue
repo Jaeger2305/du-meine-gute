@@ -72,14 +72,13 @@ import { serverResponse } from "../../game/server-response";
 import {
   GameState,
   PlayerState,
-  PlayerActionEnum,
   ServerActionEnum,
   ServerActionRequest,
+  PlayerActionEnum,
 } from "../../game/types";
 import { cloneDeep } from "lodash";
 import { isActionAvailable } from "../../game/utils";
 import { ServerActionResponse } from "../../game/server-action/types";
-import { PlayerAction } from "../../game/types";
 
 export default {
   props: {},

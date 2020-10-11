@@ -1,7 +1,5 @@
 import { ServerActionResponse } from "../types";
-import { drawFromDeck, removeActionFromAvailableActions } from "../../utils";
-import { Card, GameState, ServerActionEnum, PlayerState } from "../../types";
-import { unknown } from "../../cards";
+import { Card, GameState, PlayerState } from "../../types";
 
 /**
  * Reveals a card from the deck after the user has requested drawing a card.

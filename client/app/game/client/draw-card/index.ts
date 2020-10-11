@@ -1,4 +1,5 @@
-import { Card, GameState, PlayerActionEnum, PlayerState } from "../../types";
+import { Card, GameState, PlayerState } from "../../types";
+import { PlayerActionEnum} from "../../client";
 import { unknown } from "../../cards";
 import { removeActionFromAvailableActions } from "../../utils";
 

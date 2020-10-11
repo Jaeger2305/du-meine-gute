@@ -1,7 +1,7 @@
 import { Card, GameState, PlayerActionEnum, PlayerState } from "../../types";
 import { removeActionFromAvailableActions } from "../../utils";
 
-export function reserveFactory(gameState: GameState, playerState: PlayerState, factory: Card) {
+export function reserveFactory(gameState: GameState, playerState: PlayerState, factory: Card): Card {
   const cardIndex = playerState.cardsInHand.findIndex(
     (cardInHand) => cardInHand.name === factory.name
   );

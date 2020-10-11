@@ -1,4 +1,4 @@
-import { GameState, PlayerState } from "../../types";
+import { GameState } from "../../types";
 import { revealMarket } from "./reveal-market";
 import { assignmentStep } from "./assignment-step";
 import { ServerActionResponse } from "../types";

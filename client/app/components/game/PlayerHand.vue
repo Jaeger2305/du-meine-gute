@@ -13,7 +13,7 @@
 <script lang="ts">
 import Vue, { PropType } from "vue";
 import { CustomEvents } from "../../types";
-import { PlayerActionEnum } from "../../game/types";
+import { PlayerActionEnum } from "../../game/client";
 import { isActionAvailable } from "../../game/utils";
 import { GameState, PlayerState } from "../../game/types";
 

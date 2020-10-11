@@ -1,11 +1,10 @@
 import { drawFromDeck } from "../../utils";
 import {
   GameState,
-  PlayerState,
   Card,
-  PlayerActionEnum,
   ServerActionEnum,
 } from "../../types";
+import { PlayerActionEnum } from "../../client";
 import { ServerActionResponse } from "../types";
 
 /**

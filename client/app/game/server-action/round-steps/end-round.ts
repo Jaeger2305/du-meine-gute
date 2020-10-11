@@ -2,10 +2,9 @@ import { sum } from "lodash";
 import {
   AssignedEmployee,
   GameState,
-  PlayerActionEnum,
-  PlayerState,
   ServerActionEnum,
 } from "../../types";
+import { PlayerActionEnum } from "../../client";
 import { ServerActionResponse } from "../types";
 
 /**

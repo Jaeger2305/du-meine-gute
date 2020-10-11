@@ -1,9 +1,10 @@
 import {
   GameState,
-  ServerActionEnum,
   PlayerState,
   PlayerActionEnum,
 } from "../types";
+import {
+  ServerActionHandler,ServerActionEnum} from "./types";
 import { bread, leather, coal } from "../resources";
 import {
   coalMineClay,
@@ -59,11 +60,6 @@ export function setupGame(game: GameState): void {
   game.players = players;
   return;
 }
-type ServerActionHandler = (
-  serverState: GameState,
-  playerNumber: PlayerState["playerNumber"],
-  playerActionResponse?: any
-) => void;
 
 export const serverActions: Record<ServerActionEnum, ServerActionHandler> = {
   [ServerActionEnum.drawCard]: drawCard,
@@ -73,3 +69,22 @@ export const serverActions: Record<ServerActionEnum, ServerActionHandler> = {
   [ServerActionEnum.revealMarket]: () => {},
   [ServerActionEnum.startRound]: () => {},
 };
+
+enum Steps {
+  startRound = "start",
+  revealMarket = "reveal market",
+  assignEmployees = "assign",
+  produce = "produce",
+  purchase = "purchase",
+  endRound = "round end",
+}
+
+export const RoundSteps = [
+  Steps.startRound,
+  Steps.revealMarket,
+  Steps.assignEmployees,
+  Steps.revealMarket,
+  Steps.produce,
+  Steps.purchase,
+  Steps.endRound,
+];

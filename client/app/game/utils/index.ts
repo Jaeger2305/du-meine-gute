@@ -1,4 +1,5 @@
-import { PlayerState, PlayerActionEnum, GameState, Card } from "../types";
+import { PlayerState, GameState, Card } from "../types";
+import { PlayerActionEnum } from "../client";
 
 import { Resource } from "../resources";
 import { sortBy, sumBy, shuffle } from "lodash";
