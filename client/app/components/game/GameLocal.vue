@@ -129,6 +129,7 @@ export default {
       // There's still a question here of whether child components will be responsible for sending/receiving messages.
       // Current architecture is no, everything is done in the global Game component. But not much thought has gone into that, other than keeping it simple.
       // This could even be a mixin though.
+      this.messages.push("SENT:" + JSON.stringify(payload));
       if (this.isLocal) {
         // Perform local server action immediately
         const serverActionResponse = serverActions[payload.type](
@@ -146,6 +147,7 @@ export default {
       }
     },
     receiveMessage(payload: ServerActionResponse) {
+      this.messages.push("RECEIVED:" + JSON.stringify(payload));
       // Should be using enums here, and the separate game logic folders
       const handler = serverResponse[payload.type];
       if (handler) {
