@@ -1,5 +1,4 @@
 import { GameState, PlayerState } from "../../types";
-import { roundSteps } from "../../server-action";
 import { PlayerActionEnum } from '..';
 
 export function endStep(gameState: GameState, playerState: PlayerState) {

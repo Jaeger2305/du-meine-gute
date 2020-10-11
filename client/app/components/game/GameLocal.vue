@@ -29,6 +29,12 @@
             :assignedEmployees="playerState.assignedEmployees"
             @assign-employee="playerAction"
           />
+          <ReservedFactory
+            :factory="playerState.reservedFactory"
+            :resources="playerState.resources"
+            :availableActions="playerState.availableActions"
+            @build-factory="playerAction"
+          />
           <Factories
             :factories="playerState.cardsInPlay"
             :assignedEmployees="playerState.assignedEmployees"

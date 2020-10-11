@@ -10,11 +10,11 @@ import {
 export async function assignEmployee(
   gameState: GameState,
   playerState: PlayerState,
-  {employee, efficiency, factory}: {
+  { employee, efficiency, factory }: {
     employee: Employee,
     efficiency: ProductionEfficiency,
     factory: Card
-},
+  },
 ): Promise<AssignedEmployee> {
   
   const assignedEmployee: AssignedEmployee = {

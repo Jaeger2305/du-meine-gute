@@ -16,15 +16,16 @@ import {
 import { seedWorkers, boss } from "../worker";
 import { generateTestCards } from "./utils";
 
-export { roundSteps } from "./round-steps";
 import { drawCard } from "./actions/draw-card";
 import { endStep } from "./actions/end-step";
 import { reserveFactory } from "./actions/reserve-factory";
 import { drawStep } from "./round-steps/draw-step";
 import { assignmentStep } from "./round-steps/assignment-step";
+import { purchaseStep } from "./round-steps/purchase-step";
 import { revealMarket } from './round-steps/reveal-market';
 import { startRound } from './round-steps/start-round';
 import { assignEmployee } from './actions/assign-employee';
+import { buildFactory } from './actions/build-factory';
 
 /**
  * Initialises the deck of cards
@@ -69,6 +70,7 @@ export const serverActions: Record<ServerActionEnum, ServerActionHandler> = {
   // Standalone actions
   [ServerActionEnum.drawCard]: drawCard,
   [ServerActionEnum.reserveFactory]: reserveFactory,
+  [ServerActionEnum.buildFactory]: buildFactory,
   [ServerActionEnum.assignEmployee]: assignEmployee,
   [ServerActionEnum.endStep]: endStep,
 
@@ -77,6 +79,7 @@ export const serverActions: Record<ServerActionEnum, ServerActionHandler> = {
   [ServerActionEnum.assignWorkers]: assignmentStep,
   [ServerActionEnum.revealMarket]: revealMarket,
   [ServerActionEnum.startRound]: startRound,
+  [ServerActionEnum.purchaseStep]: purchaseStep,
 };
 
 export const RoundSteps = [
@@ -85,4 +88,5 @@ export const RoundSteps = [
   ServerActionEnum.revealMarket,
   ServerActionEnum.assignWorkers,
   ServerActionEnum.revealMarket,
+  ServerActionEnum.purchaseStep,
 ];

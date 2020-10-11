@@ -1,7 +1,7 @@
 import { EndStepResponse } from "../types";
-import { roundSteps } from "../round-steps";
+import { RoundSteps } from "..";
 import { GameState, ServerActionEnum, PlayerState } from "../../types";
-import { PlayerActionEnum } from '@/game/client';
+import { PlayerActionEnum } from '../../client';
 
 /**
  * Reveals a card from the deck after the user has requested drawing a card.
@@ -19,7 +19,7 @@ export function endStep(
     PlayerActionEnum.endStep
   );
 
-  serverState.activeStep = (serverState.activeStep + 1)  % roundSteps.length
+  serverState.activeStep = (serverState.activeStep + 1)  % RoundSteps.length
 
   // In multiple player games, we wouldn't immediately populate the available actions. But we're not there yet, so immediately send back the next round.
   // This explains why the roundsteps are actions, but actions that are only called from this action.
