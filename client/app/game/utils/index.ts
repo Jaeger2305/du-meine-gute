@@ -99,7 +99,7 @@ export function drawFromDeck(
 /**
  * Lodash's difference creates a unique array, which isn't always desired.
  * So, roll a custom implementation that does a true difference.
- * Simplest to use a for loop filter, but this isn't particularly optimised for efficiency or readability, just speed of code.
+ * Simplest to use a for loop filter, but this isn't particularly optimised for efficiency or readability, just speed of writing code.
  * @param originalResources
  * @param resourcesToRemove
  */

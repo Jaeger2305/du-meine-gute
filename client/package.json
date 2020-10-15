@@ -44,7 +44,7 @@
     "rimraf": "^3.0.2",
     "tns-platform-declarations": "^6.5.1",
     "ts-jest": "^26.4.1",
-    "typescript": "^3.8.3",
+    "typescript": "^4.0.3",
     "vue": "^2.6.11",
     "vue-loader": "^15.9.3",
     "webpack": "^4.44.1"

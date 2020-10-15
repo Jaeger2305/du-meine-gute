@@ -21,6 +21,7 @@ import { endStep } from "./actions/end-step";
 import { reserveFactory } from "./actions/reserve-factory";
 import { drawStep } from "./round-steps/draw-step";
 import { assignmentStep } from "./round-steps/assignment-step";
+import { produceStep } from "./round-steps/produce-step";
 import { purchaseStep } from "./round-steps/purchase-step";
 import { revealMarket } from './round-steps/reveal-market';
 import { startRound } from './round-steps/start-round';
@@ -75,10 +76,11 @@ export const serverActions: Record<ServerActionEnum, ServerActionHandler> = {
   [ServerActionEnum.endStep]: endStep,
 
   // Steps
-  [ServerActionEnum.drawStep]: drawStep,
-  [ServerActionEnum.assignWorkers]: assignmentStep,
-  [ServerActionEnum.revealMarket]: revealMarket,
   [ServerActionEnum.startRound]: startRound,
+  [ServerActionEnum.drawStep]: drawStep,
+  [ServerActionEnum.revealMarket]: revealMarket,
+  [ServerActionEnum.assignWorkers]: assignmentStep,
+  [ServerActionEnum.produceStep]: produceStep,
   [ServerActionEnum.purchaseStep]: purchaseStep,
 };
 
@@ -88,5 +90,6 @@ export const RoundSteps = [
   ServerActionEnum.revealMarket,
   ServerActionEnum.assignWorkers,
   ServerActionEnum.revealMarket,
+  ServerActionEnum.produceStep,
   ServerActionEnum.purchaseStep,
 ];

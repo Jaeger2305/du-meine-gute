@@ -4,6 +4,7 @@ export enum ServerActionEnum {
   endStep = "endStep",
   drawCard = "drawCard",
   drawStep = "drawStep",
+  produceStep = "produceStep",
   purchaseStep = "purchaseStep",
   assignWorkers = "assignWorkers",
   reserveFactory = "reserveFactory",

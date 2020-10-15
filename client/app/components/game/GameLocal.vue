@@ -42,11 +42,22 @@
         </StackLayout>
       </ScrollView>
 
-      <AvailableActions
-        column="2"
-        row="1"
-        :actions="playerState.availableActions"
-      />
+      <ScrollView column="2" row="1" orientation="vertical">
+        <StackLayout column="1" orientation="vertical">
+          <Employees
+            column="2"
+            row="1"
+            :availableActions="playerState.availableActions"
+            :employees="playerState.employees"
+            :assignedEmployees="playerState.assignedEmployees"
+            :resources="playerState.resources"
+            :cardsInPlay="playerState.cardsInPlay"
+            :cardsInHand="playerState.cardsInHand"
+            :marketCards="gameState.marketCards"
+            @produce-at-factory="playerAction"
+          />
+        </StackLayout>
+      </ScrollView>
 
       <!-- Draw -->
       <Deck

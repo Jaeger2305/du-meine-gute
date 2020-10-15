@@ -16,6 +16,7 @@ import Deck from "./components/game/Deck.vue";
 import Discard from "./components/game/Discard.vue";
 import Assignment from "./components/game/Assignment.vue";
 import AvailableActions from "./components/game/AvailableActions.vue";
+import Employees from "./components/game/Employees.vue";
 import Market from "./components/game/Market.vue";
 import PlayerHand from "./components/game/PlayerHand.vue";
 import Factories from "./components/game/Factories.vue";
@@ -25,6 +26,7 @@ Vue.component("GameListItem", GameListItem); // Locally registering inside of th
 Vue.component("Card", Card);
 Vue.component("Deck", Deck);
 Vue.component("Discard", Discard);
+Vue.component("Employees", Employees);
 Vue.component("Resources", Resources);
 Vue.component("Factories", Factories);
 Vue.component("ReservedFactory", ReservedFactory);
