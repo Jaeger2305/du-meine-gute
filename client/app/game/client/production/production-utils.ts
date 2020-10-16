@@ -2,7 +2,7 @@ import { placeholder } from "../../resources";
 import { GameState, PlayerState } from "../../types";
 
 import { Resource, ResourceType } from "../../resources";
-import { differenceResources, drawFromDeck } from "../../utils";
+import { differenceResources, drawFromDeck, obfuscateDeck } from "../../utils";
 
 export function checkOutstandingResources(
   requiredResources: Array<Resource>,
@@ -98,12 +98,14 @@ export function checkOutstandingResources(
 export function produceGood(
   { cardsInDeck, cardsInDiscard, reservedCards }: GameState,
   { resources }: PlayerState,
-  resource: Resource
+  resource: Resource,
+  isObfuscated: boolean = true
 ): void {
   // If there are no cards to draw from, shuffle the discard.
   if (!cardsInDeck.length) {
+    const recycledCards = cardsInDiscard.splice(0, cardsInDiscard.length);
     cardsInDeck.push(
-      ...cardsInDiscard.splice(0, cardsInDiscard.length).reverse()
+      ...(isObfuscated ? obfuscateDeck(recycledCards) : recycledCards)
     );
   }
 

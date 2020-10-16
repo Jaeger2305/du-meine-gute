@@ -7,11 +7,12 @@ export enum ServerActionEnum {
   produceStep = "produceStep",
   purchaseStep = "purchaseStep",
   assignWorkers = "assignWorkers",
+  produceAtFactory = "produceAtFactory",
   reserveFactory = "reserveFactory",
   buildFactory = "buildFactory",
   revealMarket = "revealMarket",
   startRound = "startRound",
-  assignEmployee = "assignEmployee"
+  assignEmployee = "assignEmployee",
 }
 
 export interface ServerActionRequest {
@@ -46,14 +47,14 @@ export interface RevealMarketResponse extends ServerActionResponse {
     drawnCards: Array<Card>;
     cardsInDiscard: Array<Card>;
     cardsInDeck: Array<Card>;
-    availableActions: PlayerState["availableActions"]
+    availableActions: PlayerState["availableActions"];
   };
 }
 
 export interface EndStepResponse extends ServerActionResponse {
   type: ServerActionEnum.endStep;
   response: {
-    activeStep: GameState["activeStep"]
-    availableActions: PlayerState["availableActions"]
-  }
+    activeStep: GameState["activeStep"];
+    availableActions: PlayerState["availableActions"];
+  };
 }

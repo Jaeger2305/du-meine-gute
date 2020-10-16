@@ -17,11 +17,13 @@ import { PlayerActionEnum } from "../../game/client";
 import { isActionAvailable } from "../../game/utils";
 import {
   AssignedEmployee,
+  Card,
   Employee,
   GameState,
   PlayerState,
 } from "../../game/types";
 import Production from "./Production.vue";
+import { Resource } from "@/game/resources";
 
 export default Vue.extend({
   props: {
@@ -89,13 +91,19 @@ export default Vue.extend({
         ...this.marketCards.map((card) => card.resource),
         ...this.cardsInPlay.flatMap((card) => card.marketBoost).filter(Boolean),
       ];
-      const res = await this.$showModal(Production, {
+      const production: {
+        discardedCards: Array<Card>;
+        outputResources: Array<Resource>;
+        assignedEmployee: AssignedEmployee;
+      } = await this.$showModal(Production, {
         fullscreen: true,
         props: { assignedEmployee, cardsInHand, marketResources, resources },
       });
-      // Just log output while debugging. It should send an event with the selected data to commit to the server.
-      console.log(assignedEmployee, res);
-      // this.$emit(CustomEvents.PRODUCE_AT_FACTORY, assignment);
+      this.$emit(
+        CustomEvents.PRODUCE_AT_FACTORY,
+        PlayerActionEnum.produceAtFactory,
+        production
+      );
     },
   },
 });

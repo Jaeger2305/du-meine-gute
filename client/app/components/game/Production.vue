@@ -292,15 +292,14 @@ export default Vue.extend({
     },
     submitPayment(): void {
       const payment: {
-        inputResources: Array<Resource>;
-        inputCards: Array<Card>;
+        discardedCards: Array<Card>;
         outputResources: Array<Resource>;
+        assignedEmployee: AssignedEmployee;
       } = {
-        inputResources: this.basket,
-        inputCards: this.discardedCards,
+        discardedCards: this.discardedCards,
         outputResources: this.outputResources,
+        assignedEmployee: this.assignedEmployee,
       };
-      debugger;
       this.$modal.close(payment);
     },
   },

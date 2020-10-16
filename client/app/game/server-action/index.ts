@@ -1,10 +1,5 @@
-import {
-  GameState,
-  PlayerState,
-  PlayerActionEnum,
-} from "../types";
-import {
-  ServerActionHandler,ServerActionEnum} from "./types";
+import { GameState, PlayerState, PlayerActionEnum } from "../types";
+import { ServerActionHandler, ServerActionEnum } from "./types";
 import { bread, leather, coal } from "../resources";
 import {
   coalMineClay,
@@ -23,10 +18,11 @@ import { drawStep } from "./round-steps/draw-step";
 import { assignmentStep } from "./round-steps/assignment-step";
 import { produceStep } from "./round-steps/produce-step";
 import { purchaseStep } from "./round-steps/purchase-step";
-import { revealMarket } from './round-steps/reveal-market';
-import { startRound } from './round-steps/start-round';
-import { assignEmployee } from './actions/assign-employee';
-import { buildFactory } from './actions/build-factory';
+import { revealMarket } from "./round-steps/reveal-market";
+import { startRound } from "./round-steps/start-round";
+import { assignEmployee } from "./actions/assign-employee";
+import { buildFactory } from "./actions/build-factory";
+import { produceAtFactory } from "./actions/produce-at-factory";
 
 /**
  * Initialises the deck of cards
@@ -72,6 +68,7 @@ export const serverActions: Record<ServerActionEnum, ServerActionHandler> = {
   [ServerActionEnum.drawCard]: drawCard,
   [ServerActionEnum.reserveFactory]: reserveFactory,
   [ServerActionEnum.buildFactory]: buildFactory,
+  [ServerActionEnum.produceAtFactory]: produceAtFactory,
   [ServerActionEnum.assignEmployee]: assignEmployee,
   [ServerActionEnum.endStep]: endStep,
 

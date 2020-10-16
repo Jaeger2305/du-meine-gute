@@ -4,6 +4,7 @@ import { endStep } from "./end-step";
 import { reserveFactory } from "./reserve-factory";
 import { assignEmployee } from "./assign-employee";
 import { buildFactory } from "./build-factory";
+import { produceAtFactory } from "./production";
 
 export enum PlayerActionEnum {
   endStep = "endStep",
@@ -24,7 +25,7 @@ export const playerActions = {
   [PlayerActionEnum.assignEmployee]: assignEmployee,
   [PlayerActionEnum.reserveFactory]: reserveFactory,
   [PlayerActionEnum.unassignEmployee]: () => {},
-  [PlayerActionEnum.produceAtFactory]: () => {},
+  [PlayerActionEnum.produceAtFactory]: produceAtFactory,
   [PlayerActionEnum.buildFactory]: buildFactory,
   [PlayerActionEnum.hireWorker]: () => {},
 };

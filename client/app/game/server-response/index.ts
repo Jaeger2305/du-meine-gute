@@ -1,17 +1,13 @@
-import {
-  GameState,
-  ServerActionEnum,
-  PlayerState,
-} from "../types";
-import {endStep} from "./end-step"
-import {drawCard} from "./draw-card"
-import { ServerActionResponse } from "../server-action/types"
-import { revealMarket } from './reveal-market';
-import { assignmentStep } from './assignment-step';
-import { produceStep } from './produce-step';
-import { purchaseStep } from './purchase-step';
-import { startRound } from './start-round';
-import { drawStep } from './draw-step';
+import { GameState, ServerActionEnum, PlayerState } from "../types";
+import { endStep } from "./end-step";
+import { drawCard } from "./draw-card";
+import { ServerActionResponse } from "../server-action/types";
+import { revealMarket } from "./reveal-market";
+import { assignmentStep } from "./assignment-step";
+import { produceStep } from "./produce-step";
+import { purchaseStep } from "./purchase-step";
+import { startRound } from "./start-round";
+import { drawStep } from "./draw-step";
 
 type ServerResponseHandler = (
   gameState: GameState,
@@ -25,6 +21,7 @@ export const serverResponse: Record<ServerActionEnum, ServerResponseHandler> = {
   [ServerActionEnum.endStep]: endStep,
   [ServerActionEnum.drawCard]: drawCard,
   [ServerActionEnum.drawStep]: drawStep,
+  [ServerActionEnum.produceAtFactory]: () => {}, // the optimistic response is fine
   [ServerActionEnum.buildFactory]: () => {}, // the optimistic response is fine
   [ServerActionEnum.assignEmployee]: () => {}, // the optimistic response is fine
   [ServerActionEnum.reserveFactory]: () => {}, // the optimistic response is fine
