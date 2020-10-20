@@ -1,9 +1,17 @@
-import { PlayerState, GameState, Card, AssignedEmployee, Employee } from "../types";
+import {
+  PlayerState,
+  GameState,
+  Card,
+  AssignedEmployee,
+  Employee,
+} from "../types";
 import { unknown } from "../cards";
 import { PlayerActionEnum } from "../client";
 
 import { Resource } from "../resources";
 import { sortBy, sumBy, shuffle } from "lodash";
+
+export { checkOutstandingResources, produceGood } from "./production-utils";
 
 export function filterCardsToAffordable<T>(
   cards: Array<T>,

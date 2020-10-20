@@ -1,8 +1,8 @@
-import { placeholder } from "../../resources";
-import { GameState, PlayerState } from "../../types";
+import { placeholder } from "../resources";
+import { GameState, PlayerState } from "../types";
 
-import { Resource, ResourceType } from "../../resources";
-import { differenceResources, drawFromDeck, obfuscateDeck } from "../../utils";
+import { Resource, ResourceType } from "../resources";
+import { differenceResources, drawFromDeck, obfuscateDeck } from ".";
 
 export function checkOutstandingResources(
   requiredResources: Array<Resource>,

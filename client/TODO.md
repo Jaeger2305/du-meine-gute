@@ -2,8 +2,6 @@
 
 Next up:
 
-1. Connect production to server and game state
-   - separate produce good from client/server
 1. Add employee unassignment
 1. Add purchasing employees
 1. Add round/game end logic

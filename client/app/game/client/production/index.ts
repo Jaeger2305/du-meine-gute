@@ -6,8 +6,7 @@ import {
   PlayerState,
 } from "../../types";
 import { Resource } from "../../resources";
-import { produceGood } from "./production-utils";
-import { removeActionFromAvailableActions } from "../../utils";
+import { removeActionFromAvailableActions, produceGood } from "../../utils";
 
 export async function produceAtFactory(
   gameState: GameState,

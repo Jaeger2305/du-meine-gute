@@ -1,14 +1,7 @@
 import { ServerActionResponse } from "../types";
-import {
-  GameState,
-  ServerActionEnum,
-  PlayerState,
-  AssignedEmployee,
-  Card,
-} from "../../types";
+import { GameState, PlayerState, AssignedEmployee, Card } from "../../types";
 import { Resource } from "../../resources";
-import { produceGood } from "../../client/production/production-utils";
-import { removeActionFromAvailableActions } from "../../utils";
+import { removeActionFromAvailableActions, produceGood } from "../../utils";
 import { PlayerActionEnum } from "../../client";
 
 export function produceAtFactory(
