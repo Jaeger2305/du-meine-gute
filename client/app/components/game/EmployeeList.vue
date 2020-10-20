@@ -16,7 +16,8 @@
       :cardsInPlay="cardsInPlay"
       :marketCards="marketCards"
       :resources="resources"
-      @produce-at-factory="bubbleEvent"
+      @produce-at-factory="bubbleProduction"
+      @unassign-employee="bubbleUnassignment"
     />
   </FlexboxLayout>
 </template>
@@ -109,8 +110,11 @@ export default Vue.extend({
     },
   },
   methods: {
-    bubbleEvent(eventName: CustomEvents, ...args): void {
-      this.$emit(eventName, ...args);
+    bubbleProduction(...args) {
+      this.$emit(CustomEvents.PRODUCE_AT_FACTORY, ...args);
+    },
+    bubbleUnassignment(...args) {
+      this.$emit(CustomEvents.UNASSIGN_EMPLOYEE, ...args);
     },
   },
 });

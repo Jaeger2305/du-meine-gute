@@ -3,9 +3,11 @@
     <Card
       :name="name"
       :isEnabled="isAssignable"
-      @click="produceAtFactory(assigned)"
+      @click="produceAtFactory(assignedEmployee)"
     />
-    <Button v-if="isUnassignable" @tap="unassignEmployee">unassign</Button>
+    <Button v-if="isUnassignable" @tap="unassignEmployee(assignedEmployee)"
+      >unassign</Button
+    >
   </FlexboxLayout>
 </template>
 
@@ -25,13 +27,13 @@ import { Resource } from "../../game/resources";
 
 export default Vue.extend({
   props: {
-    employee: {
-      type: Object as PropType<Employee>,
+    name: {
+      type: String,
       required: true,
     },
     assignedEmployee: {
-      type: Object as PropType<AssignedEmployee>,
-      required: true,
+      type: Object as PropType<AssignedEmployee> | null,
+      default: null,
     },
     isAssignable: {
       type: Boolean,
@@ -79,12 +81,12 @@ export default Vue.extend({
         production
       );
     },
-    unassignEmployee(assignedEmployee: AssignedEmployee) {
-      console.warn("not listened to or implemented yet");
+    async unassignEmployee(assignedEmployee: AssignedEmployee): Promise<void> {
+      console.warn("no payment modal, still todo");
       this.$emit(
         CustomEvents.UNASSIGN_EMPLOYEE,
         PlayerActionEnum.unassignEmployee,
-        assignedEmployee
+        assignedEmployee.name
       );
     },
   },

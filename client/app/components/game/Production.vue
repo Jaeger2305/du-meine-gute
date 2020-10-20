@@ -98,9 +98,11 @@ import {
   Card,
   AssignedEmployee,
 } from "../../game/types";
-import { differenceResources } from "../../game/utils";
+import {
+  differenceResources,
+  checkOutstandingResources,
+} from "../../game/utils";
 import { Resource } from "../../game/resources";
-import { checkOutstandingResources } from "../../game/client/production/production-utils";
 
 /**
  * Loop through the outstanding resources until we find the remaining extra resources, returning the count of production as well.

@@ -55,6 +55,7 @@
             :cardsInHand="playerState.cardsInHand"
             :marketCards="gameState.marketCards"
             @produce-at-factory="playerAction"
+            @unassign-employee="playerAction"
           />
         </StackLayout>
       </ScrollView>

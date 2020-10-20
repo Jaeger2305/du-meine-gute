@@ -21,6 +21,7 @@ import { purchaseStep } from "./round-steps/purchase-step";
 import { revealMarket } from "./round-steps/reveal-market";
 import { startRound } from "./round-steps/start-round";
 import { assignEmployee } from "./actions/assign-employee";
+import { unassignEmployee } from "./actions/unassign-employee";
 import { buildFactory } from "./actions/build-factory";
 import { produceAtFactory } from "./actions/produce-at-factory";
 
@@ -70,6 +71,7 @@ export const serverActions: Record<ServerActionEnum, ServerActionHandler> = {
   [ServerActionEnum.buildFactory]: buildFactory,
   [ServerActionEnum.produceAtFactory]: produceAtFactory,
   [ServerActionEnum.assignEmployee]: assignEmployee,
+  [ServerActionEnum.unassignEmployee]: unassignEmployee,
   [ServerActionEnum.endStep]: endStep,
 
   // Steps

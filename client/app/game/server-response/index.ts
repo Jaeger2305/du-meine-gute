@@ -23,6 +23,7 @@ export const serverResponse: Record<ServerActionEnum, ServerResponseHandler> = {
   [ServerActionEnum.drawStep]: drawStep,
   [ServerActionEnum.produceAtFactory]: () => {}, // the optimistic response is fine
   [ServerActionEnum.buildFactory]: () => {}, // the optimistic response is fine
+  [ServerActionEnum.unassignEmployee]: () => {}, // the optimistic response is fine
   [ServerActionEnum.assignEmployee]: () => {}, // the optimistic response is fine
   [ServerActionEnum.reserveFactory]: () => {}, // the optimistic response is fine
   [ServerActionEnum.produceStep]: produceStep,

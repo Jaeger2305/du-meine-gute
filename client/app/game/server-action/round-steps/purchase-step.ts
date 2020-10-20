@@ -1,8 +1,4 @@
-import {
-  GameState,
-  ServerActionEnum,
-  PlayerActionEnum,
-} from "../../types";
+import { GameState, ServerActionEnum, PlayerActionEnum } from "../../types";
 import { ServerActionResponse } from "../types";
 
 /**
@@ -18,13 +14,14 @@ export function purchaseStep(
   );
   serverState.players[playerNumber].availableActions = [
     PlayerActionEnum.buildFactory,
+    PlayerActionEnum.unassignEmployee,
     PlayerActionEnum.endStep,
   ];
   return {
     type: ServerActionEnum.purchaseStep,
     isOK: true,
     response: {
-      availableActions: serverState.players[playerNumber].availableActions
+      availableActions: serverState.players[playerNumber].availableActions,
     },
   };
 }

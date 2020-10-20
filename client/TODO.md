@@ -3,6 +3,9 @@
 Next up:
 
 1. Add employee unassignment
+
+- add payment for unassignment
+
 1. Add purchasing employees
 1. Add round/game end logic
 1. Add discarding cards

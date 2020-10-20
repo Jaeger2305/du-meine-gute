@@ -13,6 +13,7 @@ export enum ServerActionEnum {
   revealMarket = "revealMarket",
   startRound = "startRound",
   assignEmployee = "assignEmployee",
+  unassignEmployee = "unassignEmployee",
 }
 
 export interface ServerActionRequest {
