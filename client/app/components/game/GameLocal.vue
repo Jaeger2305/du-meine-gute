@@ -44,7 +44,7 @@
 
       <ScrollView column="2" row="1" orientation="vertical">
         <StackLayout column="1" orientation="vertical">
-          <Employees
+          <EmployeeList
             column="2"
             row="1"
             :availableActions="playerState.availableActions"

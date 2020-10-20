@@ -1,12 +1,11 @@
 <template>
   <FlexboxLayout backgroundColor="#3c495e">
     <Card
-      v-for="{ name, assigned, isAssignable } in displayEmployees"
-      :key="name"
       :name="name"
       :isEnabled="isAssignable"
       @click="produceAtFactory(assigned)"
     />
+    <Button v-if="isUnassignable" @tap="unassignEmployee">unassign</Button>
   </FlexboxLayout>
 </template>
 
@@ -14,7 +13,6 @@
 import Vue, { PropType } from "vue";
 import { CustomEvents } from "../../types";
 import { PlayerActionEnum } from "../../game/client";
-import { isActionAvailable } from "../../game/utils";
 import {
   AssignedEmployee,
   Card,
@@ -23,20 +21,24 @@ import {
   PlayerState,
 } from "../../game/types";
 import Production from "./Production.vue";
-import { Resource } from "@/game/resources";
+import { Resource } from "../../game/resources";
 
 export default Vue.extend({
   props: {
-    availableActions: {
-      type: Object as PropType<PlayerState["availableActions"]>,
+    employee: {
+      type: Object as PropType<Employee>,
       required: true,
     },
-    employees: {
-      type: Object as PropType<PlayerState["employees"]>,
+    assignedEmployee: {
+      type: Object as PropType<AssignedEmployee>,
       required: true,
     },
-    assignedEmployees: {
-      type: Object as PropType<PlayerState["assignedEmployees"]>,
+    isAssignable: {
+      type: Boolean,
+      required: true,
+    },
+    isUnassignable: {
+      type: Boolean,
       required: true,
     },
     cardsInHand: {
@@ -56,36 +58,8 @@ export default Vue.extend({
       required: true,
     },
   },
-  computed: {
-    isProductionPhase() {
-      return isActionAvailable(
-        this.availableActions,
-        PlayerActionEnum.produceAtFactory
-      );
-    },
-    displayEmployees(): Array<
-      Employee & {
-        isAssignable: boolean;
-        assigned: AssignedEmployee | undefined;
-      }
-    > {
-      return this.employees.map((employee) => {
-        const assigned = this.assignedEmployees.find(
-          (ae) => ae.name === employee.name
-        );
-        const isAssignable = Boolean(
-          assigned && !assigned.hasProduced && this.isProductionPhase
-        );
-        return {
-          ...employee,
-          isAssignable,
-          assigned,
-        };
-      });
-    },
-  },
   methods: {
-    async produceAtFactory(assignedEmployee: AssignedEmployee) {
+    async produceAtFactory(assignedEmployee: AssignedEmployee): Promise<void> {
       const { resources, cardsInHand } = this;
       const marketResources = [
         ...this.marketCards.map((card) => card.resource),
@@ -103,6 +77,14 @@ export default Vue.extend({
         CustomEvents.PRODUCE_AT_FACTORY,
         PlayerActionEnum.produceAtFactory,
         production
+      );
+    },
+    unassignEmployee(assignedEmployee: AssignedEmployee) {
+      console.warn("not listened to or implemented yet");
+      this.$emit(
+        CustomEvents.UNASSIGN_EMPLOYEE,
+        PlayerActionEnum.unassignEmployee,
+        assignedEmployee
       );
     },
   },
