@@ -43,21 +43,19 @@
       </ScrollView>
 
       <ScrollView column="2" row="1" orientation="vertical">
-        <StackLayout column="1" orientation="vertical">
-          <EmployeeList
-            column="2"
-            row="1"
-            :availableActions="playerState.availableActions"
-            :employees="playerState.employees"
-            :assignedEmployees="playerState.assignedEmployees"
-            :resources="playerState.resources"
-            :cardsInPlay="playerState.cardsInPlay"
-            :cardsInHand="playerState.cardsInHand"
-            :marketCards="gameState.marketCards"
-            @produce-at-factory="playerAction"
-            @unassign-employee="playerAction"
-          />
-        </StackLayout>
+        <EmployeeList
+          column="2"
+          row="1"
+          :availableActions="playerState.availableActions"
+          :employees="playerState.employees"
+          :assignedEmployees="playerState.assignedEmployees"
+          :resources="playerState.resources"
+          :cardsInPlay="playerState.cardsInPlay"
+          :cardsInHand="playerState.cardsInHand"
+          :marketCards="gameState.marketCards"
+          @produce-at-factory="playerAction"
+          @unassign-employee="playerAction"
+        />
       </ScrollView>
 
       <!-- Draw -->

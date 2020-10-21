@@ -1,6 +1,6 @@
-import { GameState, PlayerState, PlayerActionEnum } from "../types";
+import { GameState, PlayerState, PlayerActionEnum, Employee } from "../types";
 import { ServerActionHandler, ServerActionEnum } from "./types";
-import { bread, leather, coal } from "../resources";
+import { bread, leather, coal, wheat } from "../resources";
 import {
   coalMineClay,
   coalMineMetal,
@@ -42,11 +42,22 @@ export function setupGame(game: GameState): void {
 
   const coalMines = [coalMineWheat, coalMineClay, coalMineMetal, coalMineWool];
   const chosenCoalMine = coalMines[Math.floor(Math.random() * 4)];
+
+  // Just use a mock value for now, while testing the unassignment cost
+  const master: Employee = {
+    modes: [{ productionCount: 1, resourceSparingCount: 0 }],
+    name: "master-1",
+    resourceSpecialty: [wheat],
+    cost: 5,
+    points: 4,
+    unassignmentCost: 2,
+  };
+
   const players: Array<PlayerState> = [
     {
       id: "test-player-id-1",
       playerNumber: 0,
-      employees: [boss],
+      employees: [master, boss], // Currently, the first item is assigned without questions in the assignment phase.
       cardsInHand: [
         cardRecords.MARKET_OFFICE_CLAY2,
         cardRecords.TANNERY_WHEAT_WOOL,

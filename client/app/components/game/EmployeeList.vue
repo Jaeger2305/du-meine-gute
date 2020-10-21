@@ -1,5 +1,5 @@
 <template>
-  <FlexboxLayout backgroundColor="#3c495e">
+  <StackLayout orientation="vertical">
     <Employee
       v-for="{
         name,
@@ -19,7 +19,7 @@
       @produce-at-factory="bubbleProduction"
       @unassign-employee="bubbleUnassignment"
     />
-  </FlexboxLayout>
+  </StackLayout>
 </template>
 
 <script lang="ts">
@@ -98,7 +98,9 @@ export default Vue.extend({
             this.isProductionPhase
         );
         const isUnassignable = Boolean(
-          assignedEmployee && this.isUnassignmentPhase
+          assignedEmployee &&
+            assignedEmployee.unassignmentCost &&
+            this.isUnassignmentPhase
         );
         return {
           ...employee,

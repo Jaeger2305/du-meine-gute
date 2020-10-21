@@ -54,6 +54,7 @@ export default Vue.extend({
       }: { resources: Array<Resource> } = await this.$showModal(Purchasing, {
         props: {
           factory,
+          costExtractor: (factory) => factory.cost,
           resources: this.resources,
         },
       });

@@ -31,6 +31,7 @@ import {
   Employee,
   ProductionEfficiency,
   Card,
+  AssignedEmployee,
 } from "../../game/types";
 import { Resource } from "../../game/resources";
 import { sum } from "lodash";
@@ -42,7 +43,11 @@ export default {
       required: true,
     },
     factory: {
-      type: Object as PropType<Card>,
+      type: Object as PropType<Card | AssignedEmployee>,
+      required: true,
+    },
+    costExtractor: {
+      type: Function,
       required: true,
     },
   },
@@ -53,10 +58,11 @@ export default {
     };
   },
   computed: {
+    cost(): number {
+      return this.costExtractor(this.factory);
+    },
     outstandingCost(): number {
-      return (
-        this.factory.cost - sum(this.basket.map((resource) => resource.value))
-      );
+      return this.cost - sum(this.basket.map((resource) => resource.value));
     },
   },
   methods: {

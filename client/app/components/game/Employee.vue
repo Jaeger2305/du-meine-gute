@@ -25,6 +25,8 @@ import {
 import Production from "./Production.vue";
 import { Resource } from "../../game/resources";
 
+import Purchasing from "./Purchasing.vue";
+
 export default Vue.extend({
   props: {
     name: {
@@ -82,11 +84,25 @@ export default Vue.extend({
       );
     },
     async unassignEmployee(assignedEmployee: AssignedEmployee): Promise<void> {
-      console.warn("no payment modal, still todo");
+      console.warn("no error checking even on client side");
+      // Employees are only unassignable manually if they have a cost. Otherwise they are auto unassigned during the end round.
+      // Therefore, to unassign them here, we always show the modal.
+      const {
+        resources: chosenResources,
+      }: { resources: Array<Resource> } = await this.$showModal(Purchasing, {
+        props: {
+          factory: assignedEmployee,
+          costExtractor: (factory) => factory.unassignmentCost,
+          resources: this.resources,
+        },
+      });
       this.$emit(
         CustomEvents.UNASSIGN_EMPLOYEE,
         PlayerActionEnum.unassignEmployee,
-        assignedEmployee.name
+        {
+          nameOfEmployeeToUnassign: assignedEmployee.name,
+          resourcePayment: chosenResources,
+        }
       );
     },
   },
