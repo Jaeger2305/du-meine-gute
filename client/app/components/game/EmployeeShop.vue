@@ -21,12 +21,12 @@
       <!-- View available employee details -->
       <ScrollView orientation="vertical" column="0" row="0">
         <StackLayout>
-          <Label text="Available employees" />
+          <Label :text="`Available employees, money: ${totalFunds}`" />
           <EmployeeDetail
-            v-for="employee in availableEmployees"
+            v-for="employee in employeesInShop"
             :key="employee.name"
             :name="employee.name"
-            :isHireable="true"
+            :isHireable="employee.isHireable"
             :modes="employee.modes"
             :resourceSpecialty="employee.resourceSpecialty"
             :cost="employee.cost"
@@ -41,7 +41,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
-import { sum } from "lodash";
+import { sumBy } from "lodash";
 import {
   generatePoorRandomKey,
   handleValidationError,
@@ -55,10 +55,6 @@ import {
   AssignedEmployee,
   GameState,
 } from "../../game/types";
-import {
-  differenceResources,
-  checkOutstandingResources,
-} from "../../game/utils";
 import { Resource } from "../../game/resources";
 import Purchasing from "./Purchasing.vue";
 
@@ -76,7 +72,19 @@ export default Vue.extend({
   data(): {} {
     return {};
   },
-  computed: {},
+  computed: {
+    totalFunds(): number {
+      return sumBy(this.resources, "value");
+    },
+    employeesInShop(): Array<
+      GameState["availableEmployees"] & { isHireable: boolean }
+    > {
+      return this.availableEmployees.map((employee) => ({
+        ...employee,
+        isHireable: employee.cost <= this.totalFunds,
+      }));
+    },
+  },
   methods: {
     cancel(): void {
       this.$modal.close(null);
