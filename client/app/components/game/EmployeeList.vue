@@ -19,6 +19,7 @@
       @produce-at-factory="bubbleProduction"
       @unassign-employee="bubbleUnassignment"
     />
+    <Button text="purchase employees" @tap="goToAvailableEmployees" />
   </StackLayout>
 </template>
 
@@ -36,6 +37,7 @@ import {
 } from "../../game/types";
 import Production from "./Production.vue";
 import { Resource } from "@/game/resources";
+import EmployeeShop from "./EmployeeShop.vue";
 
 export default Vue.extend({
   props: {
@@ -49,6 +51,10 @@ export default Vue.extend({
     },
     assignedEmployees: {
       type: Object as PropType<PlayerState["assignedEmployees"]>,
+      required: true,
+    },
+    availableEmployees: {
+      type: Object as PropType<GameState["availableEmployees"]>,
       required: true,
     },
     cardsInHand: {
@@ -117,6 +123,23 @@ export default Vue.extend({
     },
     bubbleUnassignment(...args) {
       this.$emit(CustomEvents.UNASSIGN_EMPLOYEE, ...args);
+    },
+    async goToAvailableEmployees(): Promise<void> {
+      const employeeShopResult: null | {
+        employee: Employee;
+        resources: Array<Resource>;
+      } = await this.$showModal(EmployeeShop, {
+        fullscreen: true,
+        props: {
+          resources: this.resources,
+          availableEmployees: this.availableEmployees,
+        },
+      });
+
+      // The employee shop might just be browsed and closed, so only do something in case it returns a notable result.
+      if (employeeShopResult) {
+        this.$emit(CustomEvents.HIRE_EMPLOYEE, employeeShopResult);
+      }
     },
   },
 });

@@ -49,6 +49,7 @@
           :availableActions="playerState.availableActions"
           :employees="playerState.employees"
           :assignedEmployees="playerState.assignedEmployees"
+          :availableEmployees="gameState.availableEmployees"
           :resources="playerState.resources"
           :cardsInPlay="playerState.cardsInPlay"
           :cardsInHand="playerState.cardsInHand"
