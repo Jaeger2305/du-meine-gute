@@ -1,8 +1,8 @@
 import { ServerActionResponse } from "../types";
 import { AssignedEmployee, GameState, PlayerState } from "../../types";
-import { Resource } from "@/game/resources";
+import { Resource } from "../../resources";
 import { spendResources, removeActionFromAvailableActions } from "../../utils";
-import { PlayerActionEnum } from "@/game/client";
+import { PlayerActionEnum } from "../../client";
 
 export function unassignEmployee(
   serverState: GameState,

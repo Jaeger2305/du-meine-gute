@@ -36,7 +36,7 @@ import {
   PlayerState,
 } from "../../game/types";
 import Production from "./Production.vue";
-import { Resource } from "@/game/resources";
+import { Resource } from "../../game/resources";
 import EmployeeShop from "./EmployeeShop.vue";
 
 export default Vue.extend({
