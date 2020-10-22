@@ -56,6 +56,7 @@
           :marketCards="gameState.marketCards"
           @produce-at-factory="playerAction"
           @unassign-employee="playerAction"
+          @hire-employee="playerAction"
         />
       </ScrollView>
 

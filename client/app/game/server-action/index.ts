@@ -14,6 +14,7 @@ import { generateTestCards } from "./utils";
 import { drawCard } from "./actions/draw-card";
 import { endStep } from "./actions/end-step";
 import { reserveFactory } from "./actions/reserve-factory";
+import { hireEmployee } from "./actions/hire-employee";
 import { drawStep } from "./round-steps/draw-step";
 import { assignmentStep } from "./round-steps/assignment-step";
 import { produceStep } from "./round-steps/produce-step";
@@ -83,6 +84,7 @@ export const serverActions: Record<ServerActionEnum, ServerActionHandler> = {
   [ServerActionEnum.produceAtFactory]: produceAtFactory,
   [ServerActionEnum.assignEmployee]: assignEmployee,
   [ServerActionEnum.unassignEmployee]: unassignEmployee,
+  [ServerActionEnum.hireEmployee]: hireEmployee,
   [ServerActionEnum.endStep]: endStep,
 
   // Steps

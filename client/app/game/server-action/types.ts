@@ -14,6 +14,7 @@ export enum ServerActionEnum {
   startRound = "startRound",
   assignEmployee = "assignEmployee",
   unassignEmployee = "unassignEmployee",
+  hireEmployee = "hireEmployee",
 }
 
 export interface ServerActionRequest {

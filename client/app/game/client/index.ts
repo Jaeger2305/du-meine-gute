@@ -6,6 +6,7 @@ import { assignEmployee } from "./assign-employee";
 import { unassignEmployee } from "./unassign-employee";
 import { buildFactory } from "./build-factory";
 import { produceAtFactory } from "./production";
+import { hireEmployee } from "./hire-employee";
 
 export enum PlayerActionEnum {
   endStep = "endStep",
@@ -28,7 +29,7 @@ export const playerActions = {
   [PlayerActionEnum.unassignEmployee]: unassignEmployee,
   [PlayerActionEnum.produceAtFactory]: produceAtFactory,
   [PlayerActionEnum.buildFactory]: buildFactory,
-  [PlayerActionEnum.hireWorker]: () => {},
+  [PlayerActionEnum.hireWorker]: hireEmployee,
 };
 
 export function newGame(): GameState {

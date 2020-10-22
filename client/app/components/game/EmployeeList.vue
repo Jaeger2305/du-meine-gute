@@ -138,7 +138,11 @@ export default Vue.extend({
 
       // The employee shop might just be browsed and closed, so only do something in case it returns a notable result.
       if (employeeShopResult) {
-        this.$emit(CustomEvents.HIRE_EMPLOYEE, employeeShopResult);
+        this.$emit(
+          CustomEvents.HIRE_EMPLOYEE,
+          PlayerActionEnum.hireWorker,
+          employeeShopResult
+        );
       }
     },
   },

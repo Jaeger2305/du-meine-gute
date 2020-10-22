@@ -1,4 +1,4 @@
-import { removeActionFromAvailableActions, spendResources } from "@/game/utils";
+import { removeActionFromAvailableActions, spendResources } from "../../utils";
 import { PlayerActionEnum } from "..";
 import { Resource } from "../../resources";
 import { GameState, PlayerState, AssignedEmployee } from "../../types";
@@ -11,7 +11,7 @@ export function unassignEmployee(
     resourcePayment,
   }: {
     nameOfEmployeeToUnassign: AssignedEmployee["name"];
-    resourcePayment?: Array<Resource>;
+    resourcePayment?: Array<Resource>; // Should this be optional?
   }
 ): AssignedEmployee["name"] {
   const assignedEmployeeIndexToRemove = playerState.assignedEmployees.findIndex(

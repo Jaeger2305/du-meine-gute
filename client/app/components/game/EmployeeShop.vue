@@ -91,7 +91,7 @@ export default Vue.extend({
           resources: this.resources,
         },
       });
-      this.$modal.close({ employee, resources: chosenResources });
+      this.$modal.close({ employee, resourcePayment: chosenResources });
     },
   },
 });
