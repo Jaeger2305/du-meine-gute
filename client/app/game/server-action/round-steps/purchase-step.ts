@@ -15,6 +15,7 @@ export function purchaseStep(
   serverState.players[playerNumber].availableActions = [
     PlayerActionEnum.buildFactory,
     PlayerActionEnum.unassignEmployee,
+    PlayerActionEnum.hireWorker,
     PlayerActionEnum.endStep,
   ];
   return {

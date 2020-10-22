@@ -19,7 +19,11 @@
       @produce-at-factory="bubbleProduction"
       @unassign-employee="bubbleUnassignment"
     />
-    <Button text="purchase employees" @tap="goToAvailableEmployees" />
+    <Button
+      v-if="isHiringPhase"
+      text="purchase employees"
+      @tap="goToAvailableEmployees"
+    />
   </StackLayout>
 </template>
 
@@ -85,6 +89,12 @@ export default Vue.extend({
       return isActionAvailable(
         this.availableActions,
         PlayerActionEnum.unassignEmployee
+      );
+    },
+    isHiringPhase() {
+      return isActionAvailable(
+        this.availableActions,
+        PlayerActionEnum.hireWorker
       );
     },
     displayEmployees(): Array<
