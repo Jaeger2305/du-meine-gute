@@ -120,6 +120,29 @@ export function assignUnknownCard(
   Object.assign(unknownCard, knownCard);
 }
 
+export function discardCards(
+  cardsToDiscard: Array<Card>,
+  cards: Array<Card>
+): void {
+  // Mutate out the discarded cards from the player's hand
+  const indexesOfCardsToRemove = cardsToDiscard
+    .map(({ name: cardNameToDiscard }) => {
+      const cardIndexToDiscard = cards.findIndex(
+        ({ name }) => name === cardNameToDiscard
+      );
+      if (cardIndexToDiscard < 0)
+        throw new Error(
+          `attempted to discard a card that isn't in hand ${cardNameToDiscard}`
+        );
+      return cardIndexToDiscard;
+    })
+    .sort((a, b) => b - a); // descending, for easy index safe deleting
+
+  indexesOfCardsToRemove.forEach((indexToRemove) =>
+    cards.splice(indexToRemove, 1)
+  );
+}
+
 /**
  * Lodash's difference creates a unique array, which isn't always desired.
  * So, roll a custom implementation that does a true difference.

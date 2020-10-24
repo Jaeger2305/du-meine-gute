@@ -6,7 +6,11 @@ import {
   PlayerState,
 } from "../../types";
 import { Resource } from "../../resources";
-import { removeActionFromAvailableActions, produceGood } from "../../utils";
+import {
+  removeActionFromAvailableActions,
+  produceGood,
+  discardCards,
+} from "../../utils";
 
 export async function produceAtFactory(
   gameState: GameState,
@@ -32,18 +36,7 @@ export async function produceAtFactory(
 
   assignedEmployee.hasProduced = true;
 
-  // Mutate out the discarded cards from the player's hand
-  const indexesOfCardsToRemove = discardedCards
-    .map(({ name: discardedCardName }) =>
-      playerState.cardsInHand.findIndex(
-        ({ name: cardInHandName }) => discardedCardName === cardInHandName
-      )
-    )
-    .sort((a, b) => b - a); // descending, for easy index safe deleting
-
-  indexesOfCardsToRemove.forEach((indexToRemove) =>
-    playerState.cardsInHand.splice(indexToRemove, 1)
-  );
+  discardCards(discardedCards, playerState.cardsInHand);
 
   // Add the resources to the players bank
   outputResources.forEach((outputResource) =>
