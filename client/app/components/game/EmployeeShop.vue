@@ -90,16 +90,20 @@ export default Vue.extend({
       this.$modal.close(null);
     },
     async hireEmployee(employee: Employee): Promise<void> {
-      const {
-        resources: chosenResources,
-      }: { resources: Array<Resource> } = await this.$showModal(Purchasing, {
+      const purchaseResult: {
+        resources: Array<Resource>;
+      } | null = await this.$showModal(Purchasing, {
         props: {
           factory: employee,
           costExtractor: (employee) => employee.cost,
           resources: this.resources,
         },
       });
-      this.$modal.close({ employee, resourcePayment: chosenResources });
+      if (purchaseResult)
+        this.$modal.close({
+          employee,
+          resourcePayment: purchaseResult.resources,
+        });
     },
   },
 });

@@ -3,7 +3,7 @@
     <Page>
       <ActionBar title="Game summary">
         <ActionItem
-          @tap="$modal.close()"
+          @tap="$modal.close(null)"
           ios.systemIcon="1"
           ios.position="right"
           android.systemIcon="ic_menu_close_clear_cancel"

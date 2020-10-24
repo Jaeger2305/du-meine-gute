@@ -1,7 +1,15 @@
 <template>
   <Frame id="purchasing">
     <Page>
-      <ActionBar title="Purchasing" />
+      <ActionBar title="Purchasing">
+        <ActionItem
+          @tap="cancel"
+          ios.systemIcon="1"
+          ios.position="right"
+          android.systemIcon="ic_menu_close_clear_cancel"
+          android.position="actionBar"
+        />
+      </ActionBar>
       <StackLayout>
         <Label text="available" />
         <Label
@@ -66,6 +74,9 @@ export default {
     },
   },
   methods: {
+    cancel(): void {
+      this.$modal.close(null);
+    },
     addToBasket(index: number): void {
       this.basket.push(...this.availableResources.splice(index, 1));
     },

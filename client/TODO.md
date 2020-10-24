@@ -8,7 +8,6 @@ Next up:
 
 Backlog
 
-1. Allow actions to be cancelled (for example, closing purchasing without purchasing the item will cause failures)
 1. Ensure the chained production uses only the cards from the hand
 1. Add UI for employee assignment
 1. Integrate GameLocal with Game

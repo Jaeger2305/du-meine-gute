@@ -1,6 +1,10 @@
 <template>
   <Button
-    :text="`discard (${cardsInDiscard.length})`"
+    :text="
+      `${isDiscardPossible ? 'discard cards' : 'end step'} (${
+        cardsInDiscard.length
+      })`
+    "
     :isEnabled="isEndStepPossible"
     @tap="endStep"
   />
@@ -10,7 +14,12 @@
 import Vue, { PropType } from "vue";
 import { CustomEvents } from "../../types";
 import { isActionAvailable } from "../../game/utils";
-import { GameState, PlayerState, PlayerActionEnum } from "../../game/types";
+import {
+  GameState,
+  PlayerState,
+  PlayerActionEnum,
+  Card,
+} from "../../game/types";
 import DiscardSelection from "./DiscardSelection.vue";
 
 export default Vue.extend({
@@ -41,9 +50,12 @@ export default Vue.extend({
   methods: {
     async endStep() {
       if (this.isDiscardPossible) {
-        const cardsToDiscard = await this.$showModal(DiscardSelection, {
-          props: { cards: this.cardsInHand },
-        });
+        const cardsToDiscard: Array<Card> | null = await this.$showModal(
+          DiscardSelection,
+          {
+            props: { cards: this.cardsInHand },
+          }
+        );
         if (cardsToDiscard) {
           this.$emit(
             CustomEvents.PLAYER_ACTION,

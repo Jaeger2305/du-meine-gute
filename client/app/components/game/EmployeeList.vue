@@ -135,10 +135,10 @@ export default Vue.extend({
       this.$emit(CustomEvents.UNASSIGN_EMPLOYEE, ...args);
     },
     async goToAvailableEmployees(): Promise<void> {
-      const employeeShopResult: null | {
+      const employeeShopResult: {
         employee: Employee;
         resources: Array<Resource>;
-      } = await this.$showModal(EmployeeShop, {
+      } | null = await this.$showModal(EmployeeShop, {
         fullscreen: true,
         props: {
           resources: this.resources,

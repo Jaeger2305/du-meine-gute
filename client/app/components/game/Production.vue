@@ -1,7 +1,15 @@
 <template>
   <Frame id="production">
     <Page>
-      <ActionBar title="Production" />
+      <ActionBar title="Production">
+        <ActionItem
+          @tap="cancel"
+          ios.systemIcon="1"
+          ios.position="right"
+          android.systemIcon="ic_menu_close_clear_cancel"
+          android.position="actionBar"
+        />
+      </ActionBar>
       <GridLayout columns="*, *, *" rows="4*, 2*, *" backgroundColor="#3c8888">
         <!-- |---------------|---------------|----------------| -->
         <!-- |                               |                | -->
@@ -241,6 +249,9 @@ export default Vue.extend({
     },
   },
   methods: {
+    cancel(): void {
+      this.$modal.close(null);
+    },
     reset(): void {
       this.availableCards = this.cardsInHand.slice();
       this.availableResources = keyArray([

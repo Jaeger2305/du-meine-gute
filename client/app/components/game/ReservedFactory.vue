@@ -49,9 +49,9 @@ export default Vue.extend({
   },
   methods: {
     async buildFactory(factory) {
-      const {
-        resources: chosenResources,
-      }: { resources: Array<Resource> } = await this.$showModal(Purchasing, {
+      const purchaseResult: {
+        resources: Array<Resource>;
+      } | null = await this.$showModal(Purchasing, {
         props: {
           factory,
           costExtractor: (factory) => factory.cost,
@@ -59,9 +59,11 @@ export default Vue.extend({
         },
       });
       console.warn("no error checking even on client side");
-      this.$emit(CustomEvents.BUILD_FACTORY, PlayerActionEnum.buildFactory, {
-        resources: chosenResources,
-      });
+      if (purchaseResult) {
+        this.$emit(CustomEvents.BUILD_FACTORY, PlayerActionEnum.buildFactory, {
+          resources: purchaseResult.resources,
+        });
+      }
     },
   },
 });

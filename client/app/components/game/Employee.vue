@@ -73,37 +73,41 @@ export default Vue.extend({
         discardedCards: Array<Card>;
         outputResources: Array<Resource>;
         assignedEmployee: AssignedEmployee;
-      } = await this.$showModal(Production, {
+      } | null = await this.$showModal(Production, {
         fullscreen: true,
         props: { assignedEmployee, cardsInHand, marketResources, resources },
       });
-      this.$emit(
-        CustomEvents.PRODUCE_AT_FACTORY,
-        PlayerActionEnum.produceAtFactory,
-        production
-      );
+      if (production) {
+        this.$emit(
+          CustomEvents.PRODUCE_AT_FACTORY,
+          PlayerActionEnum.produceAtFactory,
+          production
+        );
+      }
     },
     async unassignEmployee(assignedEmployee: AssignedEmployee): Promise<void> {
       console.warn("no error checking even on client side");
       // Employees are only unassignable manually if they have a cost. Otherwise they are auto unassigned during the end round.
       // Therefore, to unassign them here, we always show the modal.
-      const {
-        resources: chosenResources,
-      }: { resources: Array<Resource> } = await this.$showModal(Purchasing, {
+      const purchasingResult: {
+        resources: Array<Resource>;
+      } | null = await this.$showModal(Purchasing, {
         props: {
           factory: assignedEmployee,
           costExtractor: (factory) => factory.unassignmentCost,
           resources: this.resources,
         },
       });
-      this.$emit(
-        CustomEvents.UNASSIGN_EMPLOYEE,
-        PlayerActionEnum.unassignEmployee,
-        {
-          nameOfEmployeeToUnassign: assignedEmployee.name,
-          resourcePayment: chosenResources,
-        }
-      );
+      if (purchasingResult) {
+        this.$emit(
+          CustomEvents.UNASSIGN_EMPLOYEE,
+          PlayerActionEnum.unassignEmployee,
+          {
+            nameOfEmployeeToUnassign: assignedEmployee.name,
+            resourcePayment: purchasingResult.resources,
+          }
+        );
+      }
     },
   },
 });

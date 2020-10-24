@@ -69,17 +69,20 @@ export default {
         employee: Employee;
         efficiency: ProductionEfficiency;
         factory: Card;
-      } = await this.$showModal(AssignmentSelection, {
+      } | null = await this.$showModal(AssignmentSelection, {
         props: {
           employee: this.unassignedEmployees[0],
           factories: this.unoccupiedFactories,
         },
       });
-      this.$emit(
-        CustomEvents.ASSIGN_EMPLOYEE,
-        PlayerActionEnum.assignEmployee,
-        assignment
-      );
+
+      if (assignment) {
+        this.$emit(
+          CustomEvents.ASSIGN_EMPLOYEE,
+          PlayerActionEnum.assignEmployee,
+          assignment
+        );
+      }
     },
   },
 };

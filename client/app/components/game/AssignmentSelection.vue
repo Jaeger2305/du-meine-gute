@@ -1,7 +1,15 @@
 <template>
   <Frame id="assignment-selection">
     <Page>
-      <ActionBar title="Assignment selection" />
+      <ActionBar title="Assignment selection">
+        <ActionItem
+          @tap="cancel"
+          ios.systemIcon="1"
+          ios.position="right"
+          android.systemIcon="ic_menu_close_clear_cancel"
+          android.position="actionBar"
+        />
+      </ActionBar>
       <StackLayout>
         <Label>
           <Span>
@@ -42,6 +50,9 @@ export default {
   },
   computed: {},
   methods: {
+    cancel(): void {
+      this.$modal.close(null);
+    },
     submitAssignment() {
       // Just manually force this for now without a choice.
       const assignment: {
