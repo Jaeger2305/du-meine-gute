@@ -21,10 +21,19 @@ orientation.setOrientation("landscape");
 export default {
   methods: {
     login() {
-      this.$navigateTo(Login);
+      this.$navigateTo(Login, { frame: "base" });
     },
     quickStart() {
-      this.$navigateTo(GameLocal);
+      this.$navigateTo(GameLocal, {
+        frame: "base",
+        animated: true,
+        // An example transition - can think more about this as part of design iterations.
+        transition: {
+          name: "slide",
+          duration: 380,
+          curve: "easeIn",
+        },
+      });
     },
   },
 };

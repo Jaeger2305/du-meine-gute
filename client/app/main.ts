@@ -24,6 +24,7 @@ import PlayerHand from "./components/game/PlayerHand.vue";
 import Factories from "./components/game/Factories.vue";
 import ReservedFactory from "./components/game/ReservedFactory.vue";
 import Resources from "./components/game/Resources.vue";
+
 Vue.component("GameListItem", GameListItem); // Locally registering inside of the Lobby didn't seem to work. Maybe it needs a different frame.
 Vue.component("Card", Card);
 Vue.component("Deck", Deck);

@@ -19,7 +19,9 @@ export default {
     };
   },
   created() {
-    if (getString("authtoken")) return this.$navigateTo(Lobby); // this appears buggy - it goes to the right place, but then gets sent back again
+    if (getString("authtoken"))
+      return this.$navigateTo(Lobby, { frame: "base" }); // this appears buggy - it goes to the right place, but then gets sent back again
+    // might be related https://github.com/nativescript-vue/nativescript-vue/issues/555#issuecomment-535590791
   },
   methods: {
     async login() {
@@ -40,7 +42,7 @@ export default {
         }
         setString("username", username);
         setString("authtoken", data.Body);
-        this.$navigateTo(Lobby);
+        this.$navigateTo(Lobby, { frame: "base" });
       } catch (error) {
         console.error("couldn't login", error);
       }

@@ -49,6 +49,7 @@ export default {
       }
 
       this.$navigateTo(Game, {
+        frame: "base",
         props: {
           game: this.game,
         },

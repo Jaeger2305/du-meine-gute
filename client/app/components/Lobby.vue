@@ -43,7 +43,7 @@ export default {
       setString("username", "");
       setString("activegame", "");
       setString("authtokem", "");
-      this.$navigateTo(Login);
+      this.$navigateTo(Login, { frame: "base" });
     },
     async fetchGames() {
       try {
@@ -76,7 +76,7 @@ export default {
       }
     },
     async createLocalGame() {
-      this.$navigateTo(GameLocal);
+      this.$navigateTo(GameLocal, { frame: "base" });
     },
   },
 };

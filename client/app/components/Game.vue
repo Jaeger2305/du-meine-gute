@@ -206,7 +206,7 @@ export default {
       const data = await response.json();
       setString("authtoken", data.Body);
 
-      this.$navigateTo(Lobby);
+      this.$navigateTo(Lobby, { frame: "base" });
     },
   },
 };
