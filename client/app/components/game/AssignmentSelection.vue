@@ -1,5 +1,5 @@
 <template>
-  <Frame>
+  <Frame id="assignment-selection">
     <Page>
       <ActionBar title="Assignment selection" />
       <StackLayout>

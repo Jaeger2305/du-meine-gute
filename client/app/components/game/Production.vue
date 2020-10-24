@@ -1,5 +1,5 @@
 <template>
-  <Frame>
+  <Frame id="production">
     <Page>
       <ActionBar title="Production" />
       <GridLayout columns="*, *, *" rows="4*, 2*, *" backgroundColor="#3c8888">

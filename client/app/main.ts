@@ -41,7 +41,7 @@ Vue.component("PlayerHand", PlayerHand);
 
 new Vue({
   store,
-  render: (h) => h("frame", [h(App)]),
+  render: (h) => h(App),
   mounted() {
     if (app.android) {
       const activity = app.android.startActivity;

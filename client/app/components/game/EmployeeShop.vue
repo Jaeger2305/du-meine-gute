@@ -1,5 +1,5 @@
 <template>
-  <Frame>
+  <Frame id="employee-shop">
     <Page>
       <ActionBar title="Employee Shop">
         <ActionItem

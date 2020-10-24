@@ -1,5 +1,5 @@
 <template>
-  <Frame>
+  <Frame id="purchasing">
     <Page>
       <ActionBar title="Purchasing" />
       <StackLayout>
