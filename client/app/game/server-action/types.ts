@@ -8,6 +8,7 @@ import {
 
 export enum ServerActionEnum {
   endStep = "endStep",
+  discard = "discard",
   drawCard = "drawCard",
   drawStep = "drawStep",
   produceStep = "produceStep",
@@ -45,6 +46,15 @@ export interface DrawCardResponse extends ServerActionResponse {
   type: ServerActionEnum.drawCard;
   response: {
     drawnCard: Card;
+    cardsInDiscard: Array<Card>;
+    cardsInDeck: Array<Card>;
+  };
+}
+
+export interface DiscardResponse extends ServerActionResponse {
+  type: ServerActionEnum.discard;
+  response: {
+    drawnCards: Array<Card>;
     cardsInDiscard: Array<Card>;
     cardsInDeck: Array<Card>;
   };

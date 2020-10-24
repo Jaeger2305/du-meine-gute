@@ -11,6 +11,7 @@ import {
 import { seedWorkers, boss } from "../worker";
 import { generateTestCards } from "./utils";
 
+import { discard } from "./actions/discard";
 import { drawCard } from "./actions/draw-card";
 import { endStep } from "./actions/end-step";
 import { reserveFactory } from "./actions/reserve-factory";
@@ -66,7 +67,7 @@ export function setupGame(game: GameState): void {
       ],
       cardsInPlay: [chosenCoalMine, cardRecords.GLASSMAKER_SUN],
       resources: [bread, leather, bread, leather, coal],
-      availableActions: [PlayerActionEnum.endStep],
+      availableActions: [PlayerActionEnum.endStep, PlayerActionEnum.discard],
       assignedEmployees: [],
       reservedFactory: null,
       score: 0,
@@ -79,6 +80,7 @@ export function setupGame(game: GameState): void {
 
 export const serverActions: Record<ServerActionEnum, ServerActionHandler> = {
   // Standalone actions
+  [ServerActionEnum.discard]: discard,
   [ServerActionEnum.drawCard]: drawCard,
   [ServerActionEnum.reserveFactory]: reserveFactory,
   [ServerActionEnum.buildFactory]: buildFactory,

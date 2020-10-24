@@ -11,6 +11,7 @@ import Vue, { PropType } from "vue";
 import { CustomEvents } from "../../types";
 import { isActionAvailable } from "../../game/utils";
 import { GameState, PlayerState, PlayerActionEnum } from "../../game/types";
+import DiscardSelection from "./DiscardSelection.vue";
 
 export default Vue.extend({
   // There's no intellisense on "this.zzz". Tutorials seem to specify using decorator syntax - https://nativescripting.com/posts/typescript-class-components-in-nativescript-vue
@@ -24,14 +25,33 @@ export default Vue.extend({
       type: Object as PropType<GameState["cardsInDiscard"]>,
       required: true,
     },
+    cardsInHand: {
+      type: Object as PropType<PlayerState["cardsInHand"]>,
+      required: true,
+    },
   },
   computed: {
     isEndStepPossible(): boolean {
       return isActionAvailable(this.availableActions, PlayerActionEnum.endStep);
     },
+    isDiscardPossible(): boolean {
+      return isActionAvailable(this.availableActions, PlayerActionEnum.discard);
+    },
   },
   methods: {
-    endStep() {
+    async endStep() {
+      if (this.isDiscardPossible) {
+        const cardsToDiscard = await this.$showModal(DiscardSelection, {
+          props: { cards: this.cardsInHand },
+        });
+        if (cardsToDiscard) {
+          this.$emit(
+            CustomEvents.PLAYER_ACTION,
+            PlayerActionEnum.discard,
+            cardsToDiscard
+          );
+        }
+      }
       this.$emit(CustomEvents.PLAYER_ACTION, PlayerActionEnum.endStep);
     },
   },

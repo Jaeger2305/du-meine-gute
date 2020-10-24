@@ -1,7 +1,4 @@
-import {
-  GameState,
-  ServerActionEnum,
-} from "../../types";
+import { GameState, ServerActionEnum } from "../../types";
 import { PlayerActionEnum } from "../../client";
 import { ServerActionResponse } from "../types";
 
@@ -13,14 +10,17 @@ export function startRound(
   serverState: GameState,
   playerNumber: number
 ): ServerActionResponse {
-  const playerState = serverState.players[playerNumber]
-  playerState.availableActions = [PlayerActionEnum.endStep];
+  const playerState = serverState.players[playerNumber];
+  playerState.availableActions = [
+    PlayerActionEnum.discard,
+    PlayerActionEnum.endStep,
+  ];
   serverState.marketCards = [];
   return {
     type: ServerActionEnum.startRound,
     isOK: true,
     response: {
-      availableActions: serverState.players[playerNumber].availableActions
+      availableActions: serverState.players[playerNumber].availableActions,
     },
   };
 }

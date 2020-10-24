@@ -2,7 +2,6 @@
 
 Next up:
 
-1. Add discarding cards
 1. Add UI designs
 1. Add artwork
 1. Connect to real server

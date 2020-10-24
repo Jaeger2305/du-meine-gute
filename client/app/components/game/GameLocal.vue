@@ -87,6 +87,7 @@
         column="2"
         row="2"
         name="end step"
+        :cardsInHand="playerState.cardsInHand"
         :cardsInDiscard="gameState.cardsInDiscard"
         :availableActions="playerState.availableActions"
         @player-action="playerAction"

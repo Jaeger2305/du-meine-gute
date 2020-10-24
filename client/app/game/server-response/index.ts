@@ -1,5 +1,6 @@
 import { GameState, ServerActionEnum, PlayerState } from "../types";
 import { endStep } from "./end-step";
+import { discard } from "./discard";
 import { drawCard } from "./draw-card";
 import { ServerActionResponse } from "../server-action/types";
 import { revealMarket } from "./reveal-market";
@@ -20,6 +21,7 @@ type ServerResponseHandler = (
 // But, they should update the game state, based on the response from the server
 export const serverResponse: Record<ServerActionEnum, ServerResponseHandler> = {
   [ServerActionEnum.endStep]: endStep,
+  [ServerActionEnum.discard]: discard,
   [ServerActionEnum.drawCard]: drawCard,
   [ServerActionEnum.drawStep]: drawStep,
   [ServerActionEnum.produceAtFactory]: () => {}, // the optimistic response is fine
