@@ -1,4 +1,10 @@
-import { Card, GameState, PlayerState } from "../types";
+import {
+  AssignedEmployee,
+  Card,
+  GameState,
+  Player,
+  PlayerState,
+} from "../types";
 
 export enum ServerActionEnum {
   endStep = "endStep",
@@ -15,6 +21,7 @@ export enum ServerActionEnum {
   assignEmployee = "assignEmployee",
   unassignEmployee = "unassignEmployee",
   hireEmployee = "hireEmployee",
+  endRound = "endRound",
 }
 
 export interface ServerActionRequest {
@@ -58,5 +65,17 @@ export interface EndStepResponse extends ServerActionResponse {
   response: {
     activeStep: GameState["activeStep"];
     availableActions: PlayerState["availableActions"];
+  };
+}
+
+export interface EndRoundResponse extends ServerActionResponse {
+  type: ServerActionEnum.endRound;
+  response: {
+    assignedEmployees: Array<AssignedEmployee>;
+    winner?: Player;
+    isGameEnding: boolean;
+    discardedCards: Array<Card>;
+    availableActions: PlayerState["availableActions"];
+    score: PlayerState["score"];
   };
 }

@@ -140,13 +140,15 @@ export default {
     this.serverState = this.isLocal ? cloneDeep(this.gameState) : null; // just to test
     this.playerState = this.gameState.players[0];
   },
-  destroyed() {
-    console.log("DESTORYED");
-  },
   watch: {
     "gameState.activeStep"() {
       if (this.isLocal) {
         this.sendMessage({ type: RoundSteps[this.gameState.activeStep] });
+      }
+    },
+    "gameState.winner"(winner) {
+      if (winner) {
+        this.endGameSummary(winner);
       }
     },
   },
@@ -198,7 +200,7 @@ export default {
     },
     async endGameSummary(winner) {
       await this.$showModal(GameSummary, { props: { winner } });
-      this.$navigateBack();
+      this.$navigateBack({ frame: "base" });
     },
   },
 };

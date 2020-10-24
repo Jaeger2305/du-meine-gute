@@ -1,11 +1,7 @@
 import { sum } from "lodash";
-import {
-  AssignedEmployee,
-  GameState,
-  ServerActionEnum,
-} from "../../types";
+import { AssignedEmployee, GameState, ServerActionEnum } from "../../types";
 import { PlayerActionEnum } from "../../client";
-import { ServerActionResponse } from "../types";
+import { EndRoundResponse } from "../types";
 
 /**
  * Initiate the final step in the round
@@ -16,8 +12,8 @@ import { ServerActionResponse } from "../types";
 export function endRound(
   serverState: GameState,
   playerNumber: number
-): ServerActionResponse {
-  const playerState = serverState.players[playerNumber]
+): EndRoundResponse {
+  const playerState = serverState.players[playerNumber];
   const isGameEnd = serverState.isGameEnding; // if marked as game ending last round, mark as finished here.
   serverState.isGameEnding =
     playerState.cardsInPlay.length >= serverState.config.buildCountForEndGame;
@@ -25,7 +21,7 @@ export function endRound(
   serverState.winner = isGameEnd ? playerState.player : null;
   const resourcesScore = Math.floor(
     sum(playerState.resources.map((resource) => resource.value)) *
-    serverState.config.pointsPerResource
+      serverState.config.pointsPerResource
   );
   const factoryScore = sum(playerState.cardsInPlay.map((card) => card.points));
   const employeeScore = sum(
@@ -65,17 +61,20 @@ export function endRound(
   }
 
   // Discard the market
-  serverState.cardsInDiscard.push(...serverState.marketCards);
+  const discardedCards = [...serverState.marketCards];
+  serverState.cardsInDiscard.push(...discardedCards);
   serverState.marketCards = [];
 
   return {
-    type: ServerActionEnum.endStep,
+    type: ServerActionEnum.endRound,
     isOK: true,
     response: {
-      cardsInDiscard: serverState.cardsInDiscard,
+      discardedCards,
       assignedEmployees: playerState.assignedEmployees,
       winner: serverState.winner,
-      availableActions: serverState.players[playerNumber].availableActions
+      isGameEnding: serverState.isGameEnding,
+      availableActions: serverState.players[playerNumber].availableActions,
+      score: playerState.score,
     },
   };
 }

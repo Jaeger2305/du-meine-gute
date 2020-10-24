@@ -2,7 +2,6 @@
 
 Next up:
 
-1. Add round/game end logic
 1. Add discarding cards
 1. Add UI designs
 1. Add artwork

@@ -1,13 +1,31 @@
-import { RevealMarketResponse } from "../server-action/types";
-import {
-    GameState,
-    PlayerState,
-  } from "../types";
+import { EndRoundResponse } from "../server-action/types";
+import { GameState, PlayerState } from "../types";
 
-export function endRound (
+export function endRound(
   gameState: GameState,
   playerState: PlayerState,
-  { availableActions }: RevealMarketResponse["response"]
+  {
+    discardedCards,
+    assignedEmployees,
+    winner,
+    isGameEnding,
+    availableActions,
+    score,
+  }: EndRoundResponse["response"]
 ): void {
-  playerState.availableActions.splice(0, playerState.availableActions.length, ...availableActions)
-};
+  gameState.winner = winner;
+  gameState.isGameEnding = isGameEnding;
+  gameState.winner = winner;
+  playerState.score = score;
+  playerState.assignedEmployees.splice(
+    0,
+    playerState.assignedEmployees.length,
+    ...assignedEmployees
+  );
+  gameState.cardsInDiscard.push(...discardedCards);
+  playerState.availableActions.splice(
+    0,
+    playerState.availableActions.length,
+    ...availableActions
+  );
+}

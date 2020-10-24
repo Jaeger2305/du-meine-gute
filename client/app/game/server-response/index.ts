@@ -7,6 +7,7 @@ import { assignmentStep } from "./assignment-step";
 import { produceStep } from "./produce-step";
 import { purchaseStep } from "./purchase-step";
 import { startRound } from "./start-round";
+import { endRound } from "./end-round";
 import { drawStep } from "./draw-step";
 
 type ServerResponseHandler = (
@@ -32,4 +33,5 @@ export const serverResponse: Record<ServerActionEnum, ServerResponseHandler> = {
   [ServerActionEnum.assignWorkers]: assignmentStep,
   [ServerActionEnum.revealMarket]: revealMarket,
   [ServerActionEnum.startRound]: startRound,
+  [ServerActionEnum.endRound]: endRound,
 };
