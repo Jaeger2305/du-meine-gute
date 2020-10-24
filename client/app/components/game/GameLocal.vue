@@ -22,6 +22,7 @@
       <!-- For now though, this is available actions -->
       <ScrollView column="1" row="1" orientation="horizontal">
         <StackLayout column="1" orientation="horizontal">
+          <Label :text="playerState.score" />
           <Assignment
             :availableActions="playerState.availableActions"
             :employees="playerState.employees"
@@ -97,6 +98,8 @@
 <script lang="ts">
 import { getString, setString } from "@nativescript/core/application-settings";
 import Lobby from "../Lobby.vue";
+import GameSummary from "./GameSummary.vue";
+
 import { setTimeout, clearTimeout } from "tns-core-modules/timer";
 import { newGame, newPlayer, playerActions } from "../../game/client";
 import { setupGame, serverActions } from "../../game/server-action";
@@ -137,7 +140,9 @@ export default {
     this.serverState = this.isLocal ? cloneDeep(this.gameState) : null; // just to test
     this.playerState = this.gameState.players[0];
   },
-  async destroyed() {},
+  destroyed() {
+    console.log("DESTORYED");
+  },
   watch: {
     "gameState.activeStep"() {
       if (this.isLocal) {
@@ -191,9 +196,9 @@ export default {
         );
       }
     },
-    requestPlayCard() {},
-    async leaveGame() {
-      this.$navigateTo(Lobby);
+    async endGameSummary(winner) {
+      await this.$showModal(GameSummary, { props: { winner } });
+      this.$navigateBack();
     },
   },
 };
