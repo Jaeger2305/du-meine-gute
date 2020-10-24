@@ -46,19 +46,19 @@ export default Vue.extend({
       required: true,
     },
     cardsInHand: {
-      type: Object as PropType<PlayerState["cardsInHand"]>,
+      type: Array as PropType<PlayerState["cardsInHand"]>,
       required: true,
     },
     cardsInPlay: {
-      type: Object as PropType<PlayerState["cardsInPlay"]>,
+      type: Array as PropType<PlayerState["cardsInPlay"]>,
       required: true,
     },
     marketCards: {
-      type: Object as PropType<GameState["marketCards"]>,
+      type: Array as PropType<GameState["marketCards"]>,
       required: true,
     },
     resources: {
-      type: Object as PropType<PlayerState["resources"]>,
+      type: Array as PropType<PlayerState["resources"]>,
       required: true,
     },
   },

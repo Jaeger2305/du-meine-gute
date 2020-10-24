@@ -47,7 +47,7 @@ import { sum } from "lodash";
 export default {
   props: {
     resources: {
-      type: Object as PropType<PlayerState["resources"]>,
+      type: Array as PropType<PlayerState["resources"]>,
       required: true,
     },
     factory: {

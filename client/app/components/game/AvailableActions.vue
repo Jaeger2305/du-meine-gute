@@ -18,7 +18,7 @@ export default Vue.extend({
   // But this syntax seems to work in a normal web dev project. To revisit.
   props: {
     actions: {
-      type: Object as PropType<PlayerState["availableActions"]>,
+      type: Array as PropType<PlayerState["availableActions"]>,
       required: true,
     },
   },

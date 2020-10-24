@@ -28,19 +28,19 @@ import AssignmentSelection from "./AssignmentSelection.vue";
 export default {
   props: {
     availableActions: {
-      type: Object as PropType<PlayerState["availableActions"]>,
+      type: Array as PropType<PlayerState["availableActions"]>,
       required: true,
     },
     employees: {
-      type: Object as PropType<PlayerState["employees"]>,
+      type: Array as PropType<PlayerState["employees"]>,
       required: true,
     },
     factories: {
-      type: Object as PropType<PlayerState["cardsInPlay"]>,
+      type: Array as PropType<PlayerState["cardsInPlay"]>,
       required: true,
     },
     assignedEmployees: {
-      type: Object as PropType<PlayerState["assignedEmployees"]>,
+      type: Array as PropType<PlayerState["assignedEmployees"]>,
       required: true,
     },
   },

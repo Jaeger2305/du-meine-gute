@@ -17,7 +17,7 @@ import { ResourceType, Resource } from "../../game/resources";
 export default Vue.extend({
   props: {
     resources: {
-      type: Object as PropType<GameState["marketCards"]>,
+      type: Array as PropType<GameState["marketCards"]>,
       required: true,
     },
   },

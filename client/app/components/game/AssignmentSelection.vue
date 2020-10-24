@@ -44,7 +44,7 @@ export default {
       required: true,
     },
     factories: {
-      type: Object as PropType<PlayerState["cardsInPlay"]>,
+      type: Array as PropType<PlayerState["cardsInPlay"]>,
       required: true,
     },
   },

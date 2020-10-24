@@ -27,15 +27,15 @@ export default Vue.extend({
   // But this syntax seems to work in a normal web dev project. To revisit.
   props: {
     availableActions: {
-      type: Object as PropType<PlayerState["availableActions"]>,
+      type: Array as PropType<PlayerState["availableActions"]>,
       required: true,
     },
     cardsInDiscard: {
-      type: Object as PropType<GameState["cardsInDiscard"]>,
+      type: Array as PropType<GameState["cardsInDiscard"]>,
       required: true,
     },
     cardsInHand: {
-      type: Object as PropType<PlayerState["cardsInHand"]>,
+      type: Array as PropType<PlayerState["cardsInHand"]>,
       required: true,
     },
   },

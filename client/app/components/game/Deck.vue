@@ -17,11 +17,11 @@ export default Vue.extend({
   // But this syntax seems to work in a normal web dev project. To revisit.
   props: {
     availableActions: {
-      type: Object as PropType<PlayerState["availableActions"]>,
+      type: Array as PropType<PlayerState["availableActions"]>,
       required: true,
     },
     cardsInDeck: {
-      type: Object as PropType<GameState["cardsInDeck"]>,
+      type: Array as PropType<GameState["cardsInDeck"]>,
       required: true,
     },
   },

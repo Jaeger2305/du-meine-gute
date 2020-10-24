@@ -18,11 +18,11 @@ export default Vue.extend({
   // But this syntax seems to work in a normal web dev project. To revisit.
   props: {
     factories: {
-      type: Object as PropType<PlayerState["cardsInPlay"]>,
+      type: Array as PropType<PlayerState["cardsInPlay"]>,
       required: true,
     },
     assignedEmployees: {
-      type: Object as PropType<PlayerState["assignedEmployees"]>,
+      type: Array as PropType<PlayerState["assignedEmployees"]>,
       required: true,
     },
   },

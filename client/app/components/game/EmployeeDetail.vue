@@ -54,11 +54,11 @@ export default Vue.extend({
       required: true,
     },
     modes: {
-      type: Object as PropType<Array<ProductionEfficiency>>,
+      type: Array as PropType<Array<ProductionEfficiency>>,
       required: true,
     },
     resourceSpecialty: {
-      type: Object as PropType<Array<Resource>>,
+      type: Array as PropType<Array<Resource>>,
       required: true,
     },
     cost: {

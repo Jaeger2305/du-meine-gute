@@ -61,11 +61,11 @@ import Purchasing from "./Purchasing.vue";
 export default Vue.extend({
   props: {
     resources: {
-      type: Object as PropType<PlayerState["resources"]>,
+      type: Array as PropType<PlayerState["resources"]>,
       required: true,
     },
     availableEmployees: {
-      type: Object as PropType<GameState["availableEmployees"]>,
+      type: Array as PropType<GameState["availableEmployees"]>,
       required: true,
     },
   },

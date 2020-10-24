@@ -46,35 +46,35 @@ import EmployeeShop from "./EmployeeShop.vue";
 export default Vue.extend({
   props: {
     availableActions: {
-      type: Object as PropType<PlayerState["availableActions"]>,
+      type: Array as PropType<PlayerState["availableActions"]>,
       required: true,
     },
     employees: {
-      type: Object as PropType<PlayerState["employees"]>,
+      type: Array as PropType<PlayerState["employees"]>,
       required: true,
     },
     assignedEmployees: {
-      type: Object as PropType<PlayerState["assignedEmployees"]>,
+      type: Array as PropType<PlayerState["assignedEmployees"]>,
       required: true,
     },
     availableEmployees: {
-      type: Object as PropType<GameState["availableEmployees"]>,
+      type: Array as PropType<GameState["availableEmployees"]>,
       required: true,
     },
     cardsInHand: {
-      type: Object as PropType<PlayerState["cardsInHand"]>,
+      type: Array as PropType<PlayerState["cardsInHand"]>,
       required: true,
     },
     cardsInPlay: {
-      type: Object as PropType<PlayerState["cardsInPlay"]>,
+      type: Array as PropType<PlayerState["cardsInPlay"]>,
       required: true,
     },
     marketCards: {
-      type: Object as PropType<GameState["marketCards"]>,
+      type: Array as PropType<GameState["marketCards"]>,
       required: true,
     },
     resources: {
-      type: Object as PropType<PlayerState["resources"]>,
+      type: Array as PropType<PlayerState["resources"]>,
       required: true,
     },
   },
