@@ -71,7 +71,7 @@ export default {
         factory: Card;
       } | null = await this.$showModal(AssignmentSelection, {
         props: {
-          employee: this.unassignedEmployees[0],
+          employees: this.unassignedEmployees,
           factories: this.unoccupiedFactories,
         },
       });

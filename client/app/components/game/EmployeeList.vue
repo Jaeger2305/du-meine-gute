@@ -1,23 +1,17 @@
 <template>
   <StackLayout orientation="vertical">
     <Employee
-      v-for="{
-        name,
-        assignedEmployee,
-        isAssignable,
-        isUnassignable,
-      } in displayEmployees"
-      :key="name"
-      :name="name"
-      :isAssignable="isAssignable"
-      :isUnassignable="isUnassignable"
-      :assignedEmployee="assignedEmployee"
+      v-for="employee in displayEmployees"
+      :key="employee.name"
+      :employee="employee"
       :cardsInHand="cardsInHand"
       :cardsInPlay="cardsInPlay"
       :marketCards="marketCards"
       :resources="resources"
+      :emptyFactories="emptyFactories"
       @produce-at-factory="bubbleProduction"
       @unassign-employee="bubbleUnassignment"
+      @assign-employee="bubbleAssignment"
     />
     <Button
       v-if="isHiringPhase"
@@ -91,27 +85,46 @@ export default Vue.extend({
         PlayerActionEnum.unassignEmployee
       );
     },
+    isAssignmentPhase() {
+      return isActionAvailable(
+        this.availableActions,
+        PlayerActionEnum.assignEmployee
+      );
+    },
     isHiringPhase() {
       return isActionAvailable(
         this.availableActions,
         PlayerActionEnum.hireWorker
       );
     },
+    emptyFactories(): Array<Card> {
+      return this.cardsInPlay.filter(
+        (factory) =>
+          !this.assignedEmployees.find(
+            (assignedEmployee) =>
+              assignedEmployee.assignment.name === factory.name
+          )
+      );
+    },
     displayEmployees(): Array<
       Employee & {
         isAssignable: boolean;
         isUnassignable: boolean;
-        assigned: AssignedEmployee | undefined;
+        isReadyToProduce: boolean;
+        assignedEmployee: AssignedEmployee | undefined;
       }
     > {
       return this.employees.map((employee) => {
         const assignedEmployee = this.assignedEmployees.find(
           (ae) => ae.name === employee.name
         );
-        const isAssignable = Boolean(
+        const isReadyToProduce = Boolean(
           assignedEmployee &&
             !assignedEmployee.hasProduced &&
             this.isProductionPhase
+        );
+        const isAssignable = Boolean(
+          !assignedEmployee && this.isAssignmentPhase
         );
         const isUnassignable = Boolean(
           assignedEmployee &&
@@ -122,6 +135,7 @@ export default Vue.extend({
           ...employee,
           isAssignable,
           isUnassignable,
+          isReadyToProduce,
           assignedEmployee,
         };
       });
@@ -133,6 +147,9 @@ export default Vue.extend({
     },
     bubbleUnassignment(...args) {
       this.$emit(CustomEvents.UNASSIGN_EMPLOYEE, ...args);
+    },
+    bubbleAssignment(...args) {
+      this.$emit(CustomEvents.ASSIGN_EMPLOYEE, ...args);
     },
     async goToAvailableEmployees(): Promise<void> {
       const employeeShopResult: {

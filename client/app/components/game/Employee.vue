@@ -1,13 +1,10 @@
 <template>
   <FlexboxLayout backgroundColor="#3c495e">
     <Card
-      :name="name"
-      :isEnabled="isAssignable"
-      @click="produceAtFactory(assignedEmployee)"
+      :name="employee.name"
+      :isEnabled="isActionable"
+      @click="contextualClick"
     />
-    <Button v-if="isUnassignable" @tap="unassignEmployee(assignedEmployee)"
-      >unassign</Button
-    >
   </FlexboxLayout>
 </template>
 
@@ -26,23 +23,20 @@ import Production from "./Production.vue";
 import { Resource } from "../../game/resources";
 
 import Purchasing from "./Purchasing.vue";
+import AssignmentFactorySelection from "./AssignmentFactorySelection.vue";
+import AssignmentModeSelection from "./AssignmentModeSelection.vue";
 
 export default Vue.extend({
   props: {
-    name: {
-      type: String,
-      required: true,
-    },
-    assignedEmployee: {
-      type: Object as PropType<AssignedEmployee> | null,
-      default: null,
-    },
-    isAssignable: {
-      type: Boolean,
-      required: true,
-    },
-    isUnassignable: {
-      type: Boolean,
+    employee: {
+      type: Object as PropType<
+        Employee & {
+          isAssignable: boolean;
+          isUnassignable: boolean;
+          isReadyToProduce: boolean;
+          assignedEmployee: AssignedEmployee | undefined;
+        }
+      >,
       required: true,
     },
     cardsInHand: {
@@ -50,6 +44,10 @@ export default Vue.extend({
       required: true,
     },
     cardsInPlay: {
+      type: Array as PropType<PlayerState["cardsInPlay"]>,
+      required: true,
+    },
+    emptyFactories: {
       type: Array as PropType<PlayerState["cardsInPlay"]>,
       required: true,
     },
@@ -62,7 +60,42 @@ export default Vue.extend({
       required: true,
     },
   },
+  computed: {
+    isActionable(): boolean {
+      return (
+        this.employee.isAssignable ||
+        this.employee.isUnassignable ||
+        this.employee.isReadyToProduce
+      );
+    },
+  },
   methods: {
+    contextualClick(): void {
+      if (this.employee.isAssignable) return this.assignEmployee(this.employee);
+      if (this.employee.isUnassignable)
+        return this.unassignEmployee(this.employee.assignedEmployee);
+      if (this.employee.isReadyToProduce)
+        return this.produceAtFactory(this.employee.assignedEmployee);
+    },
+    async assignEmployee(employee: Employee) {
+      const factory = await this.$showModal(AssignmentFactorySelection, {
+        props: { factories: this.emptyFactories },
+      });
+      if (!factory) return;
+
+      const efficiency = employee.modes.length
+        ? await this.$showModal(AssignmentModeSelection, {
+            props: { modes: employee.modes },
+          })
+        : employee.modes[0];
+      if (!efficiency) return;
+
+      this.$emit(
+        CustomEvents.ASSIGN_EMPLOYEE,
+        PlayerActionEnum.assignEmployee,
+        { employee, efficiency, factory }
+      );
+    },
     async produceAtFactory(assignedEmployee: AssignedEmployee): Promise<void> {
       const { resources, cardsInHand } = this;
       const marketResources = [

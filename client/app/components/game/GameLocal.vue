@@ -31,6 +31,7 @@
             @assign-employee="playerAction"
           />
           <ReservedFactory
+            v-if="playerState.reservedFactory"
             :factory="playerState.reservedFactory"
             :resources="playerState.resources"
             :availableActions="playerState.availableActions"
@@ -56,6 +57,7 @@
           :cardsInHand="playerState.cardsInHand"
           :marketCards="gameState.marketCards"
           @produce-at-factory="playerAction"
+          @assign-employee="playerAction"
           @unassign-employee="playerAction"
           @hire-employee="playerAction"
         />

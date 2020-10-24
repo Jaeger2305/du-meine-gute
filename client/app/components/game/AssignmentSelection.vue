@@ -10,20 +10,37 @@
           android.position="actionBar"
         />
       </ActionBar>
-      <StackLayout>
-        <Label>
-          <Span>
-            {{
-              {
-                employee: employee,
-                efficiency: employee.modes[0],
-                factory: factories[0],
-              }
-            }}
-          </Span>
-        </Label>
-        <Button @tap="submitAssignment" text="Close" />
-      </StackLayout>
+      <ScrollView orientation="vertical">
+        <StackLayout>
+          <GridLayout
+            columns="*, *"
+            rows="*, *"
+            v-for="employee in employees"
+            :key="employee.name"
+          >
+            <StackLayout column="0" row="0" orientation="horizontal">
+              <Label :text="employee.name" />
+            </StackLayout>
+            <StackLayout column="1" row="0" rowSpan="2" orientation="vertical">
+              <Label
+                v-for="mode in employee.modes"
+                :key="
+                  [mode.productionCount, mode.resourceSparingCount].join('~')
+                "
+                :text="[mode.productionCount, mode.resourceSparingCount].join()"
+              />
+            </StackLayout>
+            <StackLayout
+              column="2"
+              row="0"
+              rowSpan="2"
+              orientation="horizontal"
+            >
+              <Button text="assign" @tap="assignEmployee(employee)" />
+            </StackLayout>
+          </GridLayout>
+        </StackLayout>
+      </ScrollView>
     </Page>
   </Frame>
 </template>
@@ -36,11 +53,13 @@ import {
   ProductionEfficiency,
   Card,
 } from "../../game/types";
+import AssignmentFactorySelection from "./AssignmentFactorySelection.vue";
+import AssignmentModeSelection from "./AssignmentModeSelection.vue";
 
 export default {
   props: {
-    employee: {
-      type: Object as PropType<Employee>,
+    employees: {
+      type: Array as PropType<Array<Employee>>,
       required: true,
     },
     factories: {
@@ -53,16 +72,26 @@ export default {
     cancel(): void {
       this.$modal.close(null);
     },
-    submitAssignment() {
-      // Just manually force this for now without a choice.
+    async assignEmployee(employee: Employee) {
+      const factory = await this.$showModal(AssignmentFactorySelection, {
+        props: { factories: this.factories },
+      });
+      if (!factory) return;
+
+      const efficiency = employee.modes.length
+        ? await this.$showModal(AssignmentModeSelection, {
+            props: { modes: employee.modes },
+          })
+        : employee.modes[0];
+      if (!efficiency) return;
       const assignment: {
         employee: Employee;
         efficiency: ProductionEfficiency;
         factory: Card;
       } = {
-        employee: this.employee,
-        efficiency: this.employee.modes[0],
-        factory: this.factories[0],
+        employee,
+        efficiency,
+        factory,
       };
       this.$modal.close(assignment);
     },
