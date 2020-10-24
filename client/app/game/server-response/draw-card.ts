@@ -1,11 +1,8 @@
 import { DrawCardResponse } from "../server-action/types";
-import {
-    BuildingType,
-    GameState,
-    PlayerState,
-  } from "../types";
+import { GameState, PlayerState } from "../types";
+import { assignUnknownCard } from "../utils";
 
-export function drawCard (
+export function drawCard(
   gameState: GameState,
   playerState: PlayerState,
   { drawnCard, cardsInDiscard, cardsInDeck }: DrawCardResponse["response"]
@@ -24,13 +21,5 @@ export function drawCard (
       ...cardsInDeck
     );
   }
-  const unknownCard = playerState.cardsInHand.find(
-    (card) => card.type === BuildingType.unknown
-  );
-  if (!unknownCard) {
-    throw new Error(
-      "An unknown card was expected here to populate - maybe it already completed."
-    );
-  }
-  Object.assign(unknownCard, drawnCard);
-};
+  assignUnknownCard(drawnCard, playerState.cardsInHand);
+}

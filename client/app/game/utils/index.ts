@@ -4,6 +4,7 @@ import {
   Card,
   AssignedEmployee,
   Employee,
+  BuildingType,
 } from "../types";
 import { unknown } from "../cards";
 import { PlayerActionEnum } from "../client";
@@ -102,6 +103,21 @@ export function drawFromDeck(
 
   const drawnCards = cardsInDeck.splice(0, 1);
   return drawnCards[0];
+}
+
+export function assignUnknownCard(
+  knownCard: Card,
+  mixedCards: Array<Card>
+): void {
+  const unknownCard = mixedCards.find(
+    (card) => card.type === BuildingType.unknown
+  );
+  if (!unknownCard) {
+    throw new Error(
+      "An unknown card was expected here to populate - maybe it already completed."
+    );
+  }
+  Object.assign(unknownCard, knownCard);
 }
 
 /**
