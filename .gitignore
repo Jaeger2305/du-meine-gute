@@ -19,3 +19,4 @@ ignore
 # Sensitive configs
 *.env
 !*.env.template
+*.DS_Store
