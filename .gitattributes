@@ -23,6 +23,7 @@
 *.jpg filter=lfs diff=lfs merge=lfs -text
 *.svg filter=lfs diff=lfs merge=lfs -text
 *.psd filter=lfs diff=lfs merge=lfs -text
+*.studio filter=lfs diff=lfs merge=lfs -text
 *.vue !text !filter !merge !diff
 * !text !filter !merge !diff
 ignore filter=lfs diff=lfs merge=lfs -text
