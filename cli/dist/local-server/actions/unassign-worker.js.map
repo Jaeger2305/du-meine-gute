@@ -1,1 +1,0 @@
-{"version":3,"file":"unassign-worker.js","sourceRoot":"","sources":["../../../local-server/actions/unassign-worker.ts"],"names":[],"mappings":";;;AAIA,SAAgB,cAAc,CAC5B,SAAoB,EACpB,WAAwB,EACxB,MAAwB,EACxB,SAA0B;IAE1B,OAAO,CAAC,IAAI,CAAC,iDAAiD,CAAC,CAAC;IAChE,OAAO;QACL,QAAQ,EAAE,EAAE,IAAI,EAAE,IAAI,EAAE;KACzB,CAAC;AACJ,CAAC;AAVD,wCAUC"}
