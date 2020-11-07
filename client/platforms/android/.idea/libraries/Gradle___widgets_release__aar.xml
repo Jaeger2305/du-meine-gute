@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Gradle: :widgets-release:@aar">
+    <ANNOTATIONS>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3741f269b4bd30ed2dca5483409be7c5/widgets-release/annotations.zip!/" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3741f269b4bd30ed2dca5483409be7c5/widgets-release/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3741f269b4bd30ed2dca5483409be7c5/widgets-release/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3741f269b4bd30ed2dca5483409be7c5/widgets-release/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

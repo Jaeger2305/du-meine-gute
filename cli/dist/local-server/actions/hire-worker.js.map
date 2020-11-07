@@ -1,0 +1,1 @@
+{"version":3,"file":"hire-worker.js","sourceRoot":"","sources":["../../../local-server/actions/hire-worker.ts"],"names":[],"mappings":";;;AAIA;;;GAGG;AACH,SAAgB,UAAU,CACxB,SAAoB,EACpB,WAAwB,EACxB,MAAgB,EAChB,SAA0B;IAE1B,OAAO,CAAC,IAAI,CAAC,gCAAgC,CAAC,CAAC;IAC/C,OAAO;QACL,QAAQ,EAAE,EAAE,IAAI,EAAE,IAAI,EAAE;KACzB,CAAC;AACJ,CAAC;AAVD,gCAUC"}

@@ -1,0 +1,46 @@
+[
+    {
+        "name": "@nativescript/theme",
+        "directory": "../../node_modules/@nativescript/theme"
+    },
+    {
+        "name": "nativescript-orientation",
+        "directory": "../../node_modules/nativescript-orientation"
+    },
+    {
+        "name": "nativescript-socketio",
+        "directory": "../../node_modules/nativescript-socketio"
+    },
+    {
+        "name": "nativescript-toasty",
+        "directory": "../../node_modules/nativescript-toasty"
+    },
+    {
+        "name": "nativescript-vue",
+        "directory": "../../node_modules/nativescript-vue"
+    },
+    {
+        "name": "nativescript-websockets",
+        "directory": "../../node_modules/nativescript-websockets"
+    },
+    {
+        "name": "tns-core-modules",
+        "directory": "../../node_modules/tns-core-modules"
+    },
+    {
+        "name": "nativescript-dom",
+        "directory": "../../node_modules/nativescript-dom"
+    },
+    {
+        "name": "nativescript-globalevents",
+        "directory": "../../node_modules/nativescript-globalevents"
+    },
+    {
+        "name": "@nativescript/core",
+        "directory": "../../node_modules/@nativescript/core"
+    },
+    {
+        "name": "tns-core-modules-widgets",
+        "directory": "../../node_modules/tns-core-modules-widgets"
+    }
+]

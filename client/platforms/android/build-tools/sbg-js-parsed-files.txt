@@ -1,0 +1,4 @@
+/Users/richard/personal/du-meine-gute/client/platforms/android/app/src/main/assets/app/runtime.js
+/Users/richard/personal/du-meine-gute/client/platforms/android/app/src/main/assets/app/bundle.js
+/Users/richard/personal/du-meine-gute/client/platforms/android/app/src/main/assets/app/vendor.js
+/Users/richard/personal/du-meine-gute/client/platforms/android/app/src/main/assets/app/tns-java-classes.js
