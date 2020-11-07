@@ -1,0 +1,146 @@
+version: "3"
+services:
+  server:
+    build: ./server
+    image: dmg-server:latest
+    ports:
+      - "4445:4444"
+    restart: on-failure:3
+    environment:
+      - "DMG_MESSAGE_QUEUE_BROKER_URLS=kafka-1:19092,kafka-2:29092,kafka-3:39092"
+      - "DMG_MESSAGE_QUEUE_CLIENT_ID=du-meine-gute-server-local"
+      - "DMG_MESSAGE_QUEUE_TOPIC=game"
+      - "DMG_CONNECTION_STRING=mongodb://db/du-meine-gute"
+      - "DMG_HOST=0.0.0.0"
+      - "DMG_PORT=4444"
+      - "DMG_SESSION_SECRET=local-session-secret"
+      - "DMG_ENV=development"
+      - "DMG_JWT_SIGNING_KEY=thisissupersecret"
+      - "DMG_ENCRYPTION_KEY=thisisanothersupersecret"
+    depends_on:
+      - zk1
+      - zk2
+      - zk3
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - db
+
+  server-debug:
+    build:
+      context: ./server
+      dockerfile: ./debug.Dockerfile
+    image: dmg-server-files
+    ports:
+      - "4444:4444"
+      - "44000:44000"
+    restart: on-failure:3
+    command: dlv debug --listen=:44000 --headless=true --api-version=2 --accept-multiclient ./cmd
+    environment:
+      - "DMG_MESSAGE_QUEUE_BROKER_URLS=kafka-1:19092,kafka-2:29092,kafka-3:39092"
+      - "DMG_MESSAGE_QUEUE_CLIENT_ID=du-meine-gute-server-local"
+      - "DMG_MESSAGE_QUEUE_TOPIC=game"
+      - "DMG_CONNECTION_STRING=mongodb://db/du-meine-gute"
+      - "DMG_HOST=0.0.0.0"
+      - "DMG_PORT=4444"
+      - "DMG_SESSION_SECRET=local-session-secret"
+      - "DMG_ENV=development"
+      - "DMG_JWT_SIGNING_KEY=thisissupersecret"
+      - "DMG_ENCRYPTION_KEY=thisisanothersupersecret"
+    depends_on:
+      - zk1
+      - zk2
+      - zk3
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - db
+
+  db:
+    image: mongo
+    ports:
+      - "27017:27017"
+    restart: on-failure:3
+    volumes:
+      - "~/personal/du-meine-gute/ignore:/data/db"
+
+  zk1:
+    image: confluentinc/cp-zookeeper:5.5.1
+    ports:
+      - "22181:22181"
+    restart: on-failure:3
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 22181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zk1:22888:23888;zk2:32888:33888;zk3:42888:43888
+
+  zk2:
+    image: confluentinc/cp-zookeeper:5.5.1
+    ports:
+      - "32181:32181"
+    restart: on-failure:3
+    environment:
+      ZOOKEEPER_SERVER_ID: 2
+      ZOOKEEPER_CLIENT_PORT: 32181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zk1:22888:23888;zk2:32888:33888;zk3:42888:43888
+
+  zk3:
+    image: confluentinc/cp-zookeeper:5.5.1
+    ports:
+      - "42181:42181"
+    restart: on-failure:3
+    environment:
+      ZOOKEEPER_SERVER_ID: 3
+      ZOOKEEPER_CLIENT_PORT: 42181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zk1:22888:23888;zk2:32888:33888;zk3:42888:43888
+
+  kafka-1:
+    image: confluentinc/cp-kafka:5.5.1
+    ports:
+      - "19092:19092"
+    restart: on-failure:3
+    depends_on:
+      - zk1
+      - zk2
+      - zk3
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: ${MY_IP}:22181,${MY_IP}:32181,${MY_IP}:42181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${MY_IP}:19092
+
+  kafka-2:
+    image: confluentinc/cp-kafka:5.5.1
+    ports:
+      - "29092:29092"
+    restart: on-failure:3
+    depends_on:
+      - zk1
+      - zk2
+      - zk3
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: ${MY_IP}:22181,${MY_IP}:32181,${MY_IP}:42181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${MY_IP}:29092
+
+  kafka-3:
+    image: confluentinc/cp-kafka:5.5.1
+    ports:
+      - "39092:39092"
+    restart: on-failure:3
+    depends_on:
+      - zk1
+      - zk2
+      - zk3
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: ${MY_IP}:22181,${MY_IP}:32181,${MY_IP}:42181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${MY_IP}:39092

@@ -1,0 +1,147 @@
+{
+  "info": {
+    "_postman_id": "1cf18dfd-18bf-4ef2-b90c-99d40e0c1e6f",
+    "name": "du-meine-gute",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\": \"testuser\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:4444/login",
+          "host": ["localhost"],
+          "port": "4444",
+          "path": ["login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "join a game",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "id": "24a35937-a2bb-44b8-b982-b26ed6e188b9",
+            "exec": [""],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"GameID\": \"5f3c4a22e29a4af381e1f32f\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:4444/game/join",
+          "host": ["localhost"],
+          "port": "4444",
+          "path": ["game", "join"],
+          "query": [
+            {
+              "key": "Name",
+              "value": "postman-2356",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "create game",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"Name\": \"richard-2337\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:4444/game",
+          "host": ["localhost"],
+          "port": "4444",
+          "path": ["game"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "leave game",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"GameID\": \"5f2ef8d576a4c6661ad5847e\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:4444/games/leave",
+          "host": ["localhost"],
+          "port": "4444",
+          "path": ["games", "leave"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get single game",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:4444/game/5f2ef441438eb612f7d0cdd3",
+          "host": ["localhost"],
+          "port": "4444",
+          "path": ["game", "5f2ef441438eb612f7d0cdd3"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "list games",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:4444/game",
+          "host": ["localhost"],
+          "port": "4444",
+          "path": ["game"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "protocolProfileBehavior": {}
+}
