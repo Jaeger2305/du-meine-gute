@@ -11,6 +11,7 @@ import store from "./store";
 // Prints Vue logs when --env.production is *NOT* set while building
 Vue.config.silent = TNS_ENV === "production";
 import GameListItem from "./components/GameListItem.vue";
+import Banner from "./components/game/contextual-board/Banner.vue";
 import Card from "./components/Card.vue";
 import Deck from "./components/game/Deck.vue";
 import Discard from "./components/game/Discard.vue";
@@ -26,6 +27,7 @@ import ReservedFactory from "./components/game/ReservedFactory.vue";
 import Resources from "./components/game/Resources.vue";
 
 Vue.component("GameListItem", GameListItem); // Locally registering inside of the Lobby didn't seem to work. Maybe it needs a different frame.
+Vue.component("Banner", Banner);
 Vue.component("Card", Card);
 Vue.component("Deck", Deck);
 Vue.component("Discard", Discard);

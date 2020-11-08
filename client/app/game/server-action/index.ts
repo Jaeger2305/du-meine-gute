@@ -33,15 +33,22 @@ import { produceAtFactory } from "./actions/produce-at-factory";
  * Returns valid actions that can be performed, which is just acknowledgements
  */
 export function setupGame(game: GameState): void {
-  game.reservedCards.push(
+  game.reservedCards.splice(
+    0,
+    game.reservedCards.length,
     cardRecords.TANNERY_METAL_WOOD,
     cardRecords.GLASSMAKER,
     cardRecords.BAKERY_CLAY,
     cardRecords.SAWMILL_CLAY_METAL,
     cardRecords.MARKET_OFFICE_CLAY1
   );
-  game.cardsInDeck.push(...generateTestCards());
-  game.availableEmployees.push(...seedWorkers(game.config.workerCount));
+  game.cardsInDeck.splice(0, game.cardsInDeck.length, ...generateTestCards());
+  game.cardsInDiscard.splice(0, game.cardsInDiscard.length);
+  game.availableEmployees.splice(
+    0,
+    game.availableEmployees.length,
+    ...seedWorkers(game.config.workerCount)
+  );
 
   const coalMines = [coalMineWheat, coalMineClay, coalMineMetal, coalMineWool];
   const chosenCoalMine = coalMines[Math.floor(Math.random() * 4)];
@@ -74,7 +81,7 @@ export function setupGame(game: GameState): void {
       player: { name: "test-player-name-1" },
     },
   ];
-  game.players = players;
+  game.players.splice(0, game.players.length, ...players);
   return;
 }
 
