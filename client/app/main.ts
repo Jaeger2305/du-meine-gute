@@ -26,6 +26,11 @@ import Factories from "./components/game/Factories.vue";
 import ReservedFactory from "./components/game/ReservedFactory.vue";
 import Resources from "./components/game/Resources.vue";
 
+Vue.registerElement(
+  "ShadowedLabel",
+  () => require("nativescript-shadowed-label").ShadowedLabel
+);
+
 Vue.component("GameListItem", GameListItem); // Locally registering inside of the Lobby didn't seem to work. Maybe it needs a different frame.
 Vue.component("Banner", Banner);
 Vue.component("Card", Card);

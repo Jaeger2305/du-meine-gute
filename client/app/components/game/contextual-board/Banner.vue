@@ -1,28 +1,18 @@
 <template>
   <Frame id="banner">
     <Page actionBarHidden="true" class="cover-image">
-      <!-- History (just websockets for now)  -->
-      <ScrollView orientation="vertical">
-        <StackLayout orientation="horizontal">
-          <Resources :resources="$store.state.playerState.resources" />
-          <Market :resources="$store.state.gameState.marketCards" />
-          <Button text="navi" @tap="navi" />
-          <Label
-            v-for="message in $store.state.messages"
-            :key="message"
-            :text="message"
-          />
-        </StackLayout>
-      </ScrollView>
+      <Discard />
     </Page>
   </Frame>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
+import Discard from "./Discard.vue";
 
 export default {
   props: {},
+  components: { Discard },
   methods: {},
 };
 </script>
