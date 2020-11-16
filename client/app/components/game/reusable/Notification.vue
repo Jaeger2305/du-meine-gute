@@ -13,6 +13,8 @@
     <NotificationMessageContainer
       v-if="messages"
       :messages="messages"
+      col="1"
+      row="1"
       style="margin: 10px;"
     />
   </GridLayout>
