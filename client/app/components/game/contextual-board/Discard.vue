@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
-import { PlayerActionEnum } from "../../../../../cli/types";
+import { PlayerActionEnum } from "../../../game/client";
 import { ActionEnum } from "../../../store";
 import Draw from "./Draw.vue";
 import Notification from "../reusable/Notification.vue";

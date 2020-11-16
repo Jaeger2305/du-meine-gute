@@ -2,11 +2,11 @@
   <GridLayout columns="*" :rows="messages ? '*,*' : '*'">
     <Image col="0" row="0" src="~/assets/images/combined-clouds.png" />
 
-    <shadowed-label col="0" row="0" text="Discard" class="bgh1" />
+    <shadowed-label col="0" row="0" :text="header" class="bgh1" />
     <shadowed-label
       col="0"
       row="0"
-      text="Discard"
+      :text="header"
       class="h1"
       textShadow="0 0 10 rgb(88, 120, 164)"
     />

@@ -55,15 +55,6 @@
         />
       </ScrollView>
 
-      <!-- Draw -->
-      <Deck
-        column="0"
-        row="2"
-        :cardsInDeck="$store.state.gameState.cardsInDeck"
-        :availableActions="$store.state.playerState.availableActions"
-        @player-action="playerAction"
-      />
-
       <!-- Player hand -->
 
       <ScrollView column="1" row="2" orientation="horizontal">
