@@ -45,8 +45,8 @@
       justifyContent="space-around"
       class="attribute-container"
     >
-      <Label text="pts" class="attribute-item" />
-      <Label text="cst" class="attribute-item" />
+      <GameIcon :unicodeIcon="'\uf3ed'" :displayNumber="5" />
+      <GameIcon :unicodeIcon="'\uf51e'" :displayNumber="5" />
     </FlexboxLayout>
     <Image col="2" row="1" src="~/assets/images/combined-clouds.png" />
   </GridLayout>
@@ -54,9 +54,11 @@
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
+import GameIcon from "../reusable/GameIcon.vue";
 
 export default {
   props: {},
+  components: { GameIcon },
 };
 </script>
 
