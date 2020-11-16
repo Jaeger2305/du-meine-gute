@@ -1,5 +1,5 @@
 <template>
-  <GridLayout columns="14*, 30px, 7*" rows="*,3*" class="card-container">
+  <GridLayout columns="2*, 30px, *" rows="2*,5*" class="card-container">
     <FlexboxLayout
       col="0"
       row="0"
@@ -12,13 +12,46 @@
     <!-- Production info -->
     <GridLayout col="0" row="1" columns="4*,*,8*,*,4*" rows="3*,*,3*">
       <!-- Primary input -->
-      <Label col="0" colSpan="2" row="0" rowSpan="2" class="icon-placeholder" />
-      <Label col="0" colSpan="2" row="1" rowSpan="2" class="icon-placeholder" />
+      <PrimaryResource
+        col="0"
+        colSpan="2"
+        row="0"
+        rowSpan="2"
+        :resourceType="'clay'"
+        :displayNumber="'2'"
+      />
+      <PrimaryResource
+        col="0"
+        colSpan="2"
+        row="1"
+        rowSpan="2"
+        :resourceType="'wheat'"
+        :displayNumber="'1'"
+      />
       <!-- Output -->
-      <Label col="2" row="0" rowSpan="3" class="icon-placeholder-big" />
+      <SecondaryResource
+        col="2"
+        row="0"
+        rowSpan="3"
+        :resourceType="'unknown'"
+      />
       <!-- Chain input -->
-      <Label col="3" colSpan="2" row="0" rowSpan="2" class="icon-placeholder" />
-      <Label col="3" colSpan="2" row="1" rowSpan="2" class="icon-placeholder" />
+      <PrimaryResource
+        col="3"
+        colSpan="2"
+        row="0"
+        rowSpan="2"
+        :resourceType="'metal'"
+        :displayNumber="'1'"
+      />
+      <PrimaryResource
+        col="3"
+        colSpan="2"
+        row="1"
+        rowSpan="2"
+        :resourceType="'wood'"
+        :displayNumber="'1'"
+      />
       <!-- Arrows -->
       <Label
         col="0"
@@ -48,17 +81,19 @@
       <GameIcon :unicodeIcon="'\uf3ed'" :displayNumber="5" />
       <GameIcon :unicodeIcon="'\uf51e'" :displayNumber="5" />
     </FlexboxLayout>
-    <Image col="2" row="1" src="~/assets/images/combined-clouds.png" />
+    <Image col="2" row="1" src="~/assets/images/placeholder-factory.png" />
   </GridLayout>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
 import GameIcon from "../reusable/GameIcon.vue";
+import PrimaryResource from "../reusable/PrimaryResource.vue";
+import SecondaryResource from "../reusable/SecondaryResource.vue";
 
 export default {
   props: {},
-  components: { GameIcon },
+  components: { GameIcon, PrimaryResource, SecondaryResource },
 };
 </script>
 
