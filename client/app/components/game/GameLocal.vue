@@ -83,6 +83,7 @@
 
 <script lang="ts">
 import { getString, setString } from "@nativescript/core/application-settings";
+import orientation from "nativescript-orientation";
 import { MutationEnum, ActionEnum } from "../../store";
 import Lobby from "../Lobby.vue";
 import GameSummary from "./GameSummary.vue";
@@ -94,6 +95,7 @@ import { RoundSteps } from "../../game/server-action";
 export default {
   created() {
     this.$store.commit(MutationEnum.SetupGame);
+    orientation.setOrientation("landscape");
   },
   watch: {
     "$store.state.gameState.activeStep"() {
