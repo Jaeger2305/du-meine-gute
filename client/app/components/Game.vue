@@ -148,7 +148,6 @@ export default {
         this.playerState.cardsInHand.splice(cardIndex, 1);
       } else if (parsedMessage.messageType === "gameReady") {
         // Simplistically handle playing the card (not syncing with the server or anything, and won't hold up well on many simultaneous clicks!)
-        debugger;
         this.playerState.cardsInHand.push(...parsedMessage.body.startingCards);
         this.cardsInDeck.push(...parsedMessage.body.cardsInDeck);
         const cardIndex = this.playerState.cardsInHand.findIndex(

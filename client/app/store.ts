@@ -62,7 +62,6 @@ export default new Vuex.Store({
       // Should be using enums here, and the separate game logic folders
       const handler = serverResponse[payload.type];
       if (handler) {
-        debugger;
         handler(state.gameState, state.playerState, payload.response);
       } else {
         console.warn(

@@ -100,7 +100,6 @@ export default {
   watch: {
     "$store.state.gameState.activeStep"() {
       if (this.$store.state.isLocal) {
-        debugger;
         this.$store.dispatch(ActionEnum.SendMessage, {
           type: RoundSteps[this.$store.state.gameState.activeStep],
         });
