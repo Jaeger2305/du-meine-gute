@@ -3,7 +3,7 @@
     columns="2*, 30px, *"
     rows="2*,5*"
     class="card-container"
-    :class="[`lowlight-bg-${resourceType}`]"
+    :class="[`base-bg-${resourceType}`, `lowlight-outline-${resourceType}`]"
   >
     <FlexboxLayout
       col="0"
@@ -81,7 +81,7 @@
       row="1"
       text=""
       class="separator"
-      :class="[`highlight-bg-${resourceType}`]"
+      :class="[`base-bg-${resourceType}`]"
     />
     <FlexboxLayout
       col="2"
@@ -116,6 +116,9 @@ export default {
 </script>
 
 <style scoped>
+.lowlight-outline-clay {
+  border-color: var(--clay-color-lowlight);
+}
 .lowlight-bg-clay {
   background-color: var(--clay-color-lowlight);
 }
@@ -124,6 +127,10 @@ export default {
 }
 .base-bg-clay {
   background-color: var(--clay-color-base);
+}
+
+.lowlight-outline-wood {
+  border-color: var(--wood-color-lowlight);
 }
 .lowlight-bg-wood {
   background-color: var(--wood-color-lowlight);
@@ -134,6 +141,10 @@ export default {
 .base-bg-wood {
   background-color: var(--wood-color-base);
 }
+
+.lowlight-outline-metal {
+  border-color: var(--metal-color-lowlight);
+}
 .lowlight-bg-metal {
   background-color: var(--metal-color-lowlight);
 }
@@ -142,6 +153,10 @@ export default {
 }
 .base-bg-metal {
   background-color: var(--metal-color-base);
+}
+
+.lowlight-outline-wheat {
+  border-color: var(--wheat-color-lowlight);
 }
 .lowlight-bg-wheat {
   background-color: var(--wheat-color-lowlight);
@@ -152,6 +167,10 @@ export default {
 .base-bg-wheat {
   background-color: var(--wheat-color-base);
 }
+
+.lowlight-outline-linen {
+  border-color: var(--linen-color-lowlight);
+}
 .lowlight-bg-linen {
   background-color: var(--linen-color-lowlight);
 }
@@ -160,6 +179,10 @@ export default {
 }
 .base-bg-linen {
   background-color: var(--linen-color-base);
+}
+
+.lowlight-outline-unknown {
+  border-color: var(--unknown-color-lowlight);
 }
 .lowlight-bg-unknown {
   background-color: var(--unknown-color-lowlight);
@@ -174,6 +197,9 @@ export default {
 .card-container {
   width: 600px;
   height: 320px;
+  border-radius: 5px;
+  border-width: 5px;
+  android-elevation: 5;
 }
 
 .title-container {
