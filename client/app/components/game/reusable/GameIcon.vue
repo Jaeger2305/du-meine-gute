@@ -26,9 +26,9 @@ import Vue, { PropType } from "vue";
 export default {
   props: {
     displayNumber: {
-      type: String,
+      type: Number,
       required: false,
-      default: "",
+      default: 0,
     },
     unicodeIcon: {
       type: String,

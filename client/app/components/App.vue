@@ -62,9 +62,9 @@ ActionBar {
   --wheat-color-highlight: rgb(216, 207, 142);
   --wheat-color-lowlight: rgb(155, 135, 53);
 
-  --linen-color-base: rgb(94, 203, 196);
-  --linen-color-highlight: rgb(142, 209, 216);
-  --linen-color-lowlight: rgb(53, 153, 155);
+  --wool-color-base: rgb(94, 203, 196);
+  --wool-color-highlight: rgb(142, 209, 216);
+  --wool-color-lowlight: rgb(53, 153, 155);
 
   --unknown-color-base: rgb(139, 94, 203);
   --unknown-color-highlight: rgb(173, 142, 216);

@@ -1,6 +1,6 @@
 <template>
   <GridLayout columns="*" rows="*" class="primary-icon">
-    <Image col="0" row="0" :src="resourceSrc" />
+    <Image col="0" row="0" :src="resourceSrc" class="primary-image" />
 
     <shadowed-label
       v-if="displayNumber"
@@ -48,6 +48,9 @@ export default {
 .primary-icon {
   height: 80px;
   width: 80px;
+}
+
+.primary-image {
   border-width: 3px;
 }
 

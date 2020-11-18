@@ -2,7 +2,7 @@
   <Page actionBarHidden="true" class="cover-image">
     <GridLayout columns="*,2*,*" rows="*" class="grid-container">
       <Notification class="grid-item" header="Draw" />
-      <Card column="1" :resourceType="'wood'" />
+      <Card v-if="drawnCard" column="1" :card="drawnCard" />
       <FlexboxLayout
         column="2"
         class="grid-item"
@@ -26,17 +26,34 @@ import { ActionEnum } from "../../../store";
 import Draw from "./Draw.vue";
 import { isActionAvailable } from "../../../game/utils";
 import Notification from "../reusable/Notification.vue";
-import Card from "../cards/Card.vue";
+import CardComponent from "../cards/Card.vue";
+import { Card, BuildingType } from "../../../game/types";
+import { ResourceType } from "../../../game/resources";
 
 export default {
   props: {},
-  components: { Notification, Card },
+  components: { Notification, Card: CardComponent },
+  data(): {
+    drawnCard: Card | null;
+  } {
+    return {
+      drawnCard: null,
+    };
+  },
   computed: {
     isDrawCardPossible(): boolean {
       return isActionAvailable(
         this.$store.state.playerState.availableActions,
         PlayerActionEnum.drawCard
       );
+    },
+  },
+  watch: {
+    "$store.state.playerState.cardsInHand"(
+      newCards: Array<Card>,
+      oldCards: Array<Card>
+    ) {
+      this.drawnCard = newCards.slice(-1)[0];
     },
   },
   methods: {
@@ -50,6 +67,17 @@ export default {
       });
     },
     drawCard() {
+      this.drawnCard = {
+        type: BuildingType.unknown,
+        name: "Pending",
+        resource: {
+          type: ResourceType.unknown,
+          value: 0,
+          baseResource: true,
+        },
+        cost: 0,
+        points: 0,
+      };
       this.$store.dispatch(ActionEnum.PlayerAction, {
         type: PlayerActionEnum.drawCard,
         payload: null,
