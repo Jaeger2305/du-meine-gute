@@ -2,7 +2,7 @@
   <Page actionBarHidden="true" class="cover-image">
     <GridLayout columns="*,2*,*" rows="*" class="grid-container">
       <Notification class="grid-item" header="Draw" />
-      <Card column="1" />
+      <Card column="1" :resourceType="'wood'" />
       <FlexboxLayout
         column="2"
         class="grid-item"

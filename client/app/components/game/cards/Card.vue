@@ -1,11 +1,17 @@
 <template>
-  <GridLayout columns="2*, 30px, *" rows="2*,5*" class="card-container">
+  <GridLayout
+    columns="2*, 30px, *"
+    rows="2*,5*"
+    class="card-container"
+    :class="[`lowlight-bg-${resourceType}`]"
+  >
     <FlexboxLayout
       col="0"
       row="0"
       alignItems="center"
       justifyContent="center"
       class="title-container"
+      :class="[`highlight-bg-${resourceType}`]"
     >
       <Label text="test-card" class="h1" />
     </FlexboxLayout>
@@ -70,7 +76,13 @@
         class="fa right"
       />
     </GridLayout>
-    <Label col="1" row="1" text="" class="separator" />
+    <Label
+      col="1"
+      row="1"
+      text=""
+      class="separator"
+      :class="[`highlight-bg-${resourceType}`]"
+    />
     <FlexboxLayout
       col="2"
       row="0"
@@ -90,22 +102,81 @@ import Vue, { PropType } from "vue";
 import GameIcon from "../reusable/GameIcon.vue";
 import PrimaryResource from "../reusable/PrimaryResource.vue";
 import SecondaryResource from "../reusable/SecondaryResource.vue";
+import { ResourceType } from "../../../game/resources";
 
 export default {
-  props: {},
+  props: {
+    resourceType: {
+      type: String as () => ResourceType,
+      required: true,
+    },
+  },
   components: { GameIcon, PrimaryResource, SecondaryResource },
 };
 </script>
 
 <style scoped>
+.lowlight-bg-clay {
+  background-color: var(--clay-color-lowlight);
+}
+.highlight-bg-clay {
+  background-color: var(--clay-color-highlight);
+}
+.base-bg-clay {
+  background-color: var(--clay-color-base);
+}
+.lowlight-bg-wood {
+  background-color: var(--wood-color-lowlight);
+}
+.highlight-bg-wood {
+  background-color: var(--wood-color-highlight);
+}
+.base-bg-wood {
+  background-color: var(--wood-color-base);
+}
+.lowlight-bg-metal {
+  background-color: var(--metal-color-lowlight);
+}
+.highlight-bg-metal {
+  background-color: var(--metal-color-highlight);
+}
+.base-bg-metal {
+  background-color: var(--metal-color-base);
+}
+.lowlight-bg-wheat {
+  background-color: var(--wheat-color-lowlight);
+}
+.highlight-bg-wheat {
+  background-color: var(--wheat-color-highlight);
+}
+.base-bg-wheat {
+  background-color: var(--wheat-color-base);
+}
+.lowlight-bg-linen {
+  background-color: var(--linen-color-lowlight);
+}
+.highlight-bg-linen {
+  background-color: var(--linen-color-highlight);
+}
+.base-bg-linen {
+  background-color: var(--linen-color-base);
+}
+.lowlight-bg-unknown {
+  background-color: var(--unknown-color-lowlight);
+}
+.highlight-bg-unknown {
+  background-color: var(--unknown-color-highlight);
+}
+.base-bg-unknown {
+  background-color: var(--unknown-color-base);
+}
+
 .card-container {
-  background-color: red;
   width: 600px;
   height: 320px;
 }
 
 .title-container {
-  background-color: rgb(216, 142, 142);
   border-radius: 100%;
   margin: 5px;
 }
@@ -129,26 +200,22 @@ export default {
 }
 
 .separator {
-  background-color: rgb(216, 142, 142);
   height: 60%;
   width: 25px;
 }
 
 .icon-placeholder-small {
-  background-color: rgb(216, 142, 142);
   height: 50px;
   width: 50px;
   color: white;
 }
 
 .icon-placeholder-big {
-  background-color: rgb(95, 95, 95);
   height: 150px;
   width: 150px;
 }
 
 .icon-placeholder {
-  background-color: rgb(95, 95, 95);
   height: 50px;
   width: 90px;
 }

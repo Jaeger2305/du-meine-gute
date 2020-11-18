@@ -44,4 +44,30 @@ ActionBar {
   background-color: #53ba82;
   color: #ffffff;
 }
+
+.ns-root {
+  --clay-color-base: rgb(203, 94, 94);
+  --clay-color-highlight: rgb(216, 142, 142);
+  --clay-color-lowlight: rgb(155, 53, 53);
+
+  --wood-color-base: rgb(112, 203, 94);
+  --wood-color-highlight: rgb(167, 216, 142);
+  --wood-color-lowlight: rgb(101, 155, 53);
+
+  --metal-color-base: rgb(94, 152, 203);
+  --metal-color-highlight: rgb(142, 184, 216);
+  --metal-color-lowlight: rgb(53, 111, 155);
+
+  --wheat-color-base: rgb(203, 194, 94);
+  --wheat-color-highlight: rgb(216, 207, 142);
+  --wheat-color-lowlight: rgb(155, 135, 53);
+
+  --linen-color-base: rgb(94, 203, 196);
+  --linen-color-highlight: rgb(142, 209, 216);
+  --linen-color-lowlight: rgb(53, 153, 155);
+
+  --unknown-color-base: rgb(139, 94, 203);
+  --unknown-color-highlight: rgb(173, 142, 216);
+  --unknown-color-lowlight: rgb(104, 53, 155);
+}
 </style>
