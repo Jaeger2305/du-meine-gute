@@ -4,8 +4,18 @@
     <!-- | rsrc | --------------------history------------------ | sett | -->
     <!-- | mrkt | -----card--------card--------card------------ | actn | -->
     <!-- | deck | -----card--card--card--card--card--card------ | disc | -->
-    <GridLayout columns="*, 4*, *" rows="*, *, *" backgroundColor="#3c495e">
+    <GridLayout columns="*, 4*, *" rows="3*, 4*, 2*" backgroundColor="#3c495e">
       <Banner column="0" colSpan="3" row="0" />
+      <GridLayout
+        columns="*"
+        rows="5*, 2*, 11*"
+        column="0"
+        colSpan="3"
+        row="0"
+        rowSpan="3"
+      >
+        <Label column="0" row="1" class="grass-separator" />
+      </GridLayout>
 
       <!-- Settings -->
       <!-- <Button column="2" row="0" text="ready?" @tap="playerReady" /> -->
@@ -55,17 +65,28 @@
         />
       </ScrollView>
 
+      <!-- Bottom panel -->
+      <Label column="0" colSpan="3" row="2" class="bottom-panel" />
+      <!-- Grass border -->
+      <GridLayout
+        columns="*"
+        rows="22*, 47*, 9*, 17*"
+        column="0"
+        colSpan="3"
+        row="0"
+        rowSpan="3"
+      >
+        <Label column="0" row="2" class="grass-separator" />
+      </GridLayout>
       <!-- Player hand -->
-
-      <ScrollView column="1" row="2" orientation="horizontal">
-        <StackLayout orientation="horizontal">
-          <PlayerHand
-            :cards="$store.state.playerState.cardsInHand"
-            :availableActions="$store.state.playerState.availableActions"
-            @player-action="playerAction"
-          />
-        </StackLayout>
-      </ScrollView>
+      <PlayerHand
+        column="0"
+        colSpan="3"
+        row="2"
+        :cards="$store.state.playerState.cardsInHand"
+        :availableActions="$store.state.playerState.availableActions"
+        @player-action="playerAction"
+      />
 
       <!-- Discard -->
       <Discard
@@ -126,4 +147,18 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.bottom-panel {
+  background-image: url("~/assets/images/backboard.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+.grass-separator {
+  width: 100%;
+  height: 150px;
+  background-image: url("~/assets/images/grass-separator.png");
+  background-position: center;
+  background-repeat: repeat-x;
+}
+</style>

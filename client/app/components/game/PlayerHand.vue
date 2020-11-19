@@ -1,10 +1,11 @@
 <template>
-  <FlexboxLayout backgroundColor="#3c495e">
+  <FlexboxLayout justifyContent="space-around" class="container">
     <Card
       v-for="card in cards"
       :key="card.name"
-      :name="card.name"
+      :card="card"
       :is-enabled="isReserveFactoryPossible"
+      size="small"
       @click="reserveFactory(card)"
     />
   </FlexboxLayout>
@@ -16,8 +17,10 @@ import { CustomEvents } from "../../types";
 import { PlayerActionEnum } from "../../game/client";
 import { isActionAvailable } from "../../game/utils";
 import { GameState, PlayerState } from "../../game/types";
+import CardComponent from "./cards/Card.vue";
 
 export default Vue.extend({
+  components: { Card: CardComponent },
   // There's no intellisense on "this.zzz". Tutorials seem to specify using decorator syntax - https://nativescripting.com/posts/typescript-class-components-in-nativescript-vue
   // But this syntax seems to work in a normal web dev project. To revisit.
   props: {
@@ -50,4 +53,8 @@ export default Vue.extend({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.container {
+  padding: 15px;
+}
+</style>

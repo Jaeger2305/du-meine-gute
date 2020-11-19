@@ -1,14 +1,17 @@
 <template>
   <GridLayout
-    columns="2*, 30px, *"
-    rows="2*,5*"
+    :columns="isLarge ? '2*, 30px, *' : '*'"
+    :rows="isLarge ? '2*,5*' : '*'"
     class="card-container"
     :class="[
       `base-bg-${card.resource.type}`,
       `lowlight-outline-${card.resource.type}`,
+      `size-${size}`,
     ]"
   >
+    <!-- Title -->
     <FlexboxLayout
+      v-if="isLarge"
       col="0"
       row="0"
       alignContent="center"
@@ -28,6 +31,7 @@
     >
       <!-- Primary input -->
       <FlexboxLayout
+        v-if="isLarge"
         col="0"
         colSpan="2"
         row="0"
@@ -47,15 +51,16 @@
       <Resource
         v-for="{ resource, count } in outputResources"
         :key="resource.type"
-        col="2"
+        :col="isLarge ? 2 : 0"
         row="0"
         rowSpan="3"
+        :colSpan="isLarge ? 1 : 5"
         :resource="resource"
         :displayNumber="count > 1 ? count : null"
       />
       <!-- Chain input -->
       <FlexboxLayout
-        v-if="card.productionConfig.chainInput"
+        v-if="card.productionConfig.chainInput && isLarge"
         col="3"
         colSpan="2"
         row="0"
@@ -73,6 +78,7 @@
       </FlexboxLayout>
       <!-- Arrows -->
       <FlexboxLayout
+        v-if="isLarge"
         col="0"
         colSpan="5"
         row="0"
@@ -83,14 +89,18 @@
         <Label :text="'\uf137'" class="fa right" alignSelf="center" />
       </FlexboxLayout>
     </GridLayout>
+    <!-- Separator -->
     <Label
+      v-if="isLarge"
       col="1"
       row="1"
       text=""
       class="separator"
       :class="[`base-bg-${card.resource.type}`]"
     />
+    <!-- Right container with card details -->
     <FlexboxLayout
+      v-if="isLarge"
       col="2"
       row="0"
       alignContent="center"
@@ -100,8 +110,14 @@
       <GameIcon :unicodeIcon="'\uf3ed'" :displayNumber="card.points" />
       <GameIcon :unicodeIcon="'\uf51e'" :displayNumber="card.cost" />
     </FlexboxLayout>
-    <Image col="2" row="1" src="~/assets/images/placeholder-factory.png" />
+    <Image
+      v-if="isLarge"
+      col="2"
+      row="1"
+      src="~/assets/images/placeholder-factory.png"
+    />
     <FlexboxLayout
+      v-if="isLarge"
       col="2"
       row="1"
       flexDirection="column-reverse"
@@ -134,15 +150,28 @@ function aggregateResources(resources: Array<Resource> = []) {
   }));
 }
 
+export enum Size {
+  Small = "small",
+  Large = "large",
+}
+
 export default {
   props: {
     card: {
       type: Object as () => Card,
       required: true,
     },
+    size: {
+      type: String as () => Size,
+      required: false,
+      default: Size.Large,
+    },
   },
   components: { GameIcon, Resource: ResourceComponent, PrimaryResource },
   computed: {
+    isLarge(): boolean {
+      return this.size === Size.Large;
+    },
     inputResources(): Array<AggregatedResource> {
       return aggregateResources(this.card.productionConfig?.input);
     },
@@ -236,11 +265,19 @@ export default {
 }
 
 .card-container {
-  width: 600px;
-  height: 320px;
   border-radius: 5px;
   border-width: 5px;
   android-elevation: 5;
+}
+
+.size-large {
+  width: 600px;
+  height: 320px;
+}
+
+.size-small {
+  width: 200px;
+  height: 200px;
 }
 
 .title-container {
