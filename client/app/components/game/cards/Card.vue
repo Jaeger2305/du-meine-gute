@@ -45,12 +45,13 @@
       </FlexboxLayout>
       <!-- Output -->
       <Resource
-        v-for="resource in outputResources"
+        v-for="{ resource, count } in outputResources"
         :key="resource.type"
         col="2"
         row="0"
         rowSpan="3"
         :resource="resource"
+        :displayNumber="count > 1 ? count : null"
       />
       <!-- Chain input -->
       <FlexboxLayout

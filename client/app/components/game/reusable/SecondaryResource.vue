@@ -1,6 +1,6 @@
 <template>
   <GridLayout columns="*" rows="*" class="secondary-container">
-    <Label col="0" row="0" class="bg-halo" />
+    <Label col="0" row="0" class="bg-halo" :text="resourceType" />
     <Image col="0" row="0" :src="resourceSrc" class="secondary-icon" />
 
     <shadowed-label
@@ -51,6 +51,7 @@ export default {
   width: 100%;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.7);
+  text-align: center;
 }
 
 .secondary-container {
