@@ -35,21 +35,22 @@
         flexDirection="column"
         justifyContent="space-around"
       >
-        <PrimaryResource
-          v-for="{ type, count } in inputResources"
-          :key="type"
+        <Resource
+          v-for="{ resource, count } in inputResources"
+          :key="resource.type"
           alignSelf="center"
-          :resourceType="type"
+          :resource="resource"
           :displayNumber="count"
         />
       </FlexboxLayout>
       <!-- Output -->
-      <SecondaryResource
-        v-for
+      <Resource
+        v-for="resource in outputResources"
+        :key="resource.type"
         col="2"
         row="0"
         rowSpan="3"
-        :resourceType="card.productionConfig.output"
+        :resource="resource"
       />
       <!-- Chain input -->
       <FlexboxLayout
@@ -61,11 +62,11 @@
         flexDirection="column"
         justifyContent="space-around"
       >
-        <PrimaryResource
-          v-for="{ type, count } in chainInputResources"
-          :key="type"
+        <Resource
+          v-for="{ resource, count } in chainInputResources"
+          :key="resource.type"
           alignSelf="center"
-          :resourceType="type"
+          :resource="resource"
           :displayNumber="count"
         />
       </FlexboxLayout>
@@ -105,10 +106,7 @@
       flexDirection="column-reverse"
       class="attribute-container"
     >
-      <PrimaryResource
-        :resourceType="card.resource.type"
-        alignSelf="flex-end"
-      />
+      <Resource :resource="card.resource" alignSelf="flex-end" />
     </FlexboxLayout>
   </GridLayout>
 </template>
@@ -116,21 +114,21 @@
 <script lang="ts">
 import Vue, { PropType } from "vue";
 import GameIcon from "../reusable/GameIcon.vue";
+import ResourceComponent from "../reusable/Resource.vue";
 import PrimaryResource from "../reusable/PrimaryResource.vue";
-import SecondaryResource from "../reusable/SecondaryResource.vue";
 import { ResourceType, Resource } from "../../../game/resources";
 import { Card } from "../../../game/types";
 import { groupBy } from "lodash";
 
 type AggregatedResource = {
-  type: ResourceType;
+  resource: Resource;
   count: number;
 };
 
 function aggregateResources(resources: Array<Resource> = []) {
   const aggregatedResources = groupBy<Resource>(resources, "type");
-  return Object.entries(aggregatedResources).map(([type, resources]) => ({
-    type: type as ResourceType,
+  return Object.values(aggregatedResources).map((resources) => ({
+    resource: resources[0],
     count: resources.length,
   }));
 }
@@ -142,7 +140,7 @@ export default {
       required: true,
     },
   },
-  components: { GameIcon, PrimaryResource, SecondaryResource },
+  components: { GameIcon, Resource: ResourceComponent, PrimaryResource },
   computed: {
     inputResources(): Array<AggregatedResource> {
       return aggregateResources(this.card.productionConfig?.input);
