@@ -11,7 +11,7 @@
     <FlexboxLayout
       col="0"
       row="0"
-      alignItems="center"
+      alignContent="center"
       justifyContent="center"
       class="title-container"
       :class="[`highlight-bg-${card.resource.type}`]"
@@ -45,6 +45,7 @@
       </FlexboxLayout>
       <!-- Output -->
       <SecondaryResource
+        v-for
         col="2"
         row="0"
         rowSpan="3"
@@ -90,7 +91,7 @@
     <FlexboxLayout
       col="2"
       row="0"
-      alignItems="center"
+      alignContent="center"
       justifyContent="space-around"
       class="attribute-container"
     >
@@ -98,6 +99,17 @@
       <GameIcon :unicodeIcon="'\uf51e'" :displayNumber="card.cost" />
     </FlexboxLayout>
     <Image col="2" row="1" src="~/assets/images/placeholder-factory.png" />
+    <FlexboxLayout
+      col="2"
+      row="1"
+      flexDirection="column-reverse"
+      class="attribute-container"
+    >
+      <PrimaryResource
+        :resourceType="card.resource.type"
+        alignSelf="flex-end"
+      />
+    </FlexboxLayout>
   </GridLayout>
 </template>
 
