@@ -1,5 +1,5 @@
 <template>
-  <GridLayout columns="*" rows="*" class="secondary-container">
+  <GridLayout columns="*" rows="*" class="secondary-container" :style="style">
     <Label col="0" row="0" class="bg-halo" :text="resourceType" />
     <Image col="0" row="0" :src="resourceSrc" class="secondary-icon" />
 
@@ -36,6 +36,10 @@ export default {
       type: String as () => ResourceType,
       required: true,
     },
+    style: {
+      type: String,
+      default: "height: 170px; width: 170px",
+    },
   },
   computed: {
     resourceSrc(): string {
@@ -54,14 +58,9 @@ export default {
   text-align: center;
 }
 
-.secondary-container {
-  height: 170px;
-  width: 170px;
-}
-
 .secondary-icon {
-  height: 140px;
-  width: 140px;
+  height: 90%;
+  width: 90%;
 }
 
 .fg-number {

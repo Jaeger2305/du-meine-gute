@@ -46,6 +46,10 @@ ActionBar {
 }
 
 .ns-root {
+  --employee-color-base: rgb(203, 154, 94);
+  --employee-color-highlight: rgb(216, 183, 142);
+  --employee-color-lowlight: rgb(155, 106, 53);
+
   --clay-color-base: rgb(203, 94, 94);
   --clay-color-highlight: rgb(216, 142, 142);
   --clay-color-lowlight: rgb(155, 53, 53);
