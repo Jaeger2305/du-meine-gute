@@ -1,14 +1,13 @@
 <template>
-  <FlexboxLayout>
+  <FlexboxLayout justifyContent="center">
     <Label
       v-if="subheader"
       :text="subheader"
       textWrap
-      alignSelf="center"
       class="subheader"
       flexShrink="3"
     />
-    <Label :text="content" class="content" textWrap alignSelf="center" />
+    <Label :text="content" class="content" textWrap />
   </FlexboxLayout>
 </template>
 
@@ -37,19 +36,16 @@ export default {
 
 <style scoped>
 .subheader {
-  font-size: 25px;
+  font-size: 24px;
   color: black;
   font-family: "Grandstander", "Grandstander-Bold";
   font-weight: bold;
-
-  text-align: center;
   text-shadow: 2px 2px #ff0000;
 }
 .content {
-  font-size: 20px;
+  font-size: 16px;
   color: black;
   font-family: "Grandstander", "Grandstander-Regular";
-
   text-align: center;
 }
 </style>

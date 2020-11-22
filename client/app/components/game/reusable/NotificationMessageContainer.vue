@@ -1,5 +1,9 @@
 <template>
-  <FlexboxLayout class="message-container" flexDirection="column">
+  <FlexboxLayout
+    class="message-container"
+    flexDirection="column"
+    justifyContent="center"
+  >
     <NotificationMessage
       v-for="message in messages"
       :key="message.content"

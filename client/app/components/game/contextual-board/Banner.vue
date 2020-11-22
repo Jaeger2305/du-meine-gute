@@ -15,6 +15,8 @@ export enum ContextBoardComponentName {
   Draw = "Draw",
   Discard = "Discard",
   RevealMarket = "RevealMarket",
+  Production = "Production",
+  EndRound = "EndRound",
   Placeholder = "Placeholder", // For banners that haven't been implemened yet - they still need a way to end the turn.
 }
 
@@ -29,9 +31,9 @@ const contextBoardRoundStepMap: {
   [ServerActionEnum.drawStep]: ContextBoardComponentName.Draw,
   [ServerActionEnum.revealMarket]: ContextBoardComponentName.RevealMarket,
   [ServerActionEnum.assignWorkers]: ContextBoardComponentName.Placeholder,
-  [ServerActionEnum.produceStep]: ContextBoardComponentName.Placeholder,
+  [ServerActionEnum.produceStep]: ContextBoardComponentName.Production,
   [ServerActionEnum.purchaseStep]: ContextBoardComponentName.Placeholder,
-  [ServerActionEnum.endRound]: ContextBoardComponentName.Placeholder,
+  [ServerActionEnum.endRound]: ContextBoardComponentName.EndRound,
 };
 
 export default {

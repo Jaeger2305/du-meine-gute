@@ -1,6 +1,25 @@
 <template>
   <GridLayout columns="*,2*,*" rows="*" class="grid-container">
-    <Notification class="grid-item" header="Placeholder" />
+    <Notification class="grid-item" header="Production" />
+    <NotificationMessageContainer
+      class="grid-item"
+      column="1"
+      :messages="[
+        {
+          content:
+            'When a player reaches 8 factories, the end game is triggered',
+        },
+        {
+          content: '1 point for every 5 resource value',
+        },
+        {
+          content: 'Points for built factories',
+        },
+        {
+          content: 'Points for hired employees',
+        },
+      ]"
+    />
     <FlexboxLayout
       column="2"
       class="grid-item"
@@ -17,11 +36,12 @@
 import Vue, { PropType } from "vue";
 import { PlayerActionEnum } from "../../../game/client";
 import Notification from "../reusable/Notification.vue";
+import NotificationMessageContainer from "../reusable/NotificationMessageContainer.vue";
 import { CustomEvents } from "../../../types";
 
 export default {
   props: {},
-  components: { Notification },
+  components: { Notification, NotificationMessageContainer },
   methods: {
     endStep() {
       this.$emit(CustomEvents.PLAYER_ACTION, PlayerActionEnum.endStep, null);
