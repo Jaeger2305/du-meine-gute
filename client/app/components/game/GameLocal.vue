@@ -5,7 +5,7 @@
     <!-- | mrkt | -----card--------card--------card------------ | actn | -->
     <!-- | deck | -----card--card--card--card--card--card------ | disc | -->
     <GridLayout columns="*, 4*, *" rows="3*, 4*, 2*" backgroundColor="#3c495e">
-      <Banner column="0" colSpan="3" row="0" />
+      <Banner column="0" colSpan="3" row="0" @player-action="playerAction" />
       <GridLayout
         columns="*"
         rows="5*, 2*, 11*"
@@ -84,17 +84,6 @@
         colSpan="3"
         row="2"
         :cards="$store.state.playerState.cardsInHand"
-        :availableActions="$store.state.playerState.availableActions"
-        @player-action="playerAction"
-      />
-
-      <!-- Discard -->
-      <Discard
-        column="2"
-        row="2"
-        name="end step"
-        :cardsInHand="$store.state.playerState.cardsInHand"
-        :cardsInDiscard="$store.state.gameState.cardsInDiscard"
         :availableActions="$store.state.playerState.availableActions"
         @player-action="playerAction"
       />

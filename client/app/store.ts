@@ -9,6 +9,7 @@ import {
   PlayerState,
   ServerActionRequest,
   PlayerActionEnum,
+  Card,
 } from "./game/types";
 import { cloneDeep } from "lodash";
 import { ServerActionResponse } from "./game/server-action/types";
@@ -21,17 +22,21 @@ const state: {
   gameState: GameState; // The UI should use only the gameState, and the serverState is used for local games. Keeping these in sync will be a challenge.
   messages: Array<any>;
   isLocal: boolean;
+  stagedCardsForDiscard: Array<Card>;
 } = {
   isLocal: true,
   serverState: newGame(),
   gameState: newGame(),
   messages: [],
   playerState: newPlayer(),
+  stagedCardsForDiscard: [],
 };
 
 export enum MutationEnum {
   ReceiveMessage = "RECEIVE_MESSAGE",
   SetupGame = "SETUP_GAME",
+  StageCardDiscard = "STAGE_CARD_DISCARD",
+  ResetDiscard = "RESET_DISCARD",
 }
 
 export enum ActionEnum {
@@ -68,6 +73,22 @@ export default new Vuex.Store({
           "unrecognised type - game logic not fully implemented yet"
         );
       }
+    },
+    /** Either adds or removes a card into the temporary state that contains cards that will be discarded once confirmed. */
+    [MutationEnum.StageCardDiscard](state, payload: Card) {
+      const stagedCardIndex = state.stagedCardsForDiscard.findIndex(
+        ({ name }) => name === payload.name
+      );
+      if (stagedCardIndex < 0) state.stagedCardsForDiscard.push(payload);
+      else state.stagedCardsForDiscard.splice(stagedCardIndex, 1);
+    },
+    /** Empty the discard state after the user submitted/resetted the selected cards
+     * This is inconsistent with the other modifications, which all go through the game state and server response.
+     * Perhaps they all need converting to store mutations, or this should be converted to a normal player state.
+     * Having it as part of the player state would be a more portable implementation, but less Vue oriented.
+     */
+    [MutationEnum.ResetDiscard](state) {
+      state.stagedCardsForDiscard.splice(0, state.stagedCardsForDiscard.length);
     },
   },
   actions: {

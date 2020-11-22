@@ -7,7 +7,9 @@
       `base-bg-${card.resource.type}`,
       `lowlight-outline-${card.resource.type}`,
       `size-${size}`,
+      isDiscardable || isPlayable ? 'actionable' : 'disabled',
     ]"
+    @tap="contextualAction"
   >
     <!-- Title -->
     <FlexboxLayout
@@ -155,6 +157,11 @@ export enum Size {
   Large = "large",
 }
 
+export enum CardActions {
+  Reserve = "reserve",
+  Discard = "discard",
+}
+
 export default {
   props: {
     card: {
@@ -165,6 +172,16 @@ export default {
       type: String as () => Size,
       required: false,
       default: Size.Large,
+    },
+    isPlayable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isDiscardable: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   components: { GameIcon, Resource: ResourceComponent, PrimaryResource },
@@ -180,6 +197,12 @@ export default {
     },
     chainInputResources(): Array<AggregatedResource> {
       return aggregateResources(this.card.productionConfig?.chainInput);
+    },
+  },
+  methods: {
+    contextualAction(): void {
+      if (this.isPlayable) this.$emit(CardActions.Reserve);
+      if (this.isDiscardable) this.$emit(CardActions.Discard);
     },
   },
 };
@@ -268,6 +291,17 @@ export default {
   border-radius: 5px;
   border-width: 5px;
   android-elevation: 5;
+}
+
+.actionable {
+  border-width: 10px;
+  opacity: 1;
+  android-elevation: 10;
+}
+
+.disabled {
+  opacity: 0.8;
+  android-elevation: 1;
 }
 
 .size-large {

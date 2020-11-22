@@ -14,7 +14,6 @@ import GameListItem from "./components/GameListItem.vue";
 import Banner from "./components/game/contextual-board/Banner.vue";
 import Card from "./components/Card.vue";
 import Deck from "./components/game/Deck.vue";
-import Discard from "./components/game/Discard.vue";
 import Assignment from "./components/game/Assignment.vue";
 import AvailableActions from "./components/game/AvailableActions.vue";
 import Employee from "./components/game/Employee.vue";
@@ -35,7 +34,6 @@ Vue.component("GameListItem", GameListItem); // Locally registering inside of th
 Vue.component("Banner", Banner);
 Vue.component("Card", Card);
 Vue.component("Deck", Deck);
-Vue.component("Discard", Discard);
 Vue.component("Employee", Employee);
 Vue.component("EmployeeList", EmployeeList);
 Vue.component("EmployeeDetail", EmployeeDetail);

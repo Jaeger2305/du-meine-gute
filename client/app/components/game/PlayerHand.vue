@@ -4,9 +4,11 @@
       v-for="card in cards"
       :key="card.name"
       :card="card"
-      :is-enabled="isReserveFactoryPossible"
+      :isPlayable="isReserveFactoryPossible"
+      :isDiscardable="isDiscardPossible"
       size="small"
-      @click="reserveFactory(card)"
+      @reserve="reserveFactory(card)"
+      @discard="discard(card)"
     />
   </FlexboxLayout>
 </template>
@@ -18,6 +20,7 @@ import { PlayerActionEnum } from "../../game/client";
 import { isActionAvailable } from "../../game/utils";
 import { GameState, PlayerState } from "../../game/types";
 import CardComponent from "./cards/Card.vue";
+import { MutationEnum } from "../../store";
 
 export default Vue.extend({
   components: { Card: CardComponent },
@@ -40,6 +43,9 @@ export default Vue.extend({
         PlayerActionEnum.reserveFactory
       );
     },
+    isDiscardPossible(): boolean {
+      return isActionAvailable(this.availableActions, PlayerActionEnum.discard);
+    },
   },
   methods: {
     reserveFactory(factory) {
@@ -48,6 +54,10 @@ export default Vue.extend({
         PlayerActionEnum.reserveFactory,
         factory
       );
+    },
+    discard(card) {
+      // Maybe there's refactoring here, when we allow discarding a card for its resource as part of production
+      this.$store.commit(MutationEnum.StageCardDiscard, card);
     },
   },
 });

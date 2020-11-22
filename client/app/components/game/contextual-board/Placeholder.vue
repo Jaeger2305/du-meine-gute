@@ -1,7 +1,6 @@
 <template>
   <GridLayout columns="*,2*,*" rows="*" class="grid-container">
-    <Notification class="grid-item" header="Draw" />
-    <Card v-if="drawnCard" column="1" :card="drawnCard" />
+    <Notification class="grid-item" header="Placeholder" />
     <FlexboxLayout
       column="2"
       class="grid-item"
@@ -9,9 +8,6 @@
       justifyContent="center"
       flexDirection="column"
     >
-      <Button v-if="isDrawCardPossible" class="button" @tap="drawCard"
-        >DRAW</Button
-      >
       <Button class="button" @tap="endStep">END</Button>
     </FlexboxLayout>
   </GridLayout>
@@ -31,47 +27,10 @@ import { CustomEvents } from "../../../types";
 
 export default {
   props: {},
-  components: { Notification, Card: CardComponent },
-  data(): {
-    drawnCard: Card | null;
-  } {
-    return {
-      drawnCard: null,
-    };
-  },
-  computed: {
-    isDrawCardPossible(): boolean {
-      return isActionAvailable(
-        this.$store.state.playerState.availableActions,
-        PlayerActionEnum.drawCard
-      );
-    },
-  },
-  watch: {
-    "$store.state.playerState.cardsInHand"(
-      newCards: Array<Card>,
-      oldCards: Array<Card>
-    ) {
-      this.drawnCard = newCards.slice(-1)[0];
-    },
-  },
+  components: { Notification },
   methods: {
     endStep() {
       this.$emit(CustomEvents.PLAYER_ACTION, PlayerActionEnum.endStep, null);
-    },
-    drawCard() {
-      this.drawnCard = {
-        type: BuildingType.unknown,
-        name: "Pending",
-        resource: {
-          type: ResourceType.unknown,
-          value: 0,
-          baseResource: true,
-        },
-        cost: 0,
-        points: 0,
-      };
-      this.$emit(CustomEvents.PLAYER_ACTION, PlayerActionEnum.drawCard, null);
     },
   },
 };
