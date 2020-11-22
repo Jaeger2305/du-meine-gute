@@ -1,6 +1,12 @@
 <template>
   <GridLayout columns="*,2*,*" rows="*" class="grid-container">
-    <Notification class="grid-item" header="Placeholder" />
+    <Notification
+      column="0"
+      row="0"
+      class="grid-item"
+      :header="isFirstMarket ? 'Market opens' : 'Market closes'"
+    />
+    <PrimaryResourceCollection column="1" row="0" />
     <FlexboxLayout
       column="2"
       class="grid-item"
@@ -17,12 +23,22 @@
 import Vue, { PropType } from "vue";
 import { PlayerActionEnum } from "../../../game/client";
 import Notification from "../reusable/Notification.vue";
+import PrimaryResourceCollection from "../reusable/PrimaryResourceCollection.vue";
 import { RoundSteps, ServerActionEnum } from "../../../game/types";
+import { ResourceType } from "../../../game/resources";
 import { CustomEvents } from "../../../types";
 
 export default {
   props: {},
-  components: { Notification },
+  components: { Notification, PrimaryResourceCollection },
+  computed: {
+    isFirstMarket(): boolean {
+      return (
+        RoundSteps.indexOf(ServerActionEnum.revealMarket) ===
+        this.$store.state.gameState.activeStep
+      );
+    },
+  },
   methods: {
     endStep() {
       this.$emit(CustomEvents.PLAYER_ACTION, PlayerActionEnum.endStep, null);

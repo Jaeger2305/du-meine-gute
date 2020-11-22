@@ -8,14 +8,13 @@
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
-import Discard from "./Discard.vue";
-import Draw from "./Draw.vue";
-import Placeholder from "./Placeholder.vue";
+import bannerComponents from "./index";
 import { RoundSteps, ServerActionEnum } from "../../../game/types";
 
 export enum ContextBoardComponentName {
   Draw = "Draw",
   Discard = "Discard",
+  RevealMarket = "RevealMarket",
   Placeholder = "Placeholder", // For banners that haven't been implemened yet - they still need a way to end the turn.
 }
 
@@ -28,7 +27,7 @@ const contextBoardRoundStepMap: {
 } = {
   [ServerActionEnum.startRound]: ContextBoardComponentName.Discard,
   [ServerActionEnum.drawStep]: ContextBoardComponentName.Draw,
-  [ServerActionEnum.revealMarket]: ContextBoardComponentName.Placeholder,
+  [ServerActionEnum.revealMarket]: ContextBoardComponentName.RevealMarket,
   [ServerActionEnum.assignWorkers]: ContextBoardComponentName.Placeholder,
   [ServerActionEnum.produceStep]: ContextBoardComponentName.Placeholder,
   [ServerActionEnum.purchaseStep]: ContextBoardComponentName.Placeholder,
@@ -37,7 +36,7 @@ const contextBoardRoundStepMap: {
 
 export default {
   props: {},
-  components: { Discard, Draw, Placeholder },
+  components: { ...bannerComponents },
   computed: {
     componentName(): ContextBoardComponentName {
       return contextBoardRoundStepMap[
