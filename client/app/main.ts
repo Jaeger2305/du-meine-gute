@@ -19,7 +19,6 @@ import AvailableActions from "./components/game/AvailableActions.vue";
 import Employee from "./components/game/Employee.vue";
 import EmployeeList from "./components/game/EmployeeList.vue";
 import EmployeeDetail from "./components/game/EmployeeDetail.vue";
-import Market from "./components/game/Market.vue";
 import PlayerHand from "./components/game/PlayerHand.vue";
 import Factories from "./components/game/Factories.vue";
 import ReservedFactory from "./components/game/ReservedFactory.vue";
@@ -42,7 +41,6 @@ Vue.component("Factories", Factories);
 Vue.component("ReservedFactory", ReservedFactory);
 Vue.component("Assignment", Assignment);
 Vue.component("AvailableActions", AvailableActions);
-Vue.component("Market", Market);
 Vue.component("PlayerHand", PlayerHand);
 
 new Vue({

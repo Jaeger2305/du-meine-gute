@@ -6,7 +6,13 @@
       class="grid-item"
       :header="isFirstMarket ? 'Market opens' : 'Market closes'"
     />
-    <PrimaryResourceCollection column="1" row="0" />
+    <PrimaryResourceCollection
+      column="1"
+      row="0"
+      :resources="marketResources"
+      :isSorted="true"
+      class="market-resources"
+    />
     <FlexboxLayout
       column="2"
       class="grid-item"
@@ -25,7 +31,7 @@ import { PlayerActionEnum } from "../../../game/client";
 import Notification from "../reusable/Notification.vue";
 import PrimaryResourceCollection from "../reusable/PrimaryResourceCollection.vue";
 import { RoundSteps, ServerActionEnum } from "../../../game/types";
-import { ResourceType } from "../../../game/resources";
+import { Resource, ResourceType } from "../../../game/resources";
 import { CustomEvents } from "../../../types";
 
 export default {
@@ -36,6 +42,11 @@ export default {
       return (
         RoundSteps.indexOf(ServerActionEnum.revealMarket) ===
         this.$store.state.gameState.activeStep
+      );
+    },
+    marketResources(): Array<Resource> {
+      return this.$store.state.gameState.marketCards.map(
+        ({ resource }) => resource
       );
     },
   },
@@ -56,6 +67,10 @@ export default {
 
 .grid-item {
   margin: 25px 15px 25px 15px;
+}
+
+.market-resources {
+  margin: 25px 10% 25px 10%;
 }
 
 .button {

@@ -36,6 +36,14 @@ export enum ResourceType {
   window = "window",
 }
 
+export const defaultResourceOrder = {
+  [ResourceType.wood]: 1,
+  [ResourceType.clay]: 2,
+  [ResourceType.wheat]: 3,
+  [ResourceType.wool]: 4,
+  [ResourceType.metal]: 5,
+};
+
 // Special
 
 export const unknown: Resource = {
