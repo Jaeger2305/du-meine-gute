@@ -21,12 +21,10 @@
 import Vue, { PropType } from "vue";
 import { PlayerActionEnum } from "../../../game/client";
 import { ActionEnum } from "../../../store";
-import Draw from "./Draw.vue";
-import { isActionAvailable } from "../../../game/utils";
+import { isActionAvailable, createUnknownCard } from "../../../game/utils";
 import Notification from "../reusable/Notification.vue";
 import CardComponent from "../cards/Card.vue";
-import { Card, BuildingType } from "../../../game/types";
-import { ResourceType } from "../../../game/resources";
+import { Card } from "../../../game/types";
 import { CustomEvents } from "../../../types";
 
 export default {
@@ -60,17 +58,7 @@ export default {
       this.$emit(CustomEvents.PLAYER_ACTION, PlayerActionEnum.endStep, null);
     },
     drawCard() {
-      this.drawnCard = {
-        type: BuildingType.unknown,
-        name: "Pending",
-        resource: {
-          type: ResourceType.unknown,
-          value: 0,
-          baseResource: true,
-        },
-        cost: 0,
-        points: 0,
-      };
+      this.drawnCard = createUnknownCard();
       this.$emit(CustomEvents.PLAYER_ACTION, PlayerActionEnum.drawCard, null);
     },
   },

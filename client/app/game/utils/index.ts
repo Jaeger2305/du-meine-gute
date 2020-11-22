@@ -10,7 +10,7 @@ import { unknown } from "../cards";
 import { PlayerActionEnum } from "../client";
 
 import { Resource } from "../resources";
-import { sortBy, sumBy, shuffle } from "lodash";
+import { sortBy, sumBy, shuffle, groupBy } from "lodash";
 
 export { checkOutstandingResources, produceGood } from "./production-utils";
 
@@ -175,7 +175,7 @@ export function isActionAvailable(
 }
 
 // This should be a shared util function, but quick for now whilst PoC
-function createUnknownCard(baseCard: Card = unknown): Card {
+export function createUnknownCard(baseCard: Card = unknown): Card {
   return { ...unknown, ...baseCard };
 }
 
@@ -208,4 +208,12 @@ export function getUnoccupiedFactories(
         .map((assignedEmployee) => assignedEmployee.assignment.name)
         .includes(factory.name)
   );
+}
+
+export function aggregateResources(resources: Array<Resource> = []) {
+  const aggregatedResources = groupBy<Resource>(resources, "type");
+  return Object.values(aggregatedResources).map((resources) => ({
+    resource: resources[0],
+    count: resources.length,
+  }));
 }

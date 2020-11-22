@@ -1,9 +1,9 @@
 <template>
   <FlexboxLayout flexDirection="column" backgroundColor="#3c495e">
     <Label
-      v-for="{ type, count } in aggregatedResources"
-      :key="type"
-      :text="`${type}: ${count}`"
+      v-for="{ resource, count } in aggregatedResources"
+      :key="resource.type"
+      :text="`${resource.type}: ${count}`"
     />
   </FlexboxLayout>
 </template>
@@ -13,6 +13,7 @@ import Vue, { PropType } from "vue";
 import { groupBy } from "lodash";
 import { GameState } from "../../game/types";
 import { ResourceType, Resource } from "../../game/resources";
+import { aggregateResources } from "../../game/utils";
 
 export default Vue.extend({
   props: {
@@ -22,15 +23,8 @@ export default Vue.extend({
     },
   },
   computed: {
-    aggregatedResources(): Array<{ type: ResourceType; count: number }> {
-      const groupedResources = groupBy(
-        this.resources as Array<Resource>,
-        "type"
-      ) as { [key in ResourceType]?: Array<Resource> };
-      return Object.entries(groupedResources).map(([key, value]) => ({
-        type: key as ResourceType,
-        count: value.length,
-      }));
+    aggregatedResources() {
+      return aggregateResources(this.resources);
     },
   },
 });

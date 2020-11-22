@@ -137,20 +137,7 @@ import ResourceComponent from "../reusable/Resource.vue";
 import PrimaryResource from "../reusable/PrimaryResource.vue";
 import { ResourceType, Resource } from "../../../game/resources";
 import { Card } from "../../../game/types";
-import { groupBy } from "lodash";
-
-type AggregatedResource = {
-  resource: Resource;
-  count: number;
-};
-
-function aggregateResources(resources: Array<Resource> = []) {
-  const aggregatedResources = groupBy<Resource>(resources, "type");
-  return Object.values(aggregatedResources).map((resources) => ({
-    resource: resources[0],
-    count: resources.length,
-  }));
-}
+import { aggregateResources } from "../../../game/utils";
 
 export enum Size {
   Small = "small",
@@ -189,13 +176,13 @@ export default {
     isLarge(): boolean {
       return this.size === Size.Large;
     },
-    inputResources(): Array<AggregatedResource> {
+    inputResources() {
       return aggregateResources(this.card.productionConfig?.input);
     },
-    outputResources(): Array<AggregatedResource> {
+    outputResources() {
       return aggregateResources(this.card.productionConfig?.output);
     },
-    chainInputResources(): Array<AggregatedResource> {
+    chainInputResources() {
       return aggregateResources(this.card.productionConfig?.chainInput);
     },
   },
