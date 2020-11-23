@@ -15,10 +15,10 @@ export enum ContextBoardComponentName {
   Draw = "Draw",
   Discard = "Discard",
   RevealMarket = "RevealMarket",
+  Planning = "Planning",
   Production = "Production",
   EndRound = "EndRound",
   PurchasingStep = "PurchasingStep",
-  Placeholder = "Placeholder", // For banners that haven't been implemened yet - they still need a way to end the turn.
 }
 
 /** Map the server steps to a given contextual banner
@@ -31,7 +31,7 @@ const contextBoardRoundStepMap: {
   [ServerActionEnum.startRound]: ContextBoardComponentName.Discard,
   [ServerActionEnum.drawStep]: ContextBoardComponentName.Draw,
   [ServerActionEnum.revealMarket]: ContextBoardComponentName.RevealMarket,
-  [ServerActionEnum.assignWorkers]: ContextBoardComponentName.Placeholder,
+  [ServerActionEnum.assignWorkers]: ContextBoardComponentName.Planning,
   [ServerActionEnum.produceStep]: ContextBoardComponentName.Production,
   [ServerActionEnum.purchaseStep]: ContextBoardComponentName.PurchasingStep,
   [ServerActionEnum.endRound]: ContextBoardComponentName.EndRound,

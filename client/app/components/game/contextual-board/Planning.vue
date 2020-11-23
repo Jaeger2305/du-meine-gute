@@ -1,6 +1,13 @@
 <template>
   <GridLayout columns="*,2*,*" rows="*" class="grid-container">
-    <Notification class="grid-item" header="Placeholder" />
+    <Notification class="grid-item" header="Planning" />
+    <PrimaryResourceCollection
+      column="1"
+      row="0"
+      :resources="marketResources"
+      :isSorted="true"
+      class="market-resources"
+    />
     <FlexboxLayout
       column="2"
       class="grid-item"
@@ -18,10 +25,18 @@ import Vue, { PropType } from "vue";
 import { PlayerActionEnum } from "../../../game/client";
 import Notification from "../reusable/Notification.vue";
 import { CustomEvents } from "../../../types";
+import { Resource } from "../../../game/resources";
 
 export default {
   props: {},
   components: { Notification },
+  computed: {
+    marketResources(): Array<Resource> {
+      return this.$store.state.gameState.marketCards.map(
+        ({ resource }) => resource
+      );
+    },
+  },
   methods: {
     endStep() {
       this.$emit(CustomEvents.PLAYER_ACTION, PlayerActionEnum.endStep, null);
@@ -39,6 +54,10 @@ export default {
 
 .grid-item {
   margin: 25px 15px 25px 15px;
+}
+
+.market-resources {
+  margin: 25px 10% 25px 10%;
 }
 
 .button {
