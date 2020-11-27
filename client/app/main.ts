@@ -2,10 +2,19 @@ import Vue from "nativescript-vue";
 import App from "./components/App.vue";
 import VueDevtools from "nativescript-vue-devtools";
 const app = require("tns-core-modules/application");
+import RadSideDrawerPlugin from "nativescript-ui-sidedrawer/vue";
+
+Vue.registerElement(
+  "RadSideDrawer",
+  () => require("nativescript-ui-sidedrawer").RadSideDrawer
+);
 
 if (TNS_ENV !== "production") {
   Vue.use(VueDevtools);
 }
+
+Vue.use(RadSideDrawerPlugin);
+
 import store from "./store";
 
 // Prints Vue logs when --env.production is *NOT* set while building
@@ -29,6 +38,7 @@ Vue.registerElement(
   () => require("nativescript-shadowed-label").ShadowedLabel
 );
 
+Vue.component("App", App); // Locally registering inside of the Lobby didn't seem to work. Maybe it needs a different frame.
 Vue.component("GameListItem", GameListItem); // Locally registering inside of the Lobby didn't seem to work. Maybe it needs a different frame.
 Vue.component("Banner", Banner);
 Vue.component("Card", Card);
