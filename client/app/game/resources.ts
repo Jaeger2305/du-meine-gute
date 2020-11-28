@@ -36,12 +36,31 @@ export enum ResourceType {
   window = "window",
 }
 
-export const defaultResourceOrder = {
+export const defaultResourceOrder: Record<ResourceType, number> = {
   [ResourceType.wood]: 1,
   [ResourceType.clay]: 2,
   [ResourceType.wheat]: 3,
   [ResourceType.wool]: 4,
   [ResourceType.metal]: 5,
+  [ResourceType.coal]: 6,
+  [ResourceType.grain]: 7,
+  [ResourceType.ingot]: 8,
+  [ResourceType.brick]: 9,
+  [ResourceType.plank]: 10,
+  [ResourceType.glass]: 11,
+  [ResourceType.bread]: 12,
+  [ResourceType.cattle]: 13,
+  [ResourceType.cloth]: 14,
+  [ResourceType.tools]: 15,
+  [ResourceType.barrel]: 16,
+  [ResourceType.leather]: 17,
+  [ResourceType.meat]: 18,
+  [ResourceType.window]: 19,
+  [ResourceType.shirt]: 20,
+  [ResourceType.shoe]: 21,
+  [ResourceType.feast]: 22,
+  [ResourceType.unknown]: 23,
+  [ResourceType.placeholder]: 24,
 };
 
 // Special

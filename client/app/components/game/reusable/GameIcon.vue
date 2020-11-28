@@ -1,6 +1,6 @@
 <template>
-  <GridLayout columns="*" rows="*" class="game-icon">
-    <Label col="0" row="0" :text="unicodeIcon" class="fa-icon" />
+  <GridLayout columns="*" rows="*" class="game-icon" :class="size">
+    <Label col="0" row="0" :text="unicodeIcon" class="fa-icon" :class="size" />
 
     <shadowed-label
       v-if="displayNumber"
@@ -8,6 +8,7 @@
       row="0"
       :text="displayNumber"
       class="bg-number"
+      :class="size"
     />
     <shadowed-label
       v-if="displayNumber"
@@ -15,6 +16,7 @@
       row="0"
       :text="displayNumber"
       class="fg-number"
+      :class="size"
       textShadow="0 0 3 rgb(88, 120, 164)"
     />
   </GridLayout>
@@ -33,6 +35,10 @@ export default {
     unicodeIcon: {
       type: String,
       required: true,
+    },
+    size: {
+      type: String,
+      default: "small",
     },
   },
 };
@@ -65,5 +71,11 @@ export default {
   font-weight: bold;
   text-align: center;
   vertical-align: middle;
+}
+
+.large {
+  height: 180px;
+  width: 180px;
+  font-size: 35px;
 }
 </style>

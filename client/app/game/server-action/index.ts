@@ -72,7 +72,11 @@ export function setupGame(game: GameState): void {
         cardRecords.MARKET_OFFICE_CLAY2,
         cardRecords.TANNERY_WHEAT_WOOL,
       ],
-      cardsInPlay: [chosenCoalMine, cardRecords.GLASSMAKER_SUN],
+      cardsInPlay: [
+        chosenCoalMine,
+        cardRecords.MARKET_OFFICE_CLAY2,
+        cardRecords.MARKET_OFFICE_DRAW2,
+      ],
       resources: [bread, leather, bread, leather, coal],
       availableActions: [PlayerActionEnum.endStep, PlayerActionEnum.discard],
       assignedEmployees: [],
