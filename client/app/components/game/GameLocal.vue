@@ -6,10 +6,18 @@
       :drawerLocation="drawerLocation"
       :drawerContentSize="activeDrawerConfig.size"
     >
-      <StackLayout ~drawerContent @swipe="close">
+      <StackLayout
+        ~drawerContent
+        @swipe="close"
+        style="background-color: transparent"
+      >
         <Banner v-if="drawerLocation === 'Top'" @player-action="playerAction" />
-        <Button v-if="drawerLocation === 'Left'" :text="'LEFT'" />
-        <Button v-if="drawerLocation === 'Right'" :text="'RIGHT'" />
+        <MessageHistory
+          v-if="drawerLocation === 'Left'"
+          :drawerMessages="$store.state.messages"
+          @close="close"
+        />
+        <StatSummary v-if="drawerLocation === 'Right'" />
       </StackLayout>
       <!-- The overall grid -->
       <!-- | rsrc | --------------------history------------------ | sett | -->
@@ -112,6 +120,8 @@ import {
   SwipeDirection,
 } from "tns-core-modules/ui/gestures";
 import { SideDrawerLocation } from "nativescript-ui-sidedrawer";
+import MessageHistory from "./left-drawer/MessageHistory.vue";
+import StatSummary from "./right-drawer/StatSummary.vue";
 
 type SideDrawerConfig = { closingDirection: SwipeDirection; size: number };
 const drawerConfig: { [key in SideDrawerLocation]: SideDrawerConfig } = {
@@ -134,6 +144,10 @@ const drawerConfig: { [key in SideDrawerLocation]: SideDrawerConfig } = {
 };
 
 export default {
+  components: {
+    MessageHistory,
+    StatSummary,
+  },
   data() {
     return {
       drawerLocation: SideDrawerLocation.Top,

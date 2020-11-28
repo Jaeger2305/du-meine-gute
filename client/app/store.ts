@@ -10,6 +10,9 @@ import {
   ServerActionRequest,
   PlayerActionEnum,
   Card,
+  EventMessage,
+  EventSource,
+  ServerActionEventTypeLookup,
 } from "./game/types";
 import { cloneDeep } from "lodash";
 import { ServerActionResponse } from "./game/server-action/types";
@@ -20,7 +23,7 @@ const state: {
   playerState: PlayerState;
   serverState: GameState | null; // We should have separate types for server/game state, where one permits unknown cards but the other does not.
   gameState: GameState; // The UI should use only the gameState, and the serverState is used for local games. Keeping these in sync will be a challenge.
-  messages: Array<any>;
+  messages: Array<EventMessage>;
   isLocal: boolean;
   stagedCardsForDiscard: Array<Card>;
 } = {
@@ -60,7 +63,14 @@ export default new Vuex.Store({
       ); // just to test
     },
     [MutationEnum.ReceiveMessage](state, payload: ServerActionResponse) {
-      state.messages.push("RECEIVED:" + JSON.stringify(payload));
+      const visibleMessageType = ServerActionEventTypeLookup[payload.type];
+      if (visibleMessageType) {
+        state.messages.push({
+          eventSource: EventSource.Server,
+          eventType: visibleMessageType,
+          message: "RECEIVED:" + JSON.stringify(payload),
+        });
+      }
       // If explicitly nothing, do nothing with this message.
       // This is probably because the optimistic response was sufficient.
       if (payload.type === null) return;
@@ -110,7 +120,14 @@ export default new Vuex.Store({
       // There's still a question here of whether child components will be responsible for sending/receiving messages.
       // Current architecture is no, everything is done in the global Game component. But not much thought has gone into that, other than keeping it simple.
       // This could even be a mixin though.
-      state.messages.push("SENT:" + JSON.stringify(payload));
+      const visibleMessageType = ServerActionEventTypeLookup[payload.type];
+      if (visibleMessageType) {
+        state.messages.push({
+          eventSource: EventSource.Self,
+          eventType: visibleMessageType,
+          message: "SENT:" + JSON.stringify(payload),
+        });
+      }
       if (state.isLocal) {
         // Perform local server action immediately
         const serverActionResponse = serverActions[payload.type](

@@ -1,11 +1,9 @@
 import { Resource } from "./resources";
 import { PlayerActionEnum as ClientPlayerActionEnum } from "./client";
-
-
+import { ServerActionEnum } from "./server-action/types";
 export { RoundSteps } from "./server-action";
 export { ServerActionEnum, ServerActionRequest } from "./server-action/types";
 export { PlayerActionEnum } from "./client";
-
 
 export type Card = {
   type: BuildingType;
@@ -109,3 +107,46 @@ export enum BuildingType {
   weavingMill,
   windowMaker,
 }
+
+export enum EventSource {
+  Server = "server",
+  Opponent = "opponent",
+  Self = "self",
+}
+
+/** The events that can be tracked in the history
+ * Perhaps this links to the server action enum eventually, but for now it's standalone.
+ */
+export enum EventType {
+  Draw = "DRAW",
+  Discard = "DISCARD",
+  MarketOpened = "MARKET_OPENED",
+  MarketClosed = "MARKET_CLOSED",
+  FactoryOpened = "FACTORY_OPENED",
+  Production = "PRODUCTION",
+  PointsUpdate = "POINTS_UPDATE",
+  HiredEmployee = "HIRED_EMPLOYEE",
+  Construction = "CONSTRUCTION",
+}
+
+/** Map a servers events to events the player should see.
+ * This is a bit more dev friendly, and definitely an area that could be tidied up for users.
+ */
+export const ServerActionEventTypeLookup: {
+  [key in ServerActionEnum]?: EventType;
+} = {
+  [ServerActionEnum.drawCard]: EventType.Draw,
+  [ServerActionEnum.discard]: EventType.Discard,
+  [ServerActionEnum.endRound]: EventType.PointsUpdate,
+  [ServerActionEnum.hireEmployee]: EventType.HiredEmployee,
+  [ServerActionEnum.purchaseStep]: EventType.Construction,
+  [ServerActionEnum.reserveFactory]: EventType.Construction,
+  [ServerActionEnum.produceAtFactory]: EventType.Production,
+  [ServerActionEnum.revealMarket]: EventType.MarketOpened,
+};
+
+export type EventMessage = {
+  eventType: EventType;
+  eventSource: EventSource;
+  message: string;
+};

@@ -73,5 +73,17 @@ ActionBar {
   --unknown-color-base: rgb(139, 94, 203);
   --unknown-color-highlight: rgb(173, 142, 216);
   --unknown-color-lowlight: rgb(104, 53, 155);
+
+  --self-color-base: rgb(94, 134, 203);
+  --self-color-highlight: rgb(142, 169, 216);
+  --self-color-lowlight: rgb(53, 65, 155);
+
+  --opponent-color-base: rgb(203, 172, 94);
+  --opponent-color-highlight: rgb(216, 199, 142);
+  --opponent-color-lowlight: rgb(155, 123, 53);
+
+  --server-color-base: rgb(94, 203, 94);
+  --server-color-highlight: rgb(142, 216, 142);
+  --server-color-lowlight: rgb(58, 155, 53);
 }
 </style>
