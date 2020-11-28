@@ -1,5 +1,5 @@
 <template>
-  <FlexboxLayout backgroundColor="#3c495e">
+  <FlexboxLayout>
     <Card
       :name="employee.name"
       :isEnabled="isActionable"

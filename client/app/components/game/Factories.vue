@@ -1,5 +1,5 @@
 <template>
-  <FlexboxLayout backgroundColor="#3c495e">
+  <FlexboxLayout>
     <Card
       v-for="factory in displayFactories"
       :key="factory.name"

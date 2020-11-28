@@ -20,24 +20,21 @@
         <StatSummary v-if="drawerLocation === 'Right'" />
       </StackLayout>
       <!-- The overall grid -->
-      <!-- | rsrc | --------------------history------------------ | sett | -->
-      <!-- | mrkt | -----card--------card--------card------------ | actn | -->
-      <!-- | deck | -----card--card--card--card--card--card------ | disc | -->
+      <!-- | ---------- cards in play ---------- | -->
+      <!-- | --------------- hand -------------- | -->
       <GridLayout
         ~mainContent
-        columns="*, 4*, *"
-        rows="3*, 4*, 2*"
-        backgroundColor="#3c495e"
+        columns="5*, *"
+        rows="7*, 2*"
+        class="play-area"
         @swipe="swipe"
       >
         <!-- Settings -->
-        <!-- <Button column="2" row="0" text="ready?" @tap="playerReady" /> -->
 
         <!-- Event space (e.g. the market) -->
         <!-- For now though, this is available actions -->
-        <ScrollView column="1" row="1" orientation="horizontal">
-          <StackLayout column="1" orientation="horizontal">
-            <Label :text="$store.state.playerState.score" />
+        <ScrollView column="0" row="0" orientation="horizontal" @swipe="swipe">
+          <StackLayout orientation="horizontal">
             <Assignment
               :availableActions="$store.state.playerState.availableActions"
               :employees="$store.state.playerState.employees"
@@ -59,7 +56,7 @@
           </StackLayout>
         </ScrollView>
 
-        <ScrollView column="2" row="1" orientation="vertical">
+        <ScrollView column="1" row="0" orientation="vertical" @swipe="swipe">
           <EmployeeList
             column="2"
             row="1"
@@ -79,23 +76,23 @@
         </ScrollView>
 
         <!-- Bottom panel -->
-        <Label column="0" colSpan="3" row="2" class="bottom-panel" />
+        <Label column="0" colSpan="2" row="1" class="bottom-panel" />
         <!-- Grass border -->
         <GridLayout
           columns="*"
           rows="22*, 47*, 9*, 17*"
           column="0"
-          colSpan="3"
+          colSpan="2"
           row="0"
-          rowSpan="3"
+          rowSpan="2"
         >
           <Label column="0" row="2" class="grass-separator" />
         </GridLayout>
         <!-- Player hand -->
         <PlayerHand
           column="0"
-          colSpan="3"
-          row="2"
+          colSpan="2"
+          row="1"
           :cards="$store.state.playerState.cardsInHand"
           :availableActions="$store.state.playerState.availableActions"
           @player-action="playerAction"
@@ -213,6 +210,13 @@ export default {
 </script>
 
 <style scoped>
+.play-area {
+  background-image: url("~/assets/images/grass.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
 .bottom-panel {
   background-image: url("~/assets/images/backboard.png");
   background-repeat: no-repeat;
