@@ -24,12 +24,13 @@
 import Vue, { PropType } from "vue";
 import { PlayerActionEnum } from "../../../game/client";
 import Notification from "../reusable/Notification.vue";
+import PrimaryResourceCollection from "../reusable/PrimaryResourceCollection.vue";
 import { CustomEvents } from "../../../types";
 import { Resource } from "../../../game/resources";
 
 export default {
   props: {},
-  components: { Notification },
+  components: { Notification, PrimaryResourceCollection },
   computed: {
     marketResources(): Array<Resource> {
       return this.$store.state.gameState.marketCards.map(

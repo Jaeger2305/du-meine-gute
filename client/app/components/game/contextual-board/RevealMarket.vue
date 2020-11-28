@@ -10,7 +10,7 @@
       column="1"
       row="0"
       :resources="marketResources"
-      :isAggregated="false"
+      :isAggregated="true"
       class="market-resources"
     />
     <FlexboxLayout
