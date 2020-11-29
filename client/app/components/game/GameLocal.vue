@@ -135,21 +135,29 @@ import StatSummary from "./right-drawer/StatSummary.vue";
 import NotificationComponent from "./reusable/Notification.vue";
 import { notificationConfig, Notification } from "../../game/round-description";
 
-type SideDrawerConfig = { closingDirection: SwipeDirection; size: number };
+type SideDrawerConfig = {
+  bubbleSwipes: Array<SwipeDirection>;
+  closingDirection: SwipeDirection;
+  size: number;
+};
 const drawerConfig: { [key in SideDrawerLocation]: SideDrawerConfig } = {
   [SideDrawerLocation.Right]: {
+    bubbleSwipes: [SwipeDirection.down],
     closingDirection: SwipeDirection.right,
     size: 300,
   },
   [SideDrawerLocation.Left]: {
+    bubbleSwipes: [SwipeDirection.down],
     closingDirection: SwipeDirection.left,
     size: 300,
   },
   [SideDrawerLocation.Top]: {
+    bubbleSwipes: [SwipeDirection.right, SwipeDirection.left],
     closingDirection: SwipeDirection.up,
     size: 150,
   },
   [SideDrawerLocation.Bottom]: {
+    bubbleSwipes: [],
     closingDirection: SwipeDirection.down,
     size: 0,
   },
@@ -210,6 +218,10 @@ export default {
     close({ direction }: SwipeGestureEventData) {
       if (direction === this.activeDrawerConfig.closingDirection)
         this.$refs.drawer.closeDrawer();
+
+      // If we're looking at the top drawer, allow quick access to the
+      if (this.activeDrawerConfig.bubbleSwipes.includes(direction))
+        this.swipe({ direction } as SwipeGestureEventData);
     },
     /** Capture swipe data manually for the Rad Drawer
      * Default gestures can't handle different positions.
