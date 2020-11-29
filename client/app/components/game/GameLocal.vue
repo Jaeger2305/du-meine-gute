@@ -97,6 +97,19 @@
           :availableActions="$store.state.playerState.availableActions"
           @player-action="playerAction"
         />
+        <Notification
+          v-if="activeNotification"
+          col="0"
+          row="0"
+          colSpan="2"
+          rowSpan="2"
+          :header="activeNotification.header"
+          :messages="activeNotification.messages"
+          :isDismissable="true"
+          size="large"
+          class="notification-modal"
+          @close="activeNotification = null"
+        />
       </GridLayout>
     </RadSideDrawer>
   </Page>
@@ -110,7 +123,7 @@ import Lobby from "../Lobby.vue";
 import GameSummary from "./GameSummary.vue";
 
 import { setTimeout, clearTimeout } from "tns-core-modules/timer";
-import { PlayerActionEnum } from "../../game/types";
+import { PlayerActionEnum, ServerActionEnum } from "../../game/types";
 import { RoundSteps } from "../../game/server-action";
 import {
   SwipeGestureEventData,
@@ -119,6 +132,8 @@ import {
 import { SideDrawerLocation } from "nativescript-ui-sidedrawer";
 import MessageHistory from "./left-drawer/MessageHistory.vue";
 import StatSummary from "./right-drawer/StatSummary.vue";
+import NotificationComponent from "./reusable/Notification.vue";
+import { notificationConfig, Notification } from "../../game/round-description";
 
 type SideDrawerConfig = { closingDirection: SwipeDirection; size: number };
 const drawerConfig: { [key in SideDrawerLocation]: SideDrawerConfig } = {
@@ -142,12 +157,18 @@ const drawerConfig: { [key in SideDrawerLocation]: SideDrawerConfig } = {
 
 export default {
   components: {
+    Notification: NotificationComponent,
     MessageHistory,
     StatSummary,
   },
-  data() {
+  data(): {
+    drawerLocation: SideDrawerLocation;
+    activeNotification: Notification | null;
+  } {
     return {
       drawerLocation: SideDrawerLocation.Top,
+      activeNotification:
+        notificationConfig[RoundSteps[this.$store.state.gameState.activeStep]],
     };
   },
   created() {
@@ -161,6 +182,8 @@ export default {
           type: RoundSteps[this.$store.state.gameState.activeStep],
         });
       }
+      this.activeNotification =
+        notificationConfig[RoundSteps[this.$store.state.gameState.activeStep]];
     },
     "$store.state.gameState.winner"(winner) {
       if (winner) {
@@ -215,6 +238,10 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+}
+
+.notification-modal {
+  margin: 10%;
 }
 
 .bottom-panel {

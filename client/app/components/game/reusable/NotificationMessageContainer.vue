@@ -1,5 +1,5 @@
 <template>
-  <FlexboxLayout
+  <StackLayout
     class="message-container"
     flexDirection="column"
     justifyContent="center"
@@ -9,8 +9,9 @@
       :key="message.content"
       :subheader="message.subheader"
       :content="message.content"
+      style="margin: 10px"
     />
-  </FlexboxLayout>
+  </StackLayout>
 </template>
 
 <script lang="ts">

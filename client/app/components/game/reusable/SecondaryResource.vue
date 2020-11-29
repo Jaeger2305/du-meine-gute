@@ -67,7 +67,7 @@ export default {
   font-size: 24px;
   color: white;
   font-family: "Grandstander", "Grandstander-Regular";
-  text-shadow: 2px 2px #ff0000;
+  text-shadow: 2px 2px 0px #ff0000;
   text-align: center;
   vertical-align: middle;
 }

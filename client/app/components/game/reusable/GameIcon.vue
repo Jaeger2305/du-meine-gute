@@ -1,5 +1,11 @@
 <template>
-  <GridLayout columns="*" rows="*" class="game-icon" :class="size">
+  <GridLayout
+    columns="*"
+    rows="*"
+    class="game-icon"
+    :class="size"
+    @tap="$emit('tap')"
+  >
     <Label col="0" row="0" :text="unicodeIcon" class="fa-icon" :class="size" />
 
     <shadowed-label
@@ -60,7 +66,7 @@ export default {
   color: white;
   font-family: "Grandstander", "Grandstander-Bold";
   font-weight: bold;
-  text-shadow: 2px 2px #ff0000;
+  text-shadow: 2px 2px 0px #ff0000;
   text-align: center;
   vertical-align: middle;
 }
