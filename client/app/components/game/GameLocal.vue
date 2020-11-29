@@ -33,6 +33,11 @@
 
         <!-- Event space (e.g. the market) -->
         <!-- For now though, this is available actions -->
+        <Factories
+          colSpan="2"
+          :factories="$store.state.playerState.cardsInPlay"
+          :assignedEmployees="$store.state.playerState.assignedEmployees"
+        />
         <ScrollView column="0" row="0" orientation="horizontal" @swipe="swipe">
           <StackLayout orientation="horizontal">
             <Assignment
@@ -48,10 +53,6 @@
               :resources="$store.state.playerState.resources"
               :availableActions="$store.state.playerState.availableActions"
               @build-factory="$store.state.playerAction"
-            />
-            <Factories
-              :factories="$store.state.playerState.cardsInPlay"
-              :assignedEmployees="$store.state.playerState.assignedEmployees"
             />
           </StackLayout>
         </ScrollView>

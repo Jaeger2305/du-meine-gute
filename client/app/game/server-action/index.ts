@@ -75,6 +75,12 @@ export function setupGame(game: GameState): void {
       cardsInPlay: [
         chosenCoalMine,
         cardRecords.MARKET_OFFICE_CLAY2,
+        cardRecords.MARKET_OFFICE_CLAY1,
+        cardRecords.MARKET_OFFICE_CLAY3,
+        cardRecords.CATTLE_RANCH_METAL_WHEAT,
+        cardRecords.MILL_CLAY,
+        cardRecords.WEAVING_MILL_WOOD,
+        cardRecords.TAILOR_CLAY_WHEAT,
         cardRecords.MARKET_OFFICE_DRAW2,
       ],
       resources: [bread, leather, bread, leather, coal],
