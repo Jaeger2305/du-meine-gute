@@ -30,6 +30,10 @@ Roadmap:
 1. NativeScript Vue implementation
 1. Hosting
 
+[Trello backlog](https://trello.com/b/iOtl8Ea5/du-meine-g%C3%BCte)
+
+[Invision designs](https://projects.invisionapp.com/d/main?origin=v7#/console/20720499/436652055/preview?scrollOffset=1395#project_console)
+
 ## Getting started
 
 There are some READMEs in the folders, as well as a docs folder for more general information, including an architecture diagram.
