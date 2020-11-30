@@ -59,3 +59,51 @@ tns debug <platform>
 tns build <platform> --env.production
 
 ```
+
+## Differences from initial build
+
+I needed to adjust the AndroidManifest a little after the websockets and session storage with these permissions
+
+```xml
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.INTERNET"/>
+```
+
+Also, the application settings:
+
+```xml
+  <application
+      android:usesCleartextTraffic="true"
+      android:name="com.tns.NativeScriptApplication"
+      android:allowBackup="true"
+      android:icon="@drawable/icon"
+      android:label="@string/app_name"
+      android:theme="@style/AppTheme">
+```
+
+I haven't added a custom logo or anything yet, so this isn't final.
+
+## Developing on a real phone
+
+Developing for a real phone had some extra hurdles over the emulator.
+
+### Prerequisites
+
+- The phone has to be developer enabled
+- Then USB debugging needs to be turned on.
+- Then it has to be connected via USB (for my mac, USB-C to USB-C didn't work, it had to be USB-A into the mac)
+- Approval must be given on the phone to connect to the computer.
+- Android studio also has its own connection assistant.
+
+### First time setup
+
+I had issues with the signing of the app, and followed [this](https://github.com/flutter/flutter/issues/55117#issuecomment-615921647) tutorial. The password for the key vault is stored in my phone, and the keyvault should be stored in the `./du-meine-gute/client/sensitive` folder. Controlling this via env vars is probably more sensible, but this was a quick solution whilst testing it out.
+
+Otherwise, running via normal tns debug like above worked for me.
+
+Maybe this will be retained between builds on the same machine, but on a fresh clone it won't be.
+
+## Deployment to the app store
+
+Needs investigating.
