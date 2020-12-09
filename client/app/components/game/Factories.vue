@@ -1,66 +1,12 @@
 <template>
   <GridLayout columns="*,*,*,*,*" rows="*,*">
     <Factory
-      v-if="displayFactories[8]"
-      col="0"
-      row="0"
-      :card="displayFactories[8]"
-      class="factory"
-    />
-    <Factory
-      v-if="displayFactories[6]"
-      col="0"
-      row="1"
-      :card="displayFactories[6]"
-      class="factory"
-    />
-    <Factory
-      v-if="displayFactories[4]"
-      col="1"
-      row="0"
-      :card="displayFactories[4]"
-      class="factory"
-    />
-    <Factory
-      v-if="displayFactories[2]"
-      col="1"
-      row="1"
-      :card="displayFactories[2]"
-      class="factory"
-    />
-    <Factory
-      col="2"
-      rowSpan="2"
-      :card="displayFactories[0]"
-      class="factory"
-      style="height: 50%"
-    />
-    <Factory
-      v-if="displayFactories[3]"
-      col="3"
-      row="0"
-      :card="displayFactories[3]"
-      class="factory"
-    />
-    <Factory
-      v-if="displayFactories[1]"
-      col="3"
-      row="1"
-      :card="displayFactories[1]"
-      class="factory"
-    />
-    <Factory
-      v-if="displayFactories[7]"
-      col="4"
-      row="0"
-      :card="displayFactories[7]"
-      class="factory"
-    />
-    <Factory
-      v-if="displayFactories[5]"
-      col="4"
-      row="1"
-      :card="displayFactories[5]"
+      v-for="factory in displayFactories"
+      :key="factory.name"
+      :col="factory.position.col"
+      :row="factory.position.row"
+      :rowSpan="factory.position.rowSpan"
+      :card="factory"
       class="factory"
     />
   </GridLayout>
@@ -70,6 +16,54 @@
 import Vue, { PropType } from "vue";
 import { PlayerState, Card } from "../../game/types";
 import Factory from "./cards/Factory.vue";
+
+type GridPosition = {
+  col: number;
+  row: number;
+  rowSpan?: number;
+};
+
+// Arrange the factories spreading out from the center of a 3 by 5 grid.
+// Could probably derive a function here if we needed to go beyond 9 factories, but probably at that point pagination would be better, so just keep it simple.
+const factoryPositions: Array<GridPosition> = [
+  {
+    col: 2,
+    row: 0,
+    rowSpan: 2,
+  },
+  {
+    col: 3,
+    row: 1,
+  },
+  {
+    col: 1,
+    row: 1,
+  },
+  {
+    col: 3,
+    row: 0,
+  },
+  {
+    col: 1,
+    row: 0,
+  },
+  {
+    col: 4,
+    row: 1,
+  },
+  {
+    col: 0,
+    row: 1,
+  },
+  {
+    col: 4,
+    row: 0,
+  },
+  {
+    col: 0,
+    row: 0,
+  },
+];
 
 export default Vue.extend({
   components: { Factory },
@@ -86,9 +80,12 @@ export default Vue.extend({
     },
   },
   computed: {
-    displayFactories(): Array<Card & { isEnabled: boolean }> {
-      const displayFactories = this.factories.map((factory) => ({
+    displayFactories(): Array<
+      Card & { isEnabled: boolean; position: GridPosition }
+    > {
+      const displayFactories = this.factories.map((factory, index) => ({
         ...factory,
+        position: factoryPositions[index],
         isAssigned: Boolean(
           this.assignedEmployees.find(
             ({ assignment: { name: assignmentName } }) =>

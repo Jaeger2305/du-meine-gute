@@ -1,6 +1,7 @@
 <template>
   <GridLayout columns="*" rows="*">
     <Image
+      v-if="isBackgroundVisible"
       colSpan="3"
       rowSpan="3"
       src="~/assets/images/sideboard/paper.png"
@@ -71,6 +72,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    isBackgroundVisible: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   computed: {

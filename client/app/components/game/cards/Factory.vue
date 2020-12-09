@@ -1,11 +1,14 @@
 <template>
-  <GridLayout columns="*" rows="*">
-    <Image src="~/assets/images/placeholder-factory.png" />
+  <GridLayout columns="*" rows="*,*,*">
+    <Image rowSpan="2" src="~/assets/images/placeholder-factory.png" />
     <Label :text="card.name" />
     <SecondaryResourceCollection
       v-if="card.productionConfig"
+      row="1"
+      rowSpan="2"
       :resources="card.productionConfig.output"
       :isFiltered="true"
+      :isBackgroundVisible="false"
     />
   </GridLayout>
 </template>
