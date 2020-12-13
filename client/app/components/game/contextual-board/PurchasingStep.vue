@@ -1,5 +1,5 @@
 <template>
-  <GridLayout columns="2*, *, 3*, *, 2*" rows="*" class="grid-container">
+  <GridLayout columns="2*, 5*, 2*" rows="*" class="grid-container">
     <FlexboxLayout
       column="0"
       class="grid-item"
@@ -10,27 +10,16 @@
     >
       <Button class="button">BUY</Button>
     </FlexboxLayout>
-    <Label
-      v-if="activeIndex > 0"
-      column="1"
-      :text="'\uf137'"
-      class="fa"
-      @tap="activeIndex--"
-    />
-    <Employee
+    <CarouselSelect
       v-if="Number.isInteger(activeIndex)"
-      column="2"
-      :employee="employees[activeIndex]"
-    />
-    <Label
-      v-if="activeIndex < $store.state.gameState.availableEmployees.length - 1"
-      column="3"
-      :text="'\uf138'"
-      class="fa"
-      @tap="activeIndex++"
-    />
+      column="1"
+      :index.sync="activeIndex"
+      :selectableListLength="employees.length"
+    >
+      <Employee :employee="employees[activeIndex]" />
+    </CarouselSelect>
     <FlexboxLayout
-      column="4"
+      column="2"
       class="grid-item"
       alignItems="stretch"
       justifyContent="center"
@@ -47,10 +36,11 @@ import { PlayerActionEnum } from "../../../game/client";
 import Notification from "../reusable/Notification.vue";
 import { CustomEvents } from "../../../types";
 import Employee from "../cards/Employee.vue";
+import CarouselSelect from "../../CarouselSelect.vue";
 
 export default {
   props: {},
-  components: { Notification, Employee },
+  components: { Notification, Employee, CarouselSelect },
   data() {
     return {
       activeIndex: this.$store.state.gameState.availableEmployees.length
