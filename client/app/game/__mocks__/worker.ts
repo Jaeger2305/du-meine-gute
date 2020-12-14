@@ -10,6 +10,7 @@ export const defaultAssignedEmployee: AssignedEmployee = {
     resourceSparingCount: 0,
   },
   unassignmentCost: 0,
+  hasProduced: false,
 };
 
 export const defaultChainedAssignedEmployee: AssignedEmployee = {
@@ -20,6 +21,7 @@ export const defaultChainedAssignedEmployee: AssignedEmployee = {
     resourceSparingCount: 0,
   },
   unassignmentCost: 0,
+  hasProduced: false,
 };
 
 export const discountedAssignedEmployee: AssignedEmployee = {
@@ -30,6 +32,7 @@ export const discountedAssignedEmployee: AssignedEmployee = {
     resourceSparingCount: 1,
   },
   unassignmentCost: 0,
+  hasProduced: false,
 };
 
 export const discountedChainedAssignedEmployee: AssignedEmployee = {
@@ -40,6 +43,7 @@ export const discountedChainedAssignedEmployee: AssignedEmployee = {
     resourceSparingCount: 1,
   },
   unassignmentCost: 0,
+  hasProduced: false,
 };
 
 export const defaultSecondaryChainedAssignedEmployee: AssignedEmployee = {
@@ -50,6 +54,7 @@ export const defaultSecondaryChainedAssignedEmployee: AssignedEmployee = {
     resourceSparingCount: 0,
   },
   unassignmentCost: 0,
+  hasProduced: false,
 };
 
 export const bossAssigned: AssignedEmployee = {
@@ -60,6 +65,7 @@ export const bossAssigned: AssignedEmployee = {
     resourceSparingCount: 0,
   },
   unassignmentCost: 0,
+  hasProduced: false,
 };
 
 export const apprentice: Employee = {

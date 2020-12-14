@@ -55,6 +55,7 @@ export function endRound(
         mode: { productionCount: 1, resourceSparingCount: 0 },
         unassignmentCost: 0,
         assignment: factory,
+        hasProduced: false,
       })
     );
     playerState.assignedEmployees.push(...investorAssignments);

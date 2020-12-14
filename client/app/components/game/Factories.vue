@@ -9,6 +9,7 @@
       :card="factory"
       :assignedEmployee="factory.assignedEmployee"
       class="factory"
+      @produce-at-factory="bubbleAction"
       @assign-employee="bubbleAction"
       @unassign-employee="bubbleAction"
     />

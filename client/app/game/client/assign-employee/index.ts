@@ -23,6 +23,7 @@ export async function assignEmployee(
     name: employee.name,
     mode: efficiency,
     unassignmentCost: employee.unassignmentCost,
+    hasProduced: false,
   };
   playerState.assignedEmployees.push(assignedEmployee);
 

@@ -46,7 +46,7 @@ export type AssignedEmployee = {
   mode: ProductionEfficiency;
   assignment: Card;
   unassignmentCost: number;
-  hasProduced?: boolean;
+  hasProduced: boolean;
 };
 
 export type GameState = {

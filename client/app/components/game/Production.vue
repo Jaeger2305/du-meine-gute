@@ -105,12 +105,14 @@ import {
   ProductionEfficiency,
   Card,
   AssignedEmployee,
+  PlayerActionEnum,
 } from "../../game/types";
 import {
   differenceResources,
   checkOutstandingResources,
 } from "../../game/utils";
 import { Resource } from "../../game/resources";
+import { playerActions } from "../../game/client";
 
 /**
  * Loop through the outstanding resources until we find the remaining extra resources, returning the count of production as well.
@@ -304,11 +306,9 @@ export default Vue.extend({
         return this.basket.splice(resourceInBasketIndex, 1);
     },
     submitPayment(): void {
-      const payment: {
-        discardedCards: Array<Card>;
-        outputResources: Array<Resource>;
-        assignedEmployee: AssignedEmployee;
-      } = {
+      const payment: Parameters<
+        typeof playerActions[PlayerActionEnum.produceAtFactory]
+      >[2] = {
         discardedCards: this.discardedCards,
         outputResources: this.outputResources,
         assignedEmployee: this.assignedEmployee,

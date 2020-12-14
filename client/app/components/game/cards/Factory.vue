@@ -14,7 +14,7 @@
       v-if="isActionable || assignedEmployee"
       :unicodeIcon="`\uf6e3`"
       :isActionable="isActionable"
-      @tap-game-icon="toggleWorker"
+      @tap-game-icon="contextHandler"
     />
   </GridLayout>
 </template>
@@ -29,6 +29,9 @@ import { CustomEvents } from "../../../types";
 import { handleValidationError } from "../../../utils";
 import { MutationEnum } from "../../../store";
 import { playerActions } from "../../../game/client";
+import ProductionVue from "../Production.vue";
+import { Resource } from "../../../game/resources";
+import PurchasingVue from "../Purchasing.vue";
 
 // Is assigned already?
 // Resource output?
@@ -52,7 +55,18 @@ export default {
   computed: {
     isActionable(): boolean {
       return Boolean(
-        this.card.productionConfig && (this.isUnassignable || this.isAssignable)
+        this.card.productionConfig &&
+          (this.isUnassignable || this.isAssignable || this.isProductionable)
+      );
+    },
+    isProductionable(): boolean {
+      return Boolean(
+        isActionAvailable(
+          this.$store.state.playerState.availableActions,
+          PlayerActionEnum.produceAtFactory
+        ) &&
+          this.assignedEmployee &&
+          !this.assignedEmployee.hasProduced
       );
     },
     isUnassignable(): boolean {
@@ -60,7 +74,9 @@ export default {
         isActionAvailable(
           this.$store.state.playerState.availableActions,
           PlayerActionEnum.unassignEmployee
-        ) && this.assignedEmployee
+        ) &&
+          this.assignedEmployee &&
+          this.assignedEmployee.unassignmentCost
       );
     },
     isAssignable(): boolean {
@@ -75,36 +91,86 @@ export default {
     },
   },
   methods: {
-    toggleWorker(): void {
-      debugger;
-      if (!this.isActionable) return;
-
-      if (this.isAssignable) {
-        const assignmentPayload: Parameters<
-          typeof playerActions[PlayerActionEnum.assignEmployee]
-        >[2] = {
-          efficiency: this.$store.state.stagedAssignment.efficiency,
-          employee: this.$store.state.stagedAssignment.employee,
-          factory: this.card,
-        };
+    async produceAtFactory(): Promise<void> {
+      const {
+        resources,
+        cardsInHand,
+        cardsInPlay,
+      } = this.$store.state.playerState;
+      const marketResources = [
+        ...this.$store.state.gameState.marketCards.map((card) => card.resource),
+        ...cardsInPlay.flatMap((card) => card.marketBoost).filter(Boolean),
+      ];
+      const production:
+        | Parameters<typeof playerActions[PlayerActionEnum.produceAtFactory]>[2]
+        | null = await this.$showModal(ProductionVue, {
+        fullscreen: true,
+        props: {
+          assignedEmployee: this.assignedEmployee,
+          cardsInHand,
+          marketResources,
+          resources,
+        },
+      });
+      if (production) {
         this.$emit(
-          CustomEvents.ASSIGN_EMPLOYEE,
-          PlayerActionEnum.assignEmployee,
-          assignmentPayload
+          CustomEvents.PRODUCE_AT_FACTORY,
+          PlayerActionEnum.produceAtFactory,
+          production
         );
-        this.$store.commit(MutationEnum.StageEmployee, null);
-      } else if (this.isUnassignable) {
-        const unassignmentPayload: Parameters<
-          typeof playerActions[PlayerActionEnum.unassignEmployee]
-        >[2] = {
-          nameOfEmployeeToUnassign: this.assignedEmployee.name,
-          resourcePayment: undefined, // simple for now
-        };
+      }
+    },
+    async unassignEmployee(): Promise<void> {
+      console.warn("no error checking even on client side");
+      // Employees are only unassignable manually if they have a cost. Otherwise they are auto unassigned during the end round.
+      // Therefore, to unassign them here, we always show the modal.
+      const purchasingResult: {
+        resources: Array<Resource>;
+      } | null = await this.$showModal(PurchasingVue, {
+        props: {
+          factory: this.assignedEmployee,
+          costExtractor: (factory) => factory.unassignmentCost,
+          resources: this.$store.state.playerState.resources,
+        },
+      });
+      const unassignmentPayload: Parameters<
+        typeof playerActions[PlayerActionEnum.unassignEmployee]
+      >[2] = {
+        nameOfEmployeeToUnassign: this.assignedEmployee.name,
+        resourcePayment: purchasingResult.resources,
+      };
+      if (purchasingResult) {
         this.$emit(
           CustomEvents.UNASSIGN_EMPLOYEE,
           PlayerActionEnum.unassignEmployee,
           unassignmentPayload
         );
+      }
+    },
+    stageEmployee(): void {
+      const assignmentPayload: Parameters<
+        typeof playerActions[PlayerActionEnum.assignEmployee]
+      >[2] = {
+        efficiency: this.$store.state.stagedAssignment.efficiency,
+        employee: this.$store.state.stagedAssignment.employee,
+        factory: this.card,
+      };
+      this.$emit(
+        CustomEvents.ASSIGN_EMPLOYEE,
+        PlayerActionEnum.assignEmployee,
+        assignmentPayload
+      );
+      this.$store.commit(MutationEnum.StageEmployee, null);
+    },
+    contextHandler(): Promise<void> {
+      if (!this.isActionable) return;
+
+      if (this.isAssignable) {
+        this.stageEmployee();
+      } else if (this.isUnassignable) {
+        this.unassignEmployee();
+      } else if (this.isProductionable) {
+        this.produceAtFactory();
       } else {
         handleValidationError(
           new Error(
