@@ -1,6 +1,6 @@
 <template>
   <GridLayout columns="*,2*,*" rows="*" class="grid-container">
-    <Notification class="grid-item" header="Production" />
+    <Notification class="grid-item" header="End round" />
     <NotificationMessageContainer
       class="grid-item"
       column="1"
