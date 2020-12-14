@@ -7,16 +7,17 @@ import {
   Card,
 } from "../../types";
 
+type AssignmentPayload = {
+  employee: Employee;
+  efficiency: ProductionEfficiency;
+  factory: Card;
+};
+
 export async function assignEmployee(
   gameState: GameState,
   playerState: PlayerState,
-  { employee, efficiency, factory }: {
-    employee: Employee,
-    efficiency: ProductionEfficiency,
-    factory: Card
-  },
+  { employee, efficiency, factory }: AssignmentPayload
 ): Promise<AssignedEmployee> {
-  
   const assignedEmployee: AssignedEmployee = {
     assignment: factory,
     name: employee.name,
@@ -25,5 +26,5 @@ export async function assignEmployee(
   };
   playerState.assignedEmployees.push(assignedEmployee);
 
-  return assignedEmployee
+  return assignedEmployee;
 }

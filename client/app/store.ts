@@ -19,6 +19,11 @@ import { ServerActionResponse } from "./game/server-action/types";
 
 Vue.use(Vuex);
 
+type StagedAssignment = Omit<
+  Parameters<typeof playerActions[PlayerActionEnum.assignEmployee]>[2],
+  "factory"
+>;
+
 const state: {
   playerState: PlayerState;
   serverState: GameState | null; // We should have separate types for server/game state, where one permits unknown cards but the other does not.
@@ -26,6 +31,7 @@ const state: {
   messages: Array<EventMessage>;
   isLocal: boolean;
   stagedCardsForDiscard: Array<Card>;
+  stagedAssignment: StagedAssignment | null;
 } = {
   isLocal: true,
   serverState: newGame(),
@@ -33,6 +39,7 @@ const state: {
   messages: [],
   playerState: newPlayer(),
   stagedCardsForDiscard: [],
+  stagedAssignment: null,
 };
 
 export enum MutationEnum {
@@ -40,6 +47,7 @@ export enum MutationEnum {
   SetupGame = "SETUP_GAME",
   StageCardDiscard = "STAGE_CARD_DISCARD",
   ResetDiscard = "RESET_DISCARD",
+  StageEmployee = "STAGE_EMPLOYEE",
 }
 
 export enum ActionEnum {
@@ -99,6 +107,9 @@ export default new Vuex.Store({
      */
     [MutationEnum.ResetDiscard](state) {
       state.stagedCardsForDiscard.splice(0, state.stagedCardsForDiscard.length);
+    },
+    [MutationEnum.StageEmployee](state, payload: StagedAssignment | null) {
+      state.stagedAssignment = payload;
     },
   },
   actions: {

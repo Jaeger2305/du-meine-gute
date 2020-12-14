@@ -21,6 +21,7 @@
       <FlexboxLayout
         v-for="(mode, index) in employee.modes"
         :key="`${mode.productionCount}-${mode.resourceSparingCount}`"
+        @tap="selectEfficiency(employee, mode)"
       >
         <ProductionEfficiency :productionEfficiency="mode" />
         <Label
@@ -69,9 +70,11 @@
 import Vue, { PropType } from "vue";
 import GameIcon from "../reusable/GameIcon.vue";
 import { Resource, ResourceType } from "../../../game/resources";
-import { Employee } from "../../../game/types";
+import { Employee, PlayerActionEnum } from "../../../game/types";
 import PrimaryResourceCollection from "../reusable/PrimaryResourceCollection.vue";
 import ProductionEfficiency from "../reusable/ProductionEfficiency.vue";
+import { isActionAvailable } from "../../../game/utils";
+import { MutationEnum } from "../../../store";
 
 export enum Size {
   Small = "small",
@@ -105,7 +108,21 @@ export default {
       return this.employee.modes;
     },
   },
-  methods: {},
+  methods: {
+    selectEfficiency(employee, efficiency) {
+      if (
+        isActionAvailable(
+          this.$store.state.playerState.availableActions,
+          PlayerActionEnum.assignEmployee
+        )
+      ) {
+        this.$store.commit(MutationEnum.StageEmployee, {
+          employee,
+          efficiency,
+        });
+      }
+    },
+  },
 };
 </script>
 

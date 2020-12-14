@@ -5,4 +5,5 @@ export enum CustomEvents {
   HIRE_EMPLOYEE = "hire-employee",
   BUILD_FACTORY = "build-factory",
   PRODUCE_AT_FACTORY = "produce-at-factory",
+  TAP_GAME_ICON = "tap-game-icon",
 }

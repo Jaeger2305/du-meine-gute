@@ -7,14 +7,18 @@
       :row="factory.position.row"
       :rowSpan="factory.position.rowSpan"
       :card="factory"
+      :assignedEmployee="factory.assignedEmployee"
       class="factory"
+      @assign-employee="bubbleAction"
+      @unassign-employee="bubbleAction"
     />
   </GridLayout>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
-import { PlayerState, Card } from "../../game/types";
+import { PlayerState, Card, AssignedEmployee } from "../../game/types";
+import { CustomEvents } from "../../types";
 import Factory from "./cards/Factory.vue";
 
 type GridPosition = {
@@ -81,22 +85,27 @@ export default Vue.extend({
   },
   computed: {
     displayFactories(): Array<
-      Card & { isEnabled: boolean; position: GridPosition }
+      Card & {
+        assignedEmployee: AssignedEmployee;
+        position: GridPosition;
+      }
     > {
       const displayFactories = this.factories.map((factory, index) => ({
         ...factory,
         position: factoryPositions[index],
-        isAssigned: Boolean(
-          this.assignedEmployees.find(
-            ({ assignment: { name: assignmentName } }) =>
-              assignmentName === factory.name
-          )
+        assignedEmployee: this.assignedEmployees.find(
+          ({ assignment: { name: assignmentName } }) =>
+            assignmentName === factory.name
         ),
       }));
       return displayFactories;
     },
   },
-  methods: {},
+  methods: {
+    bubbleAction(...args) {
+      this.$emit(CustomEvents.PLAYER_ACTION, ...args);
+    },
+  },
 });
 </script>
 

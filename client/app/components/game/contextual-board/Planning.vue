@@ -1,13 +1,23 @@
 <template>
-  <GridLayout columns="*,2*,*" rows="*" class="grid-container">
-    <Notification class="grid-item" header="Planning" />
+  <GridLayout columns="2*,5*,2*" rows="*" class="grid-container">
     <PrimaryResourceCollection
-      column="1"
-      row="0"
+      column="0"
       :resources="marketResources"
       :isSorted="true"
       class="market-resources"
     />
+    <CarouselSelect
+      v-if="Number.isInteger(activeEmployeeIndex)"
+      class="grid-item"
+      column="1"
+      :index.sync="activeEmployeeIndex"
+      :selectableListLength="unassignedEmployees.length"
+    >
+      <Employee
+        v-if="unassignedEmployees.length"
+        :employee="unassignedEmployees[activeEmployeeIndex]"
+      />
+    </CarouselSelect>
     <FlexboxLayout
       column="2"
       class="grid-item"
@@ -27,14 +37,47 @@ import Notification from "../reusable/Notification.vue";
 import PrimaryResourceCollection from "../reusable/PrimaryResourceCollection.vue";
 import { CustomEvents } from "../../../types";
 import { Resource } from "../../../game/resources";
+import EmployeeComponent from "../cards/Employee.vue";
+import { Employee } from "../../../game/types";
+import { getUnassignedEmployees } from "../../../game/utils";
+import CarouselSelect from "../../CarouselSelect.vue";
 
 export default {
   props: {},
-  components: { Notification, PrimaryResourceCollection },
+  components: {
+    Notification,
+    PrimaryResourceCollection,
+    Employee: EmployeeComponent,
+    CarouselSelect,
+  },
+  data(): {
+    activeEmployeeIndex: number;
+  } {
+    return {
+      activeEmployeeIndex: this.unassignedEmployees?.length ? 0 : null,
+    };
+  },
+  watch: {
+    // Bit hacky but to sync the data from the carousel, which is affected by a computed, I think this is the only way
+    unassignedEmployees: {
+      handler(newAssignedEmployees) {
+        if (!newAssignedEmployees.length) return;
+
+        this.activeEmployeeIndex = 0;
+      },
+      immediate: true,
+    },
+  },
   computed: {
     marketResources(): Array<Resource> {
       return this.$store.state.gameState.marketCards.map(
         ({ resource }) => resource
+      );
+    },
+    unassignedEmployees(): Array<Employee> {
+      return getUnassignedEmployees(
+        this.$store.state.playerState.employees,
+        this.$store.state.playerState.assignedEmployees
       );
     },
   },
@@ -58,7 +101,7 @@ export default {
 }
 
 .market-resources {
-  margin: 25px 10% 25px 10%;
+  margin: 10px 5px 10px 5px;
 }
 
 .button {
