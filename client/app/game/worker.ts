@@ -1,12 +1,56 @@
-import { Employee } from "./types";
+import { Card } from "./types";
+import { Resource } from "./resources";
 import { wood, wool, clay, wheat, metal } from "./resources";
 import { shuffle } from "lodash";
+
+export type ProductionEfficiency = {
+  productionCount: number;
+  resourceSparingCount: number;
+};
+
+export type AssignedEmployee = {
+  name: string;
+  mode: ProductionEfficiency;
+  assignment: Card;
+  unassignmentCost: number;
+  hasProduced: boolean;
+};
+
+export enum EmployeeType {
+  Boss = "boss",
+  Actor = "actor",
+  Banker = "banker",
+  BrickLayer = "brick-layer",
+  Builder = "builder",
+  Farmhand = "farmhand",
+  Forester = "forester",
+  MillOwner = "mill-owner",
+  OfficeApprentice = "office-apprentice",
+  OfficeManager = "office-manager",
+  Overseer = "overseer",
+  SawmillManager = "sawmill-manager",
+  ShopOwner = "shop-owner",
+  Supervisor = "supervisor",
+  Tailor = "tailor",
+  Weaver = "weaver",
+}
+
+export type Employee = {
+  name: string;
+  type: EmployeeType;
+  modes: Array<ProductionEfficiency>;
+  resourceSpecialty?: Array<Resource>; // workers can be hired only if meeting the requirement of a certain number of builds. E.g. an apprentice might need 2 wheat based factories to be hired.
+  cost: number;
+  points: number;
+  unassignmentCost: number;
+};
 
 // Employees
 
 const actor: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "actor",
+  type: EmployeeType.Actor,
   resourceSpecialty: [wood, wool, wool],
   cost: 6,
   points: 3,
@@ -16,6 +60,7 @@ const actor: Employee = {
 const banker: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "banker",
+  type: EmployeeType.Banker,
   resourceSpecialty: [clay, wood, metal, metal],
   cost: 6,
   points: 3,
@@ -25,6 +70,7 @@ const banker: Employee = {
 const brickLayer: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "brick-layer",
+  type: EmployeeType.BrickLayer,
   resourceSpecialty: [clay, clay],
   cost: 4,
   points: 2,
@@ -34,6 +80,7 @@ const brickLayer: Employee = {
 const builder: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "builder",
+  type: EmployeeType.Builder,
   resourceSpecialty: [clay, clay, clay, clay],
   cost: 2,
   points: 3,
@@ -43,6 +90,7 @@ const builder: Employee = {
 const farmhand: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "farmhand",
+  type: EmployeeType.Farmhand,
   resourceSpecialty: [wheat, wheat, wheat, wheat],
   cost: 3,
   points: 2,
@@ -52,6 +100,7 @@ const farmhand: Employee = {
 const forester: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "forester",
+  type: EmployeeType.Forester,
   resourceSpecialty: [wood, wood, wood, wood],
   cost: 2,
   points: 3,
@@ -61,6 +110,7 @@ const forester: Employee = {
 const millOwner: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "mill-owner",
+  type: EmployeeType.MillOwner,
   resourceSpecialty: [wheat, wheat, metal],
   cost: 6,
   points: 3,
@@ -70,6 +120,7 @@ const millOwner: Employee = {
 const officeApprentice: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "office-apprentice",
+  type: EmployeeType.OfficeApprentice,
   resourceSpecialty: [metal, metal, metal],
   cost: 3,
   points: 2,
@@ -79,6 +130,7 @@ const officeApprentice: Employee = {
 const officeManager: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "office-manager",
+  type: EmployeeType.OfficeManager,
   resourceSpecialty: [metal, metal],
   cost: 4,
   points: 2,
@@ -88,6 +140,7 @@ const officeManager: Employee = {
 const overseer: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "overseer",
+  type: EmployeeType.Overseer,
   resourceSpecialty: [wool, metal, clay, wood, wheat],
   cost: 2,
   points: 3,
@@ -97,6 +150,7 @@ const overseer: Employee = {
 const sawmillManager: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "sawmill-manager",
+  type: EmployeeType.SawmillManager,
   resourceSpecialty: [wood, wood],
   cost: 4,
   points: 2,
@@ -106,6 +160,7 @@ const sawmillManager: Employee = {
 const shopOwner: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "shop-owner",
+  type: EmployeeType.ShopOwner,
   resourceSpecialty: [wood, wool, metal, metal],
   cost: 2,
   points: 3,
@@ -115,6 +170,7 @@ const shopOwner: Employee = {
 const supervisor: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "supervisor",
+  type: EmployeeType.Supervisor,
   resourceSpecialty: [wool, clay, wood, wheat],
   cost: 4,
   points: 3,
@@ -124,6 +180,7 @@ const supervisor: Employee = {
 const tailor: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "tailor",
+  type: EmployeeType.Tailor,
   resourceSpecialty: [wool, wool],
   cost: 4,
   points: 2,
@@ -133,6 +190,7 @@ const tailor: Employee = {
 const weaver: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "weaver",
+  type: EmployeeType.Weaver,
   resourceSpecialty: [wool, wool, wool, wool],
   cost: 2,
   points: 3,
@@ -170,7 +228,28 @@ export const boss: Employee = {
     { productionCount: 2, resourceSparingCount: 0 },
   ],
   name: "boss-1",
+  type: EmployeeType.Boss,
   cost: 0,
   points: 0,
   unassignmentCost: 0,
+};
+
+export const employeeRecords: Record<EmployeeType, Employee> = {
+  [EmployeeType.Boss]: boss,
+
+  [EmployeeType.Actor]: actor,
+  [EmployeeType.Banker]: banker,
+  [EmployeeType.BrickLayer]: brickLayer,
+  [EmployeeType.Builder]: builder,
+  [EmployeeType.Farmhand]: farmhand,
+  [EmployeeType.Forester]: forester,
+  [EmployeeType.MillOwner]: millOwner,
+  [EmployeeType.OfficeApprentice]: officeApprentice,
+  [EmployeeType.OfficeManager]: officeManager,
+  [EmployeeType.Overseer]: overseer,
+  [EmployeeType.SawmillManager]: sawmillManager,
+  [EmployeeType.ShopOwner]: shopOwner,
+  [EmployeeType.Supervisor]: supervisor,
+  [EmployeeType.Tailor]: tailor,
+  [EmployeeType.Weaver]: weaver,
 };

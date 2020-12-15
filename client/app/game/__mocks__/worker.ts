@@ -1,5 +1,5 @@
 import { bakery, bakeryWithChain, bakeryWithSecondaryChain } from "./card";
-import { AssignedEmployee, Employee } from "../types";
+import { AssignedEmployee, Employee, EmployeeType } from "../types";
 import { wood, wheat } from "../resources";
 
 export const defaultAssignedEmployee: AssignedEmployee = {
@@ -71,6 +71,7 @@ export const bossAssigned: AssignedEmployee = {
 export const apprentice: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "apprentice-1",
+  type: EmployeeType.OfficeApprentice,
   resourceSpecialty: [wood],
   cost: 3,
   points: 2,
@@ -80,6 +81,7 @@ export const apprentice: Employee = {
 export const skilledApprentice: Employee = {
   modes: [{ productionCount: 3, resourceSparingCount: 0 }],
   name: "skilled-apprentice-1",
+  type: EmployeeType.OfficeManager,
   resourceSpecialty: [wheat],
   cost: 4,
   points: 3,
@@ -89,6 +91,7 @@ export const skilledApprentice: Employee = {
 export const master: Employee = {
   modes: [{ productionCount: 1, resourceSparingCount: 0 }],
   name: "master-1",
+  type: EmployeeType.Banker,
   resourceSpecialty: [wheat],
   cost: 5,
   points: 4,
@@ -100,6 +103,7 @@ export const boss: Employee = {
     { productionCount: 1, resourceSparingCount: 1 },
     { productionCount: 2, resourceSparingCount: 0 },
   ],
+  type: EmployeeType.Boss,
   name: "boss-1",
   cost: 0,
   points: 0,

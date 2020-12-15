@@ -1,9 +1,18 @@
 import { Resource } from "./resources";
-import { PlayerActionEnum as ClientPlayerActionEnum } from "./client";
+import { Employee, ProductionEfficiency, AssignedEmployee } from "./worker";
+import { PlayerActionEnum } from "./client";
 import { ServerActionEnum } from "./server-action/types";
+
 export { RoundSteps } from "./server-action";
-export { ServerActionEnum, ServerActionRequest } from "./server-action/types";
-export { PlayerActionEnum } from "./client";
+export { EmployeeType } from "./worker";
+export { ServerActionRequest } from "./server-action/types";
+export {
+  ServerActionEnum,
+  PlayerActionEnum,
+  Employee,
+  ProductionEfficiency,
+  AssignedEmployee,
+};
 
 export type Card = {
   type: BuildingType;
@@ -25,28 +34,6 @@ export type ProductionConfig = {
 
 export type Player = {
   name: string;
-};
-
-export type ProductionEfficiency = {
-  productionCount: number;
-  resourceSparingCount: number;
-};
-
-export type Employee = {
-  name: string;
-  modes: Array<ProductionEfficiency>;
-  resourceSpecialty?: Array<Resource>; // workers can be hired only if meeting the requirement of a certain number of builds. E.g. an apprentice might need 2 wheat based factories to be hired.
-  cost: number;
-  points: number;
-  unassignmentCost: number;
-};
-
-export type AssignedEmployee = {
-  name: string;
-  mode: ProductionEfficiency;
-  assignment: Card;
-  unassignmentCost: number;
-  hasProduced: boolean;
 };
 
 export type GameState = {
@@ -78,7 +65,7 @@ export type PlayerState = {
   player: Player;
   cardsInHand: Array<Card>;
   cardsInPlay: Array<Card>;
-  availableActions: Array<ClientPlayerActionEnum>;
+  availableActions: Array<PlayerActionEnum>;
   employees: Array<Employee>;
   assignedEmployees: Array<AssignedEmployee>;
   resources: Array<Resource>;
