@@ -9,10 +9,12 @@ export function produceAtFactory(
   playerNumber: PlayerState["playerNumber"],
   {
     discardedCards,
+    consumedResources,
     outputResources,
     assignedEmployee: proposedAssignedEmployee,
   }: {
     discardedCards: Array<Card>;
+    consumedResources: Array<Resource>;
     outputResources: Array<Resource>;
     assignedEmployee: AssignedEmployee;
   }
@@ -45,6 +47,19 @@ export function produceAtFactory(
   outputResources.forEach((outputResource) =>
     produceGood(serverState, playerState, outputResource, false)
   );
+
+  // Remove the consumed resources
+  consumedResources.forEach(({ type: consumedType }) => {
+    const consumedIndex = playerState.resources.findIndex(
+      ({ type }) => type === consumedType
+    );
+    if (consumedIndex < 0)
+      throw new Error(
+        `could not find resource ${consumedType} in player's resources`
+      );
+
+    playerState.resources.splice(consumedIndex, 1);
+  });
 
   // If there are no more workers to produce at, remove the available step
   if (playerState.assignedEmployees.every(({ hasProduced }) => hasProduced)) {
