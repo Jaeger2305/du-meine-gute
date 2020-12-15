@@ -42,6 +42,11 @@ export function removeActionFromAvailableActions(
   return;
 }
 
+/**
+ * Checks if the value of the input resources is sufficient, and not excessibe, for the cost of purchase
+ * @param resources
+ * @param costOfPurchase
+ */
 export function verifyResources(
   resources: Array<Resource>,
   costOfPurchase: number

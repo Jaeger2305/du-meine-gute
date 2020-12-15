@@ -1,22 +1,23 @@
 <template>
   <GridLayout columns="2*, 5*, 2*" rows="*" class="grid-container">
     <FlexboxLayout
+      v-if="isActiveEmployeePurchasable"
       column="0"
       class="grid-item"
       alignItems="stretch"
       justifyContent="center"
       flexDirection="column"
-      @tap="buy"
+      @tap="hireEmployee"
     >
       <Button class="button">BUY</Button>
     </FlexboxLayout>
     <CarouselSelect
-      v-if="Number.isInteger(activeIndex)"
+      v-if="activeEmployee"
       column="1"
       :index.sync="activeIndex"
       :selectableListLength="employees.length"
     >
-      <Employee :employee="employees[activeIndex]" />
+      <Employee :employee="activeEmployee" />
     </CarouselSelect>
     <FlexboxLayout
       column="2"
@@ -32,15 +33,22 @@
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
-import { PlayerActionEnum } from "../../../game/client";
+import { sumBy } from "lodash";
+
 import Notification from "../reusable/Notification.vue";
-import { CustomEvents } from "../../../types";
-import Employee from "../cards/Employee.vue";
+import EmployeeVue from "../cards/Employee.vue";
+import PurchasingVue from "../Purchasing.vue";
 import CarouselSelect from "../../CarouselSelect.vue";
+
+import { CustomEvents } from "../../../types";
+import { PlayerActionEnum, playerActions } from "../../../game/client";
+import { Employee } from "../../../game/types";
+import { Resource } from "../../../game/resources";
+import { differenceResources } from "../../../game/utils";
 
 export default {
   props: {},
-  components: { Notification, Employee, CarouselSelect },
+  components: { Notification, Employee: EmployeeVue, CarouselSelect },
   data() {
     return {
       activeIndex: this.$store.state.gameState.availableEmployees.length
@@ -52,13 +60,55 @@ export default {
     employees() {
       return this.$store.state.gameState.availableEmployees;
     },
+    activeEmployee(): Employee | null {
+      return Number.isInteger(this.activeIndex)
+        ? this.employees[this.activeIndex]
+        : null;
+    },
+    isActiveEmployeePurchasable(): boolean {
+      if (!this.activeEmployee) return false;
+      const money = sumBy(this.$store.state.playerState.resources, "value");
+      const sufficientMoney = money >= this.activeEmployee.cost;
+
+      const buildingsTypesInPlay = this.$store.state.playerState.cardsInPlay.map(
+        ({ resource }) => resource
+      );
+      const sufficientBuildings =
+        differenceResources(
+          this.activeEmployee.resourceSpecialty,
+          buildingsTypesInPlay
+        ).length < 1;
+
+      return Boolean(sufficientMoney && sufficientBuildings);
+    },
   },
   methods: {
     endStep() {
       this.$emit(CustomEvents.PLAYER_ACTION, PlayerActionEnum.endStep, null);
     },
-    buy() {
-      console.warn("not implemented yet");
+    async hireEmployee(): Promise<void> {
+      const purchaseResult: {
+        resources: Array<Resource>;
+      } | null = await this.$showModal(PurchasingVue, {
+        props: {
+          factory: this.activeEmployee,
+          costExtractor: (employee) => employee.cost,
+          resources: this.$store.state.playerState.resources,
+        },
+      });
+      if (purchaseResult) {
+        const hireEmployeePayload: Parameters<
+          typeof playerActions[PlayerActionEnum.hireWorker]
+        >[2] = {
+          employee: this.activeEmployee,
+          resourcePayment: purchaseResult.resources,
+        };
+        this.$emit(
+          CustomEvents.PLAYER_ACTION,
+          PlayerActionEnum.hireWorker,
+          hireEmployeePayload
+        );
+      }
     },
   },
 };

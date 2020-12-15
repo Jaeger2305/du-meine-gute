@@ -26,7 +26,11 @@
           @tap="removeFromBasket(index)"
         />
         <Label :text="`outstanding: ${outstandingCost}`" />
-        <Button @tap="submitPayment" text="submit payment" />
+        <Button
+          @tap="submitPayment"
+          text="submit payment"
+          :isEnabled="isValidPayment"
+        />
       </StackLayout>
     </Page>
   </Frame>
@@ -43,6 +47,7 @@ import {
 } from "../../game/types";
 import { Resource } from "../../game/resources";
 import { sum } from "lodash";
+import { verifyResources } from "../../game/utils";
 
 export default {
   props: {
@@ -72,6 +77,9 @@ export default {
     outstandingCost(): number {
       return this.cost - sum(this.basket.map((resource) => resource.value));
     },
+    isValidPayment(): boolean {
+      return verifyResources(this.basket, this.cost);
+    },
   },
   methods: {
     cancel(): void {
@@ -84,6 +92,7 @@ export default {
       this.availableResources.push(...this.basket.splice(index, 1));
     },
     submitPayment() {
+      if (!this.isValidPayment) return this.$modal.close(null); // should be disabled, but belt and braces anyway
       const payment: {
         resources: Array<Resource>;
       } = {
