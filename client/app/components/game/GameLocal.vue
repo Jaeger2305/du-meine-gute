@@ -51,25 +51,6 @@
             />
           </StackLayout>
         </ScrollView>
-
-        <ScrollView column="1" row="0" orientation="vertical" @swipe="swipe">
-          <EmployeeList
-            column="2"
-            row="1"
-            :availableActions="$store.state.playerState.availableActions"
-            :employees="$store.state.playerState.employees"
-            :assignedEmployees="$store.state.playerState.assignedEmployees"
-            :availableEmployees="$store.state.gameState.availableEmployees"
-            :resources="$store.state.playerState.resources"
-            :cardsInPlay="$store.state.playerState.cardsInPlay"
-            :cardsInHand="$store.state.playerState.cardsInHand"
-            :marketCards="$store.state.gameState.marketCards"
-            @produce-at-factory="playerAction"
-            @assign-employee="playerAction"
-            @unassign-employee="playerAction"
-            @hire-employee="playerAction"
-          />
-        </ScrollView>
         <Factories
           colSpan="2"
           :factories="$store.state.playerState.cardsInPlay"

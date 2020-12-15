@@ -121,7 +121,6 @@ export default {
       }
     },
     async unassignEmployee(): Promise<void> {
-      console.warn("no error checking even on client side");
       // Employees are only unassignable manually if they have a cost. Otherwise they are auto unassigned during the end round.
       // Therefore, to unassign them here, we always show the modal.
       const purchasingResult: {
