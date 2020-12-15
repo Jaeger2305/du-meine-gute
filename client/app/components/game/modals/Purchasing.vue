@@ -73,15 +73,15 @@ import {
   ProductionEfficiency,
   Card,
   AssignedEmployee,
-} from "../../game/types";
-import { Resource } from "../../game/resources";
+} from "../../../game/types";
+import { Resource } from "../../../game/resources";
 import { groupBy, sum } from "lodash";
-import { aggregateResources, verifyResources } from "../../game/utils";
-import SpendResource, { ResourcePair } from "./SpendResource.vue";
-import EmployeeVue from "./cards/Employee.vue";
-import CardVue from "./cards/Card.vue";
-import GameIcon from "./reusable/GameIcon.vue";
-import { employeeRecords } from "../../game/worker";
+import { aggregateResources, verifyResources } from "../../../game/utils";
+import SpendResource, { ResourcePair } from "./../SpendResource.vue";
+import EmployeeVue from "./../cards/Employee.vue";
+import CardVue from "./../cards/Card.vue";
+import GameIcon from "./../reusable/GameIcon.vue";
+import { employeeRecords } from "../../../game/worker";
 
 export default {
   components: { SpendResource, Employee: EmployeeVue, Card: CardVue, GameIcon },

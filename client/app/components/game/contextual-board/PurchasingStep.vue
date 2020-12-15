@@ -37,7 +37,7 @@ import { sumBy } from "lodash";
 
 import Notification from "../reusable/Notification.vue";
 import EmployeeVue from "../cards/Employee.vue";
-import PurchasingVue from "../Purchasing.vue";
+import PurchasingVue from "../modals/Purchasing.vue";
 import CarouselSelect from "../../CarouselSelect.vue";
 
 import { CustomEvents } from "../../../types";

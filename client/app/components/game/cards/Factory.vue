@@ -34,7 +34,7 @@ import { MutationEnum } from "../../../store";
 import { playerActions } from "../../../game/client";
 import ProductionVue from "../Production.vue";
 import { Resource } from "../../../game/resources";
-import PurchasingVue from "../Purchasing.vue";
+import PurchasingVue from "../modals/Purchasing.vue";
 
 // Is assigned already?
 // Resource output?
