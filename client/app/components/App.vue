@@ -39,13 +39,9 @@ export default {
 };
 </script>
 
-<style scoped>
-ActionBar {
-  background-color: #53ba82;
-  color: #ffffff;
-}
-
-.ns-root {
+<style>
+/** using .ns-root means these variables don't apply across frames (ie in modals) */
+frame {
   --employee-color-base: rgb(203, 154, 94);
   --employee-color-highlight: rgb(216, 183, 142);
   --employee-color-lowlight: rgb(155, 106, 53);
@@ -85,5 +81,41 @@ ActionBar {
   --server-color-base: rgb(94, 203, 94);
   --server-color-highlight: rgb(142, 216, 142);
   --server-color-lowlight: rgb(58, 155, 53);
+}
+
+.button {
+  font-family: "Grandstander", "Grandstander-Regular";
+  font-size: 30px;
+  border-width: 7px;
+  border-color: lightblue;
+  border-radius: 7px;
+  background: rgb(188, 209, 215);
+  background: linear-gradient(
+    0deg,
+    rgba(188, 209, 215, 1) 0%,
+    rgba(211, 229, 235, 1) 25%,
+    rgba(211, 229, 235, 1) 75%,
+    rgba(237, 246, 249, 1) 100%
+  );
+  margin: 5px 0px 5px 0px;
+}
+
+.button:highlighted {
+  border-color: #8ebccc;
+  background: rgb(188, 209, 215);
+  background: linear-gradient(
+    0deg,
+    rgb(209, 225, 230) 0%,
+    rgb(227, 240, 245) 25%,
+    rgb(227, 242, 247) 75%,
+    rgb(250, 254, 255) 100%
+  );
+}
+</style>
+
+<style scoped>
+ActionBar {
+  background-color: #53ba82;
+  color: #ffffff;
 }
 </style>

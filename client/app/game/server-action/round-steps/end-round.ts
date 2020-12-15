@@ -1,5 +1,10 @@
 import { sum } from "lodash";
-import { AssignedEmployee, GameState, ServerActionEnum } from "../../types";
+import {
+  AssignedEmployee,
+  GameState,
+  ServerActionEnum,
+  EmployeeType,
+} from "../../types";
 import { PlayerActionEnum } from "../../client";
 import { EndRoundResponse } from "../types";
 
@@ -52,6 +57,7 @@ export function endRound(
         name: `investor ${index} - ${
           factory.name
         } - ${factory.productionConfig.output.join()}`,
+        type: EmployeeType.Investor,
         mode: { productionCount: 1, resourceSparingCount: 0 },
         unassignmentCost: 0,
         assignment: factory,

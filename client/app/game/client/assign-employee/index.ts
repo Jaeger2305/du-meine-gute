@@ -21,6 +21,7 @@ export async function assignEmployee(
   const assignedEmployee: AssignedEmployee = {
     assignment: factory,
     name: employee.name,
+    type: employee.type,
     mode: efficiency,
     unassignmentCost: employee.unassignmentCost,
     hasProduced: false,

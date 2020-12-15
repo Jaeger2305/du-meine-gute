@@ -30,7 +30,7 @@
       justifyContent="flex-end"
     >
       <FlexboxLayout
-        class="button"
+        class="notification-button"
         justifyContent="center"
         @tap="$emit('close')"
       >
@@ -99,7 +99,7 @@ export default {
   font-size: 73px;
 }
 
-.button {
+.notification-button {
   margin: 30% 0px 50% 0px;
 }
 </style>

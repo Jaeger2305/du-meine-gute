@@ -10,6 +10,7 @@ export type ProductionEfficiency = {
 
 export type AssignedEmployee = {
   name: string;
+  type: EmployeeType;
   mode: ProductionEfficiency;
   assignment: Card;
   unassignmentCost: number;
@@ -18,6 +19,7 @@ export type AssignedEmployee = {
 
 export enum EmployeeType {
   Boss = "boss",
+  Investor = "investor",
   Actor = "actor",
   Banker = "banker",
   BrickLayer = "brick-layer",
@@ -234,8 +236,18 @@ export const boss: Employee = {
   unassignmentCost: 0,
 };
 
+export const investor: Employee = {
+  modes: [{ productionCount: 1, resourceSparingCount: 0 }],
+  name: "investor",
+  type: EmployeeType.Investor,
+  cost: 0,
+  points: 0,
+  unassignmentCost: 0,
+};
+
 export const employeeRecords: Record<EmployeeType, Employee> = {
   [EmployeeType.Boss]: boss,
+  [EmployeeType.Investor]: investor,
 
   [EmployeeType.Actor]: actor,
   [EmployeeType.Banker]: banker,

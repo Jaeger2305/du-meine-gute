@@ -103,33 +103,4 @@ export default {
 .market-resources {
   margin: 10px 5px 10px 5px;
 }
-
-.button {
-  font-family: "Grandstander", "Grandstander-Regular";
-  font-size: 30px;
-  border-width: 7px;
-  border-color: lightblue;
-  border-radius: 7px;
-  background: rgb(188, 209, 215);
-  background: linear-gradient(
-    0deg,
-    rgba(188, 209, 215, 1) 0%,
-    rgba(211, 229, 235, 1) 25%,
-    rgba(211, 229, 235, 1) 75%,
-    rgba(237, 246, 249, 1) 100%
-  );
-  margin: 5px 0px 5px 0px;
-}
-
-.button:highlighted {
-  border-color: #8ebccc;
-  background: rgb(188, 209, 215);
-  background: linear-gradient(
-    0deg,
-    rgb(209, 225, 230) 0%,
-    rgb(227, 240, 245) 25%,
-    rgb(227, 242, 247) 75%,
-    rgb(250, 254, 255) 100%
-  );
-}
 </style>

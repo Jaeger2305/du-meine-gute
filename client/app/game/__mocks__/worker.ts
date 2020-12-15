@@ -4,6 +4,7 @@ import { wood, wheat } from "../resources";
 
 export const defaultAssignedEmployee: AssignedEmployee = {
   name: "defaultAssignedEmployee",
+  type: EmployeeType.Banker,
   assignment: bakery,
   mode: {
     productionCount: 1,
@@ -15,6 +16,7 @@ export const defaultAssignedEmployee: AssignedEmployee = {
 
 export const defaultChainedAssignedEmployee: AssignedEmployee = {
   name: "defaultChainedAssignedEmployee",
+  type: EmployeeType.MillOwner,
   assignment: bakeryWithChain,
   mode: {
     productionCount: 1,
@@ -26,6 +28,7 @@ export const defaultChainedAssignedEmployee: AssignedEmployee = {
 
 export const discountedAssignedEmployee: AssignedEmployee = {
   name: "discountedAssignedEmployee",
+  type: EmployeeType.Boss,
   assignment: bakery,
   mode: {
     productionCount: 1,
@@ -37,6 +40,7 @@ export const discountedAssignedEmployee: AssignedEmployee = {
 
 export const discountedChainedAssignedEmployee: AssignedEmployee = {
   name: "discountedChainedAssignedEmployee",
+  type: EmployeeType.Banker,
   assignment: bakeryWithChain,
   mode: {
     productionCount: 2,
@@ -48,6 +52,7 @@ export const discountedChainedAssignedEmployee: AssignedEmployee = {
 
 export const defaultSecondaryChainedAssignedEmployee: AssignedEmployee = {
   name: "defaultSecondaryChainedAssignedEmployee",
+  type: EmployeeType.Boss,
   assignment: bakeryWithSecondaryChain,
   mode: {
     productionCount: 1,
@@ -59,6 +64,7 @@ export const defaultSecondaryChainedAssignedEmployee: AssignedEmployee = {
 
 export const bossAssigned: AssignedEmployee = {
   name: "bossAssigned",
+  type: EmployeeType.Boss,
   assignment: bakery,
   mode: {
     productionCount: 2,
