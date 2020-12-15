@@ -7,6 +7,7 @@
       :displayNumber="count"
       height="50%"
       width="30%"
+      @tap="$emit('tap-resource', resource)"
     />
   </FlexboxLayout>
 </template>

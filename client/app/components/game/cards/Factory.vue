@@ -32,7 +32,7 @@ import { CustomEvents } from "../../../types";
 import { handleValidationError } from "../../../utils";
 import { MutationEnum } from "../../../store";
 import { playerActions } from "../../../game/client";
-import ProductionVue from "../Production.vue";
+import ProductionVue from "../modals/Production.vue";
 import { Resource } from "../../../game/resources";
 import PurchasingVue from "../modals/Purchasing.vue";
 import AssignmentConfirmationVue from "../modals/AssignmentConfirmation.vue";

@@ -140,7 +140,6 @@ export default {
       return Boolean(employeeRecords[this.factory.type]);
     },
     itemBeingPurchased(): Employee | Card {
-      debugger;
       const item = this.isAssignedEmployee
         ? employeeRecords[this.factory.type]
         : this.factory;

@@ -1,5 +1,5 @@
 <template>
-  <GridLayout columns="*" rows="*" class="primary-icon">
+  <GridLayout columns="*" rows="*" class="primary-icon" @tap="$emit('tap')">
     <Image
       col="0"
       row="0"

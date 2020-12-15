@@ -1,91 +1,59 @@
 <template>
   <Frame id="production">
-    <Page>
-      <ActionBar title="Production">
-        <ActionItem
-          @tap="cancel"
-          ios.systemIcon="1"
-          ios.position="right"
-          android.systemIcon="ic_menu_close_clear_cancel"
-          android.position="actionBar"
+    <Page actionBarHidden="true">
+      <GridLayout columns="*,*,*" rows="3*,*">
+        <Image
+          colSpan="3"
+          rowSpan="2"
+          src="~/assets/images/backboard.png"
+          stretch="fill"
         />
-      </ActionBar>
-      <GridLayout columns="*, *, *" rows="4*, 2*, *" backgroundColor="#3c8888">
-        <!-- |---------------|---------------|----------------| -->
-        <!-- |                               |                | -->
-        <!-- |           resources           |     cards      | -->
-        <!-- |                               |                | -->
-        <!-- |---------------|---------------|----------------| -->
-        <!-- |     basket    |  chainBasket  |   cardBasket   | -->
-        <!-- |---------------|---------------|----------------| -->
-        <!-- |            actions            | produced goods | -->
-        <!-- |---------------|---------------|----------------| -->
-
-        <!-- Choose resources to use -->
-        <ScrollView orientation="vertical" column="0" row="0" colSpan="2">
-          <StackLayout>
-            <Label text="AVAILABLE" />
-            <Label
-              v-for="({ type, key }, index) in availableResources"
-              :key="key"
-              :text="type"
-              @tap="addToBasket(index)"
-            />
-          </StackLayout>
-        </ScrollView>
-
-        <!-- Choose cards to discard -->
-        <StackLayout column="2" row="0">
-          <Label text="available CARDS" />
-          <Label
-            v-for="({ name, resource }, index) in availableCards"
-            :key="name"
-            :text="`${name}: ${resource.type}`"
-            @tap="discardCardForResource(index)"
+        <FlexboxLayout
+          flexDirection="column"
+          justifyContent="space-around"
+          alignItems="space-around"
+          alignContent="space-around"
+        >
+          <Employee :employee="employeeWithAssignment" />
+          <Card :card="cardWithProduction" />
+        </FlexboxLayout>
+        <FlexboxLayout
+          column="1"
+          flexDirection="column"
+          justifyContent="space-around"
+          alignItems="space-around"
+          alignContent="space-around"
+        >
+          <PrimaryResourceCollection
+            :resources="primaryResources"
+            :isFiltered="true"
+            @tap-resource="addToBasket"
           />
-        </StackLayout>
-
-        <!-- Summary of production -->
-        <StackLayout column="0" row="1">
-          <Label text="BASKET" />
-          <Label
-            v-for="({ type, key }, index) in basket"
-            :key="key"
-            :text="type"
-            @tap="removeFromBasket(index, basket)"
+          <SecondaryResourceCollection
+            :resources="secondaryResources"
+            :isFiltered="true"
+            @tap-resource="addToBasket"
           />
-        </StackLayout>
-        <StackLayout column="1" row="1">
-          <Label text="CHAIN BASKET" />
-          <Label
-            v-for="({ type, key }, index) in chainBasket"
-            :key="key"
-            :text="type"
-            @tap="removeFromBasket(index, chainBasket)"
-          />
-        </StackLayout>
-        <StackLayout column="2" row="1">
-          <Label text="basket CARDS" />
-          <Label
-            v-for="({ name, resource }, index) in discardedCards"
-            :key="name"
-            :text="`${name}: ${resource}`"
-            @tap="undoDiscardedCard(index)"
-          />
-        </StackLayout>
-
-        <!-- Actions and overall summary -->
-        <StackLayout column="0" row="2" orientation="vertical">
-          <Label text="OUTSTANDING" />
-          <Label :text="outstandingResources.map((r) => r.type).join()" />
-        </StackLayout>
-        <StackLayout column="1" row="2" colSpan="2" orientation="horizontal">
-          <Button @tap="reset" text="reset" />
-          <Button @tap="submitPayment" text="submit payment" />
-        </StackLayout>
-        <StackLayout column="2" row="2">
-          <Label :text="resourceSummary" />
-        </StackLayout>
+        </FlexboxLayout>
+        <FlexboxLayout
+          column="2"
+          alignItems="stretch"
+          justifyContent="space-around"
+          flexDirection="column"
+        >
+          <Button class="button" @tap="cancel">CANCEL</Button>
+          <Button class="button" @tap="reset">RESET</Button>
+          <Button class="button" :isEnabled="isValidProduction" @tap="confirm"
+            >CONFIRM</Button
+          >
+        </FlexboxLayout>
+        <!-- Not able to discard from the player hand yet - it's coupled to global state and needs refactoring -->
+        <PlayerHand
+          row="1"
+          colSpan="3"
+          :availableActions="$store.state.playerState.availableActions"
+          :cards="availableCards"
+        />
       </GridLayout>
     </Page>
   </Frame>
@@ -93,12 +61,6 @@
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
-import { sum } from "lodash";
-import {
-  generatePoorRandomKey,
-  handleValidationError,
-  keyArray,
-} from "../../utils";
 import {
   PlayerState,
   Employee,
@@ -106,13 +68,24 @@ import {
   Card,
   AssignedEmployee,
   PlayerActionEnum,
-} from "../../game/types";
+} from "../../../game/types";
+import { Resource } from "../../../game/resources";
+import { groupBy, isEqual, sum } from "lodash";
 import {
-  differenceResources,
+  aggregateResources,
   checkOutstandingResources,
-} from "../../game/utils";
-import { Resource } from "../../game/resources";
-import { playerActions } from "../../game/client";
+  differenceResources,
+  verifyResources,
+} from "../../../game/utils";
+import EmployeeVue from "./../cards/Employee.vue";
+import CardVue from "./../cards/Card.vue";
+import GameIcon from "./../reusable/GameIcon.vue";
+import { employeeRecords } from "../../../game/worker";
+import PrimaryResourceCollection from "../reusable/PrimaryResourceCollection.vue";
+import SecondaryResourceCollection from "../right-drawer/SecondaryResourceCollection.vue";
+import { generatePoorRandomKey, keyArray } from "../../../utils";
+import { playerActions } from "../../../game/client";
+import PlayerHand from "../PlayerHand.vue";
 
 /**
  * Loop through the outstanding resources until we find the remaining extra resources, returning the count of production as well.
@@ -146,15 +119,15 @@ function checkChainedOutstandingResources(
   return { requiredExtraResources, productionCount };
 }
 
-/**
- * Handle the production for a single assigned employee, allowing the user to manage their resources.
- * Designed to be used in a modal.
- *
- * Not a shining example of component design.
- * It's quite possible that this is split into separate steps for initial and chained production
- * But no design thought has gone into this yet, the prior major goal is completing the basic game loop and getting to a testable state.
- */
-export default Vue.extend({
+export default {
+  components: {
+    Employee: EmployeeVue,
+    Card: CardVue,
+    GameIcon,
+    PrimaryResourceCollection,
+    SecondaryResourceCollection,
+    PlayerHand,
+  },
   props: {
     assignedEmployee: {
       type: Object as PropType<AssignedEmployee>,
@@ -226,7 +199,7 @@ export default Vue.extend({
       if (!this.initialProductionCount) return 0; // chained production can only happen once initial production is started
       return this.chainedProductionStatus.productionCount;
     },
-    chainedProductionRequiredResources(): number {
+    chainedProductionRequiredResources(): Array<Resource> {
       return this.chainedProductionStatus.requiredExtraResources;
     },
     outstandingResources(): Array<Resource> {
@@ -244,10 +217,34 @@ export default Vue.extend({
         .fill(resources)
         .flat();
     },
-    resourceSummary(): string {
-      return `${this.outputResources.map((r) => r.type).join()} (${
-        this.productionCount
-      })`;
+    primaryResources(): Array<Resource> {
+      return this.availableResources.filter(({ baseResource }) => baseResource);
+    },
+    secondaryResources(): Array<Resource> {
+      return this.availableResources.filter(
+        ({ baseResource }) => !baseResource
+      );
+    },
+    cardWithProduction(): Card {
+      return {
+        ...this.assignedEmployee.assignment,
+        productionConfig: {
+          ...this.assignedEmployee.assignment.productionConfig,
+          output: this.outputResources,
+          input: this.initialProductionRequiredResources,
+          chainInput: this.chainedProductionRequiredResources,
+        },
+      };
+    },
+    employeeWithAssignment(): Employee {
+      return {
+        ...employeeRecords[this.assignedEmployee.type],
+        modes: [this.assignedEmployee.mode],
+      };
+    },
+    isValidProduction(): boolean {
+      console.warn("not implemented yet");
+      return true;
     },
   },
   methods: {
@@ -264,13 +261,22 @@ export default Vue.extend({
       this.basket = [];
       this.chainBasket = [];
     },
-    addToBasket(index: number): void {
+    addToBasket({ type: availableResourceType }: Resource): void {
+      const index = this.availableResources.findIndex(
+        ({ type }) => type === availableResourceType
+      );
       const basket = this.initialProductionCount
         ? this.chainBasket
         : this.basket;
       basket.push(...this.availableResources.splice(index, 1));
     },
-    removeFromBasket(index: number, basket: Array<Resource>): void {
+    removeFromBasket(
+      { type: stagedResourceType }: Resource,
+      basket: Array<Resource>
+    ): void {
+      const index = this.basket.findIndex(
+        ({ type }) => type === stagedResourceType
+      );
       this.availableResources.push(...basket.splice(index, 1));
     },
     discardCardForResource(index: number): void {
@@ -305,18 +311,22 @@ export default Vue.extend({
       if (resourceInBasketIndex > -1)
         return this.basket.splice(resourceInBasketIndex, 1);
     },
-    submitPayment(): void {
+    confirm() {
+      const consumedResources = [...this.basket, ...this.chainBasket].filter(
+        ({ baseResource }) => !baseResource
+      );
       const payment: Parameters<
         typeof playerActions[PlayerActionEnum.produceAtFactory]
       >[2] = {
         discardedCards: this.discardedCards,
         outputResources: this.outputResources,
+        consumedResources,
         assignedEmployee: this.assignedEmployee,
       };
       this.$modal.close(payment);
     },
   },
-});
+};
 </script>
 
 <style scoped></style>

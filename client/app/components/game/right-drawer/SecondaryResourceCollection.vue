@@ -21,6 +21,7 @@
         height="30%"
         width="30%"
         style="margin: 10px;"
+        @tap="$emit('tap-resource', resource)"
       />
       <GameIcon
         :displayNumber="resourceTotalValue"
