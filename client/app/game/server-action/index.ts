@@ -81,7 +81,7 @@ export function setupGame(game: GameState): void {
         cardRecords.WEAVING_MILL_WOOD,
         cardRecords.MARKET_OFFICE_DRAW2,
       ],
-      resources: [bread],
+      resources: [bread, leather, bread, leather, coal],
       availableActions: [PlayerActionEnum.endStep, PlayerActionEnum.discard],
       assignedEmployees: [],
       reservedFactory: null,

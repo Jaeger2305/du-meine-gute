@@ -11,19 +11,18 @@
         />
       </ActionBar>
       <StackLayout>
-        <Label text="available" />
-        <Label
-          v-for="({ type, value }, index) in availableResources"
-          :key="type"
-          :text="`${type}: ${value}`"
-          @tap="addToBasket(index)"
-        />
-        <Label text="basket" />
-        <Label
-          v-for="({ type, value }, index) in basket"
-          :key="type"
-          :text="`${type}: ${value}`"
-          @tap="removeFromBasket(index)"
+        <SpendResource
+          v-for="{
+            resource,
+            availableCount,
+            stagedCount,
+          } in aggregatedResourcePairs"
+          :key="resource.type"
+          :resource="resource"
+          :availableCount="availableCount"
+          :stagedCount="stagedCount"
+          @add-resource-to-basket="addToBasket"
+          @remove-resource-from-basket="removeFromBasket"
         />
         <Label :text="`outstanding: ${outstandingCost}`" />
         <Button
@@ -46,10 +45,12 @@ import {
   AssignedEmployee,
 } from "../../game/types";
 import { Resource } from "../../game/resources";
-import { sum } from "lodash";
-import { verifyResources } from "../../game/utils";
+import { groupBy, sum } from "lodash";
+import { aggregateResources, verifyResources } from "../../game/utils";
+import SpendResource, { ResourcePair } from "./SpendResource.vue";
 
 export default {
+  components: { SpendResource },
   props: {
     resources: {
       type: Array as PropType<PlayerState["resources"]>,
@@ -80,15 +81,36 @@ export default {
     isValidPayment(): boolean {
       return verifyResources(this.basket, this.cost);
     },
+    aggregatedResourcePairs(): Array<ResourcePair> {
+      const availableResources: Array<Resource> = this.resources; // help out Vue's typing intellisense.
+      const aggregatedAvailable = groupBy<Resource>(availableResources, "type");
+
+      const stagedResources: Array<Resource> = this.basket; // help out Vue's typing intellisense.
+      const aggregatedStaged = groupBy<Resource>(stagedResources, "type");
+      return Object.values(aggregatedAvailable).map((resources) => {
+        const stagedCount = aggregatedStaged[resources[0].type]?.length || 0;
+        return {
+          resource: resources[0],
+          availableCount: resources.length - stagedCount,
+          stagedCount,
+        };
+      });
+    },
   },
   methods: {
     cancel(): void {
       this.$modal.close(null);
     },
-    addToBasket(index: number): void {
+    addToBasket({ type: availableResourceType }: Resource): void {
+      const index = this.availableResources.findIndex(
+        ({ type }) => type === availableResourceType
+      );
       this.basket.push(...this.availableResources.splice(index, 1));
     },
-    removeFromBasket(index: number): void {
+    removeFromBasket({ type: stagedResourceType }: Resource): void {
+      const index = this.basket.findIndex(
+        ({ type }) => type === stagedResourceType
+      );
       this.availableResources.push(...this.basket.splice(index, 1));
     },
     submitPayment() {

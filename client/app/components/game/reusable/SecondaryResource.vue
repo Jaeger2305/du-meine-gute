@@ -1,5 +1,11 @@
 <template>
-  <GridLayout columns="*" rows="*" class="secondary-container" :style="style">
+  <GridLayout
+    columns="*"
+    rows="*"
+    class="secondary-container"
+    :style="style"
+    @tap="$emit('tap')"
+  >
     <Label col="0" row="0" class="bg-halo" :text="resourceType" />
     <Image col="0" row="0" :src="resourceSrc" class="secondary-icon" />
 
