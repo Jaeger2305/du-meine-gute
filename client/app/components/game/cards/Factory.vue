@@ -1,5 +1,5 @@
 <template>
-  <GridLayout columns="*" rows="*,*,*">
+  <GridLayout columns="*" rows="*,*,*" :class="{ placeholder: isPlaceholder }">
     <Image rowSpan="2" src="~/assets/images/placeholder-factory.png" />
     <Label v-if="assignedEmployee" :text="assignedEmployee.name" />
     <SecondaryResourceCollection
@@ -24,7 +24,10 @@ import Vue, { PropType } from "vue";
 import { AssignedEmployee, Card, PlayerActionEnum } from "../../../game/types";
 import SecondaryResourceCollection from "../right-drawer/SecondaryResourceCollection.vue";
 import GameIcon from "../reusable/GameIcon.vue";
-import { isActionAvailable } from "../../../game/utils";
+import {
+  filterCardsToAffordable,
+  isActionAvailable,
+} from "../../../game/utils";
 import { CustomEvents } from "../../../types";
 import { handleValidationError } from "../../../utils";
 import { MutationEnum } from "../../../store";
@@ -51,12 +54,18 @@ export default {
       required: false,
       default: null,
     },
+    isPlaceholder: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     isActionable(): boolean {
-      return Boolean(
-        this.card.productionConfig &&
-          (this.isUnassignable || this.isAssignable || this.isProductionable)
+      return (
+        Boolean(
+          this.card.productionConfig &&
+            (this.isUnassignable || this.isAssignable || this.isProductionable)
+        ) || this.isConstructable
       );
     },
     isProductionable(): boolean {
@@ -66,7 +75,8 @@ export default {
           PlayerActionEnum.produceAtFactory
         ) &&
           this.assignedEmployee &&
-          !this.assignedEmployee.hasProduced
+          !this.assignedEmployee.hasProduced &&
+          !this.isPlaceholder
       );
     },
     isUnassignable(): boolean {
@@ -76,7 +86,8 @@ export default {
           PlayerActionEnum.unassignEmployee
         ) &&
           this.assignedEmployee &&
-          this.assignedEmployee.unassignmentCost
+          this.assignedEmployee.unassignmentCost &&
+          !this.isPlaceholder
       );
     },
     isAssignable(): boolean {
@@ -86,7 +97,23 @@ export default {
           PlayerActionEnum.assignEmployee
         ) &&
           !this.assignedEmployee &&
-          this.$store.state.stagedAssignment
+          this.$store.state.stagedAssignment &&
+          !this.isPlaceholder
+      );
+    },
+    isConstructable(): boolean {
+      const affordableFactories = filterCardsToAffordable<Card>(
+        [this.card],
+        (card: Card) => card.cost,
+        this.$store.state.playerState.resources
+      );
+      return Boolean(
+        isActionAvailable(
+          this.$store.state.playerState.availableActions,
+          PlayerActionEnum.buildFactory
+        ) &&
+          this.isPlaceholder &&
+          affordableFactories.length
       );
     },
   },
@@ -146,6 +173,30 @@ export default {
         );
       }
     },
+    async buildFactory() {
+      const purchasingResult: {
+        resources: Array<Resource>;
+      } | null = await this.$showModal(PurchasingVue, {
+        props: {
+          factory: this.card,
+          costExtractor: (factory) => factory.cost,
+          resources: this.$store.state.playerState.resources,
+        },
+      });
+
+      const buildPayload: Parameters<
+        typeof playerActions[PlayerActionEnum.buildFactory]
+      >[2] = {
+        resources: purchasingResult.resources,
+      };
+      if (purchasingResult) {
+        this.$emit(
+          CustomEvents.BUILD_FACTORY,
+          PlayerActionEnum.buildFactory,
+          buildPayload
+        );
+      }
+    },
     stageEmployee(): void {
       const assignmentPayload: Parameters<
         typeof playerActions[PlayerActionEnum.assignEmployee]
@@ -170,6 +221,8 @@ export default {
         this.unassignEmployee();
       } else if (this.isProductionable) {
         this.produceAtFactory();
+      } else if (this.isConstructable) {
+        this.buildFactory();
       } else {
         handleValidationError(
           new Error(
@@ -184,4 +237,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.placeholder {
+  opacity: 0.4;
+}
+</style>

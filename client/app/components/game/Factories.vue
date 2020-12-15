@@ -8,10 +8,12 @@
       :rowSpan="factory.position.rowSpan"
       :card="factory"
       :assignedEmployee="factory.assignedEmployee"
+      :isPlaceholder="factory.isPlaceholder"
       class="factory"
       @produce-at-factory="bubbleAction"
       @assign-employee="bubbleAction"
       @unassign-employee="bubbleAction"
+      @build-factory="bubbleAction"
     />
   </GridLayout>
 </template>
@@ -89,17 +91,38 @@ export default Vue.extend({
       Card & {
         assignedEmployee: AssignedEmployee;
         position: GridPosition;
+        isPlaceholder: boolean;
       }
     > {
-      const displayFactories = this.factories.map((factory, index) => ({
+      // Just in case we ever go above 8 factories with a slot for reserved factory.
+      if (this.factories.length >= factoryPositions.length)
+        throw new Error(
+          `this device cannot handle displaying ${this.factories.length +
+            1} factories, max (${factoryPositions.length})`
+        );
+
+      const constructedFactories = this.factories.map((factory, index) => ({
         ...factory,
+        isPlaceholder: false,
         position: factoryPositions[index],
         assignedEmployee: this.assignedEmployees.find(
           ({ assignment: { name: assignmentName } }) =>
             assignmentName === factory.name
         ),
       }));
-      return displayFactories;
+
+      const plannedFactories = this.$store.state.playerState.reservedFactory
+        ? [
+            {
+              ...this.$store.state.playerState.reservedFactory,
+              isPlaceholder: true,
+              position: factoryPositions[constructedFactories.length],
+              assignedEmployee: undefined,
+            },
+          ]
+        : [];
+
+      return [...constructedFactories, ...plannedFactories];
     },
   },
   methods: {

@@ -29,28 +29,6 @@
         class="play-area"
         @swipe="swipe"
       >
-        <!-- Settings -->
-
-        <!-- Event space (e.g. the market) -->
-        <!-- For now though, this is available actions -->
-        <ScrollView column="0" row="0" orientation="horizontal" @swipe="swipe">
-          <StackLayout orientation="horizontal">
-            <Assignment
-              :availableActions="$store.state.playerState.availableActions"
-              :employees="$store.state.playerState.employees"
-              :factories="$store.state.playerState.cardsInPlay"
-              :assignedEmployees="$store.state.playerState.assignedEmployees"
-              @assign-employee="playerAction"
-            />
-            <ReservedFactory
-              v-if="$store.state.playerState.reservedFactory"
-              :factory="$store.state.playerState.reservedFactory"
-              :resources="$store.state.playerState.resources"
-              :availableActions="$store.state.playerState.availableActions"
-              @build-factory="$store.state.playerAction"
-            />
-          </StackLayout>
-        </ScrollView>
         <Factories
           colSpan="2"
           :factories="$store.state.playerState.cardsInPlay"
