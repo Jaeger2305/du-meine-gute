@@ -11,7 +11,7 @@
     />
     <GameIcon
       :displayNumber="resource.value"
-      :size="large"
+      size="large"
       :unicodeIcon="`\uf51e`"
       height="80%"
       width="80%"

@@ -24,7 +24,7 @@
       />
       <GameIcon
         :displayNumber="resourceTotalValue"
-        :size="large"
+        size="large"
         :unicodeIcon="`\uf51e`"
         height="30%"
         width="30%"
