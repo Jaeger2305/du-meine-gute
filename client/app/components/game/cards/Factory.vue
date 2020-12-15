@@ -35,6 +35,7 @@ import { playerActions } from "../../../game/client";
 import ProductionVue from "../Production.vue";
 import { Resource } from "../../../game/resources";
 import PurchasingVue from "../modals/Purchasing.vue";
+import AssignmentConfirmationVue from "../modals/AssignmentConfirmation.vue";
 
 // Is assigned already?
 // Resource output?
@@ -199,7 +200,21 @@ export default {
         );
       }
     },
-    stageEmployee(): void {
+    async stageEmployee(): Promise<void> {
+      const isConfirmedAssignment = await this.$showModal(
+        AssignmentConfirmationVue,
+        {
+          fullscreen: true,
+          props: {
+            efficiency: this.$store.state.stagedAssignment.efficiency,
+            employee: this.$store.state.stagedAssignment.employee,
+            factory: this.card,
+          },
+        }
+      );
+
+      if (!isConfirmedAssignment) return;
+
       const assignmentPayload: Parameters<
         typeof playerActions[PlayerActionEnum.assignEmployee]
       >[2] = {
