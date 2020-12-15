@@ -36,7 +36,7 @@ export const playerActions = {
 export function newGame(): GameState {
   const gameState: GameState = {
     config: {
-      marketSuns: 3,
+      marketSuns: 4,
       buildCountForEndGame: 8,
       drawCount: 2,
       pointsPerResource: 0.25,

@@ -1,6 +1,6 @@
 import { GameState, PlayerState, PlayerActionEnum, Employee } from "../types";
 import { ServerActionHandler, ServerActionEnum } from "./types";
-import { bread, leather, coal, wheat } from "../resources";
+import { bread, leather, coal, wheat, cattle } from "../resources";
 import {
   coalMineClay,
   coalMineMetal,
@@ -8,7 +8,7 @@ import {
   coalMineWheat,
   cardRecords,
 } from "../cards";
-import { seedWorkers, boss } from "../worker";
+import { seedWorkers, employeeRecords } from "../worker";
 import { generateTestCards } from "./utils";
 
 import { discard } from "./actions/discard";
@@ -57,7 +57,7 @@ export function setupGame(game: GameState): void {
     {
       id: "test-player-id-1",
       playerNumber: 0,
-      employees: [boss],
+      employees: [employeeRecords.boss, employeeRecords.banker],
       cardsInHand: [
         cardRecords.MARKET_OFFICE_CLAY2,
         cardRecords.TANNERY_WHEAT_WOOL,
@@ -65,13 +65,11 @@ export function setupGame(game: GameState): void {
       cardsInPlay: [
         chosenCoalMine,
         cardRecords.MARKET_OFFICE_CLAY2,
-        cardRecords.MARKET_OFFICE_CLAY1,
         cardRecords.CATTLE_RANCH_METAL_WHEAT,
-        cardRecords.MILL_CLAY,
-        cardRecords.WEAVING_MILL_WOOD,
+        cardRecords.TANNERY_WOOD_WOOL,
         cardRecords.MARKET_OFFICE_DRAW2,
       ],
-      resources: [bread, leather, bread, leather, coal],
+      resources: [bread, leather, bread, leather, coal, cattle],
       availableActions: [PlayerActionEnum.endStep, PlayerActionEnum.discard],
       assignedEmployees: [],
       reservedFactory: null,
