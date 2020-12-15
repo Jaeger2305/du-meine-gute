@@ -153,6 +153,7 @@ export default {
       const purchasingResult: {
         resources: Array<Resource>;
       } | null = await this.$showModal(PurchasingVue, {
+        fullscreen: true,
         props: {
           factory: this.assignedEmployee,
           costExtractor: (factory) => factory.unassignmentCost,
@@ -177,6 +178,7 @@ export default {
       const purchasingResult: {
         resources: Array<Resource>;
       } | null = await this.$showModal(PurchasingVue, {
+        fullscreen: true,
         props: {
           factory: this.card,
           costExtractor: (factory) => factory.cost,

@@ -1,36 +1,66 @@
 <template>
   <Frame id="purchasing">
-    <Page>
-      <ActionBar title="Purchasing">
-        <ActionItem
-          @tap="cancel"
-          ios.systemIcon="1"
-          ios.position="right"
-          android.systemIcon="ic_menu_close_clear_cancel"
-          android.position="actionBar"
+    <Page actionBarHidden="true">
+      <GridLayout columns="*,*,*" rows="*,*,*">
+        <Image
+          colSpan="3"
+          rowSpan="3"
+          src="~/assets/images/backboard.png"
+          stretch="fill"
         />
-      </ActionBar>
-      <StackLayout>
-        <SpendResource
-          v-for="{
-            resource,
-            availableCount,
-            stagedCount,
-          } in aggregatedResourcePairs"
-          :key="resource.type"
-          :resource="resource"
-          :availableCount="availableCount"
-          :stagedCount="stagedCount"
-          @add-resource-to-basket="addToBasket"
-          @remove-resource-from-basket="removeFromBasket"
+        <FlexboxLayout
+          column="0"
+          row="0"
+          rowSpan="3"
+          flexDirection="column"
+          justifyContent="space-around"
+          alignContent="space-around"
+        >
+          <SpendResource
+            v-for="{
+              resource,
+              availableCount,
+              stagedCount,
+            } in aggregatedResourcePairs"
+            :key="resource.type"
+            :resource="resource"
+            :availableCount="availableCount"
+            :stagedCount="stagedCount"
+            @add-resource-to-basket="addToBasket"
+            @remove-resource-from-basket="removeFromBasket"
+          />
+        </FlexboxLayout>
+        <Employee
+          v-if="isAssignedEmployee"
+          column="1"
+          rowSpan="2"
+          :employee="itemBeingPurchased"
         />
-        <Label :text="`outstanding: ${outstandingCost}`" />
-        <Button
-          @tap="submitPayment"
-          text="submit payment"
-          :isEnabled="isValidPayment"
+        <Card v-else column="1" rowSpan="2" :card="itemBeingPurchased" />
+        <GameIcon
+          column="1"
+          row="2"
+          :displayNumber="stagedMoney"
+          size="large"
+          :unicodeIcon="`\uf51e`"
         />
-      </StackLayout>
+        <FlexboxLayout
+          column="2"
+          rowSpan="3"
+          alignItems="stretch"
+          justifyContent="space-around"
+          flexDirection="column"
+        >
+          <Button class="button" @tap="cancel">CANCEL</Button>
+          <Button class="button" @tap="reset">RESET</Button>
+          <Button
+            class="button"
+            :isEnabled="isValidPayment"
+            @tap="submitPayment"
+            >CONFIRM</Button
+          >
+        </FlexboxLayout>
+      </GridLayout>
     </Page>
   </Frame>
 </template>
@@ -48,9 +78,13 @@ import { Resource } from "../../game/resources";
 import { groupBy, sum } from "lodash";
 import { aggregateResources, verifyResources } from "../../game/utils";
 import SpendResource, { ResourcePair } from "./SpendResource.vue";
+import EmployeeVue from "./cards/Employee.vue";
+import CardVue from "./cards/Card.vue";
+import GameIcon from "./reusable/GameIcon.vue";
+import { employeeRecords } from "../../game/worker";
 
 export default {
-  components: { SpendResource },
+  components: { SpendResource, Employee: EmployeeVue, Card: CardVue, GameIcon },
   props: {
     resources: {
       type: Array as PropType<PlayerState["resources"]>,
@@ -65,7 +99,10 @@ export default {
       required: true,
     },
   },
-  data(): { basket: Array<Resource>; availableResources: Array<Resource> } {
+  data(): {
+    basket: Array<Resource>;
+    availableResources: Array<Resource>;
+  } {
     return {
       availableResources: this.resources.slice(),
       basket: [],
@@ -75,8 +112,11 @@ export default {
     cost(): number {
       return this.costExtractor(this.factory);
     },
+    stagedMoney(): number {
+      return sum(this.basket.map((resource) => resource.value));
+    },
     outstandingCost(): number {
-      return this.cost - sum(this.basket.map((resource) => resource.value));
+      return this.cost - this.stagedMoney;
     },
     isValidPayment(): boolean {
       return verifyResources(this.basket, this.cost);
@@ -96,10 +136,29 @@ export default {
         };
       });
     },
+    isAssignedEmployee(): boolean {
+      return Boolean(employeeRecords[this.factory.type]);
+    },
+    itemBeingPurchased(): Employee | Card {
+      debugger;
+      const item = this.isAssignedEmployee
+        ? employeeRecords[this.factory.type]
+        : this.factory;
+
+      return {
+        ...item,
+        cost: this.outstandingCost,
+        unassignmentCost: this.outstandingCost,
+      };
+    },
   },
   methods: {
     cancel(): void {
       this.$modal.close(null);
+    },
+    reset() {
+      this.basket = [];
+      this.availableResources = this.resources.slice();
     },
     addToBasket({ type: availableResourceType }: Resource): void {
       const index = this.availableResources.findIndex(
