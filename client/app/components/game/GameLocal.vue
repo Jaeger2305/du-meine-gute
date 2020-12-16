@@ -95,6 +95,7 @@ import MessageHistory from "./left-drawer/MessageHistory.vue";
 import StatSummary from "./right-drawer/StatSummary.vue";
 import NotificationComponent from "./reusable/Notification.vue";
 import { notificationConfig, Notification } from "../../game/round-description";
+import SplashscreenVue from "./modals/Splashscreen.vue";
 
 type SideDrawerConfig = {
   bubbleSwipes: Array<SwipeDirection>;
@@ -141,6 +142,7 @@ export default {
     };
   },
   created() {
+    this.$showModal(SplashscreenVue, { fullscreen: true });
     this.$store.commit(MutationEnum.SetupGame);
     orientation.setOrientation("landscape");
   },
