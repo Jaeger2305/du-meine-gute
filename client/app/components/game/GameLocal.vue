@@ -81,7 +81,7 @@ import { getString, setString } from "@nativescript/core/application-settings";
 import orientation from "nativescript-orientation";
 import { MutationEnum, ActionEnum } from "../../store";
 import Lobby from "../Lobby.vue";
-import GameSummary from "./GameSummary.vue";
+import GameSummary from "./modals/GameSummary.vue";
 
 import { setTimeout, clearTimeout } from "tns-core-modules/timer";
 import { PlayerActionEnum, ServerActionEnum } from "../../game/types";
