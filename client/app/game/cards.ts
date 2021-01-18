@@ -1344,6 +1344,28 @@ enum CardName {
   windowMakerWool = "WINDOW_MAKER_WOOL",
 }
 
+export const cardImageRecords: Record<BuildingType, string> = {
+  [BuildingType.bakery]: "~/assets/images/factories/bakery.png",
+  [BuildingType.brickMaker]: "~/assets/images/factories/brick-maker.png",
+  [BuildingType.butcher]: "~/assets/images/factories/butcher.png",
+  [BuildingType.cattleRanch]: "~/assets/images/factories/ranch.png",
+  [BuildingType.charburner]: "~/assets/images/factories/coal-mine.png",
+  [BuildingType.cooperage]: "~/assets/images/factories/cooperage.png",
+  [BuildingType.foodFactory]: "~/assets/images/factories/food-factory.png",
+  [BuildingType.glassmaker]: "~/assets/images/factories/glassmaker.png",
+  [BuildingType.ironSmelter]: "~/assets/images/factories/iron-smelter.png",
+  [BuildingType.marketOffice]: "~/assets/images/factories/market-office.png",
+  [BuildingType.mill]: "~/assets/images/factories/mill.png",
+  [BuildingType.sawmill]: "~/assets/images/factories/sawmill.png",
+  [BuildingType.shoeMaker]: "~/assets/images/factories/shoemaker.png",
+  [BuildingType.tailor]: "~/assets/images/factories/tailor.png",
+  [BuildingType.tannery]: "~/assets/images/factories/tannery.png",
+  [BuildingType.toolMaker]: "~/assets/images/factories/tool-maker.png",
+  [BuildingType.unknown]: "~/assets/images/factories/unknown.png",
+  [BuildingType.weavingMill]: "~/assets/images/factories/weaving-mill.png",
+  [BuildingType.windowMaker]: "~/assets/images/factories/window-maker.png",
+};
+
 export const cardRecords: Record<CardName, Card> = {
   [CardName.bakeryWoolWood]: bakeryWoolWood,
   [CardName.bakeryClay]: bakeryClay,

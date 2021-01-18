@@ -39,7 +39,7 @@ export default {
   },
   data() {
     return {
-      placeholderSecondaryResource: ResourceType.barrel,
+      placeholderSecondaryResource: ResourceType.generic,
       placeholderPrimaryResource: ResourceType.placeholder,
     };
   },

@@ -24,6 +24,20 @@
       <Label :text="card.name" class="h1" />
     </FlexboxLayout>
     <!-- Production info -->
+    <Image
+      v-if="card.boostDrawCount"
+      col="0"
+      row="1"
+      src="~/assets/images/icons/draw-cards.png"
+    />
+    <Image
+      v-if="card.marketBoost"
+      col="0"
+      row="1"
+      :src="
+        `~/assets/images/icons/boost-market-${card.marketBoost[0].type}.png`
+      "
+    />
     <GridLayout
       v-if="card.productionConfig"
       col="0"
@@ -112,12 +126,7 @@
       <GameIcon :unicodeIcon="'\uf3ed'" :displayNumber="card.points" />
       <GameIcon :unicodeIcon="'\uf51e'" :displayNumber="card.cost" />
     </FlexboxLayout>
-    <Image
-      v-if="isLarge"
-      col="2"
-      row="1"
-      src="~/assets/images/placeholder-factory.png"
-    />
+    <Image v-if="isLarge" col="2" row="1" :src="factorySrc" />
     <FlexboxLayout
       v-if="isLarge"
       col="2"
@@ -138,6 +147,7 @@ import PrimaryResource from "../reusable/PrimaryResource.vue";
 import { ResourceType, Resource } from "../../../game/resources";
 import { Card } from "../../../game/types";
 import { aggregateResources } from "../../../game/utils";
+import { cardImageRecords } from "../../../game/cards";
 
 export enum Size {
   Small = "small",
@@ -184,6 +194,9 @@ export default {
     },
     chainInputResources() {
       return aggregateResources(this.card.productionConfig?.chainInput);
+    },
+    factorySrc() {
+      return cardImageRecords[this.card.type];
     },
   },
   methods: {

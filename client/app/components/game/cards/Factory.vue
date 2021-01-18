@@ -1,7 +1,21 @@
 <template>
   <GridLayout columns="*" rows="*,*,*" :class="{ placeholder: isPlaceholder }">
-    <Image rowSpan="2" src="~/assets/images/placeholder-factory.png" />
+    <Image rowSpan="2" :src="factorySrc" />
     <Label v-if="assignedEmployee" :text="assignedEmployee.name" />
+    <Image
+      v-if="card.boostDrawCount"
+      col="0"
+      row="1"
+      src="~/assets/images/icons/draw-cards.png"
+    />
+    <Image
+      v-if="card.marketBoost"
+      col="0"
+      row="1"
+      :src="
+        `~/assets/images/icons/boost-market-${card.marketBoost[0].type}.png`
+      "
+    />
     <SecondaryResourceCollection
       v-if="card.productionConfig"
       row="1"
@@ -36,6 +50,7 @@ import ProductionVue from "../modals/Production.vue";
 import { Resource } from "../../../game/resources";
 import PurchasingVue from "../modals/Purchasing.vue";
 import AssignmentConfirmationVue from "../modals/AssignmentConfirmation.vue";
+import { cardImageRecords } from "../../../game/cards";
 
 // Is assigned already?
 // Resource output?
@@ -116,6 +131,9 @@ export default {
           this.isPlaceholder &&
           affordableFactories.length
       );
+    },
+    factorySrc(): string {
+      return cardImageRecords[this.card.type];
     },
   },
   methods: {

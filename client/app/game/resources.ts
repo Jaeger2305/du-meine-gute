@@ -7,6 +7,7 @@ export type Resource = {
 
 export enum ResourceType {
   placeholder = "placeholder", // the resource can be any base value
+  generic = "generic", // the resource can be any base secondary value
   unknown = "unknown", // the resource isn't identified yet
 
   // base resources
@@ -61,6 +62,7 @@ export const defaultResourceOrder: Record<ResourceType, number> = {
   [ResourceType.feast]: 22,
   [ResourceType.unknown]: 23,
   [ResourceType.placeholder]: 24,
+  [ResourceType.generic]: 25,
 };
 
 // Special
@@ -75,6 +77,12 @@ export const placeholder: Resource = {
   type: ResourceType.placeholder,
   value: 0,
   baseResource: true,
+};
+
+export const generic: Resource = {
+  type: ResourceType.generic,
+  value: 0,
+  baseResource: false,
 };
 
 // Base
@@ -217,6 +225,7 @@ export const resourceRecords: Record<ResourceType, Resource> = {
   // special
   [ResourceType.unknown]: unknown,
   [ResourceType.placeholder]: placeholder,
+  [ResourceType.generic]: generic,
 
   // base
   [ResourceType.clay]: clay,

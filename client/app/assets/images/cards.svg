@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="58.792" height="68.89" viewBox="0 0 58.792 68.89">
+  <defs>
+    <path id="path-1" fill-rule="evenodd" d="M32.3261795.12098098c.84365464-.30706406 1.76098252-.01005268 2.27716828.6696248l-5.4196949.4741621L32.3261795.12098099zm19.06204224 2.12847805L18.51379967 5.1255989c-1.09963036.0962057-1.91428376 1.06707191-1.818079 2.16670131L21.925066 67.06398773c.09620476 1.09962464 1.06707192 1.91428375 2.16670227 1.81807709l32.87442208-2.87613678c1.09962845-.09620667 1.91428375-1.06707764 1.81807709-2.16670609L53.554924 4.06753731c-.09620666-1.09962964-1.06707382-1.91428304-2.16670227-1.81807828zM1.31632566 11.40764618l11.95918131-4.35278702 4.95912552 56.68305206L.12098086 13.97107124c-.37753213-1.037261.15808403-2.18589306 1.1953448-2.56342506z"/>
+    <mask id="mask-2" x="0" y="0" maskContentUnits="userSpaceOnUse" maskUnits="userSpaceOnUse">
+      <rect width="58.792" height="68.89" x="0" y="0" fill="white"/>
+      <use fill="black" xlink:href="#path-1"/>
+    </mask>
+  </defs>
+  <use fill="rgb(0,0,0)" xlink:href="#path-1"/>
+  <use fill-opacity="0" stroke="rgb(255,255,255)" stroke-linecap="butt" stroke-linejoin="miter" stroke-opacity="0" stroke-width="4" mask="url(#mask-2)" xlink:href="#path-1"/>
+</svg>

@@ -48,7 +48,7 @@
       v-if="isLarge"
       col="2"
       row="1"
-      src="~/assets/images/placeholder-factory.png"
+      src="~/assets/images/employees/generic-man.png"
     />
     <FlexboxLayout
       v-if="isLarge"
