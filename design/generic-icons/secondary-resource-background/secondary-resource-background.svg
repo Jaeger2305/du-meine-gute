@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="500"
+   height="500"
+   viewBox="0 0 132.29166 132.29167"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.1 (c497b03c, 2020-09-10)"
+   sodipodi:docname="secondary-resource-background.svg"
+   inkscape:export-filename="/Users/richard/personal/du-meine-gute/design/generic-icons/secondary-resource-background/secondary-resource-background.png"
+   inkscape:export-xdpi="111.06839"
+   inkscape:export-ydpi="111.06839">
+  <defs
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient1570">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop1566" />
+      <stop
+         style="stop-color:#666666;stop-opacity:1"
+         offset="1"
+         id="stop1568" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1570"
+       id="linearGradient1572"
+       x1="51.661774"
+       y1="44.562965"
+       x2="57.156727"
+       y2="34.562965"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(14.484057,1.5828713)" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1764">
+      <path
+         d="M 0,612 H 792 V 0 H 0 Z"
+         id="path1762" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1780">
+      <path
+         d="M 342.275,238.13 H 575.698 V 204.956 H 342.275 Z"
+         id="path1778" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1804">
+      <path
+         d="M 342.275,259.232 H 575.698 V 226.061 H 342.275 Z"
+         id="path1802" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1828">
+      <path
+         d="M 342.275,281.989 H 575.698 V 248.818 H 342.275 Z"
+         id="path1826" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1852">
+      <path
+         d="M 342.275,303.094 H 575.698 V 269.92 H 342.275 Z"
+         id="path1850" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1876">
+      <path
+         d="M 342.275,325.324 H 575.698 V 292.152 H 342.275 Z"
+         id="path1874" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1900">
+      <path
+         d="M 342.275,346.428 H 575.698 V 313.255 H 342.275 Z"
+         id="path1898" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1924">
+      <path
+         d="M 342.275,369.185 H 575.698 V 336.013 H 342.275 Z"
+         id="path1922" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1948">
+      <path
+         d="M 342.275,390.288 H 575.698 V 357.116 H 342.275 Z"
+         id="path1946" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1972">
+      <path
+         d="M 342.275,413.562 H 575.698 V 380.39 H 342.275 Z"
+         id="path1970" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1996">
+      <path
+         d="M 342.275,434.666 H 575.698 V 401.493 H 342.275 Z"
+         id="path1994" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2020">
+      <path
+         d="M 342.275,457.423 H 575.698 V 424.251 H 342.275 Z"
+         id="path2018" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2044">
+      <path
+         d="M 342.275,478.526 H 575.698 V 445.354 H 342.275 Z"
+         id="path2042" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2068">
+      <path
+         d="M 342.275,500.757 H 575.698 V 467.585 H 342.275 Z"
+         id="path2066" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2092">
+      <path
+         d="M 342.275,521.86 H 575.698 V 488.687 H 342.275 Z"
+         id="path2090" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2116">
+      <path
+         d="M 342.275,544.618 H 575.698 V 511.446 H 342.275 Z"
+         id="path2114" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2140">
+      <path
+         d="M 342.275,565.721 H 575.698 V 532.548 H 342.275 Z"
+         id="path2138" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2164">
+      <path
+         d="m 404.015,143.887 h 233.414 v -33.17 H 404.015 Z"
+         id="path2162" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2188">
+      <path
+         d="M 404.586,167.29 H 637.999 V 134.116 H 404.586 Z"
+         id="path2186" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2204">
+      <path
+         d="M 326.759,440.334 H 432.741 V 250.406 H 326.759 Z"
+         id="path2202" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2228">
+      <path
+         d="M 404.586,188.393 H 637.999 V 155.221 H 404.586 Z"
+         id="path2226" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2252">
+      <path
+         d="M 404.586,210.623 H 637.999 V 177.451 H 404.586 Z"
+         id="path2250" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2276">
+      <path
+         d="M 404.586,231.728 H 637.999 V 198.554 H 404.586 Z"
+         id="path2274" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2300">
+      <path
+         d="M 404.586,254.484 H 637.999 V 221.312 H 404.586 Z"
+         id="path2298" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2324">
+      <path
+         d="M 404.586,275.587 H 637.999 V 242.415 H 404.586 Z"
+         id="path2322" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2340">
+      <path
+         d="M 349.538,273.553 H 426.79 V 98.501 h -77.252 z"
+         id="path2338" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2364">
+      <path
+         d="M 116.114,118.279 H 349.538 V 85.1074 H 116.114 Z"
+         id="path2362" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2388">
+      <path
+         d="M 116.114,139.383 H 349.537 V 106.21 H 116.114 Z"
+         id="path2386" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2412">
+      <path
+         d="M 116.114,162.141 H 349.537 V 128.969 H 116.114 Z"
+         id="path2410" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2436">
+      <path
+         d="M 116.114,183.244 H 349.537 V 150.071 H 116.114 Z"
+         id="path2434" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2460">
+      <path
+         d="M 116.114,205.474 H 349.537 V 172.303 H 116.114 Z"
+         id="path2458" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2484">
+      <path
+         d="M 116.114,226.578 H 349.537 V 193.404 H 116.114 Z"
+         id="path2482" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2508">
+      <path
+         d="M 116.114,249.336 H 349.537 V 216.162 H 116.114 Z"
+         id="path2506" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2532">
+      <path
+         d="M 116.114,270.438 H 349.537 V 237.267 H 116.114 Z"
+         id="path2530" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2556">
+      <path
+         d="M 116.114,293.713 H 349.537 V 260.541 H 116.114 Z"
+         id="path2554" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2580">
+      <path
+         d="M 116.114,314.816 H 349.537 V 281.643 H 116.114 Z"
+         id="path2578" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2604">
+      <path
+         d="M 116.114,337.573 H 349.537 V 304.401 H 116.114 Z"
+         id="path2602" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2628">
+      <path
+         d="M 116.114,358.677 H 349.537 V 325.504 H 116.114 Z"
+         id="path2626" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2652">
+      <path
+         d="M 116.114,380.907 H 349.537 V 347.735 H 116.114 Z"
+         id="path2650" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2676">
+      <path
+         d="M 116.114,402.011 H 349.537 V 368.838 H 116.114 Z"
+         id="path2674" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2700">
+      <path
+         d="M 116.114,424.768 H 349.537 V 391.596 H 116.114 Z"
+         id="path2698" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2724">
+      <path
+         d="M 116.114,445.872 H 349.537 V 412.699 H 116.114 Z"
+         id="path2722" />
+    </clipPath>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Color Shift"
+       id="filter6136">
+      <feColorMatrix
+         type="hueRotate"
+         values="240"
+         result="color1"
+         id="feColorMatrix6132" />
+      <feColorMatrix
+         type="saturate"
+         values="1"
+         result="color2"
+         id="feColorMatrix6134" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter2299"
+       x="-0.06"
+       width="1.12"
+       y="-0.06"
+       height="1.12">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="2.6549088"
+         id="feGaussianBlur2301" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.0332452"
+     inkscape:cx="64.44766"
+     inkscape:cy="259.78286"
+     inkscape:document-units="px"
+     inkscape:current-layer="svg8"
+     inkscape:document-rotation="0"
+     showgrid="true"
+     units="px"
+     inkscape:window-width="1792"
+     inkscape:window-height="1049"
+     inkscape:window-x="0"
+     inkscape:window-y="23"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="axonomgrid"
+       id="grid10"
+       gridanglex="20"
+       gridanglez="20"
+       spacingy="0.99999999"
+       empspacing="4"
+       originx="66.14583"
+       originy="66.145835" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <circle
+     style="opacity:1;fill:#d5f6ff;stroke:none;stroke-width:2.0308;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;filter:url(#filter2299)"
+     id="path2297"
+     cx="66.145836"
+     cy="66.145836"
+     r="53.098175"
+     transform="matrix(1.0861175,0,0,1.0861175,-5.6963145,-5.6963145)" />
+</svg>
