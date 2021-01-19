@@ -5,15 +5,15 @@
       src="~/assets/images/sideboard/paper.png"
       stretch="fill"
     />
-    <GameIcon
+    <GameIconImage
       col="0"
-      :unicodeIcon="`\uf3ed`"
+      src="~/assets/images/icons/deck.png"
       :displayNumber="deckCount"
       size="large"
     />
-    <GameIcon
+    <GameIconImage
       col="1"
-      :unicodeIcon="`\uf3ed`"
+      src="~/assets/images/icons/deck.png"
       :displayNumber="discardCount"
       size="large"
     />
@@ -22,10 +22,10 @@
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
-import GameIcon from "../reusable/GameIcon.vue";
+import GameIconImage from "../reusable/GameIconImage.vue";
 
 export default {
-  components: { GameIcon },
+  components: { GameIconImage },
   props: {
     deckCount: {
       type: Number,

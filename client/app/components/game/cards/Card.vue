@@ -123,8 +123,16 @@
       justifyContent="space-around"
       class="attribute-container"
     >
-      <GameIcon :unicodeIcon="'\uf3ed'" :displayNumber="card.points" />
-      <GameIcon :unicodeIcon="'\uf51e'" :displayNumber="card.cost" />
+      <GameIconImage
+        src="~/assets/images/icons/points.png"
+        :displayNumber="card.points"
+        :isActionable="isActionable"
+      />
+      <GameIconImage
+        src="~/assets/images/icons/money.png"
+        :displayNumber="card.cost"
+        :isActionable="isActionable"
+      />
     </FlexboxLayout>
     <Image v-if="isLarge" col="2" row="1" :src="factorySrc" />
     <FlexboxLayout
@@ -141,7 +149,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
-import GameIcon from "../reusable/GameIcon.vue";
+import GameIconImage from "../reusable/GameIconImage.vue";
 import ResourceComponent from "../reusable/Resource.vue";
 import PrimaryResource from "../reusable/PrimaryResource.vue";
 import { ResourceType, Resource } from "../../../game/resources";
@@ -181,7 +189,7 @@ export default {
       default: false,
     },
   },
-  components: { GameIcon, Resource: ResourceComponent, PrimaryResource },
+  components: { GameIconImage, Resource: ResourceComponent, PrimaryResource },
   computed: {
     isLarge(): boolean {
       return this.size === Size.Large;

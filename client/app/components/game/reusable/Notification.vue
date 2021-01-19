@@ -34,7 +34,11 @@
         justifyContent="center"
         @tap="$emit('close')"
       >
-        <GameIcon :unicodeIcon="`\uf057`" size="large" />
+        <GameIconImage
+          src="~/assets/images/icons/close.png"
+          size="large"
+          @tap-game-icon="$emit('close')"
+        />
       </FlexboxLayout>
     </FlexboxLayout>
   </GridLayout>
@@ -43,7 +47,7 @@
 <script lang="ts">
 import Vue, { PropType } from "vue";
 import NotificationMessageContainer from "./NotificationMessageContainer.vue";
-import GameIcon from "./GameIcon.vue";
+import GameIconImage from "./GameIconImage.vue";
 import { Notification } from "../../../game/round-description";
 
 export default {
@@ -66,7 +70,7 @@ export default {
       default: false,
     },
   },
-  components: { NotificationMessageContainer, GameIcon },
+  components: { NotificationMessageContainer, GameIconImage },
 };
 </script>
 

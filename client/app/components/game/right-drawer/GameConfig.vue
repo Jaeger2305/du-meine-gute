@@ -6,25 +6,25 @@
       src="~/assets/images/sideboard/paper.png"
       stretch="fill"
     />
-    <GameIcon
+    <GameIconImage
       col="0"
       row="0"
       colSpan="2"
-      :unicodeIcon="`\uf275`"
+      src="~/assets/images/icons/factory.png"
       :displayNumber="buildCountForEndGame"
       size="large"
     />
-    <GameIcon
+    <GameIconImage
       col="0"
       row="1"
-      :unicodeIcon="`\uf0c0`"
+      src="~/assets/images/icons/players.png"
       :displayNumber="playerCount"
       size="large"
     />
-    <GameIcon
+    <GameIconImage
       col="1"
       row="1"
-      :unicodeIcon="`\uf185`"
+      src="~/assets/images/icons/suns.png"
       :displayNumber="marketSuns"
       size="large"
     />
@@ -33,10 +33,10 @@
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
-import GameIcon from "../reusable/GameIcon.vue";
+import GameIconImage from "../reusable/GameIconImage.vue";
 
 export default {
-  components: { GameIcon },
+  components: { GameIconImage },
   props: {
     marketSuns: {
       type: Number,

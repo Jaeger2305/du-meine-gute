@@ -41,8 +41,16 @@
       justifyContent="space-around"
       class="attribute-container"
     >
-      <GameIcon :unicodeIcon="'\uf3ed'" :displayNumber="employee.points" />
-      <GameIcon :unicodeIcon="'\uf51e'" :displayNumber="employee.cost" />
+      <GameIconImage
+        src="~/assets/images/icons/points.png"
+        :displayNumber="employee.points"
+        :isActionable="isActionable"
+      />
+      <GameIconImage
+        src="~/assets/images/icons/money.png"
+        :displayNumber="employee.cost"
+        :isActionable="isActionable"
+      />
     </FlexboxLayout>
     <Image
       v-if="isLarge"
@@ -68,7 +76,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
-import GameIcon from "../reusable/GameIcon.vue";
+import GameIconImage from "../reusable/GameIconImage.vue";
 import { Resource, ResourceType } from "../../../game/resources";
 import { Employee, PlayerActionEnum } from "../../../game/types";
 import PrimaryResourceCollection from "../reusable/PrimaryResourceCollection.vue";
@@ -96,7 +104,7 @@ export default {
     },
   },
   components: {
-    GameIcon,
+    GameIconImage,
     PrimaryResourceCollection,
     ProductionEfficiency,
   },

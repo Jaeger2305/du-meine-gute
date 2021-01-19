@@ -1,17 +1,23 @@
 <template>
-  <GridLayout columns="*" rows="*,*,*" :class="{ placeholder: isPlaceholder }">
-    <Image rowSpan="2" :src="factorySrc" />
-    <Label v-if="assignedEmployee" :text="assignedEmployee.name" />
+  <GridLayout columns="*,*" rows="*,2*" :class="{ placeholder: isPlaceholder }">
+    <Image rowSpan="2" colSpan="2" :src="factorySrc" />
+    <GameIconImage
+      v-if="isActionable || assignedEmployee"
+      src="~/assets/images/employees/generic-man.png"
+      :isActionable="isActionable"
+      class="assignment"
+      @tap-game-icon="contextHandler"
+    />
     <Image
       v-if="card.boostDrawCount"
-      col="0"
+      colSpan="2"
       row="1"
       src="~/assets/images/icons/draw-cards.png"
     />
     <Image
       v-if="card.marketBoost"
-      col="0"
       row="1"
+      colSpan="2"
       :src="
         `~/assets/images/icons/boost-market-${card.marketBoost[0].type}.png`
       "
@@ -19,16 +25,10 @@
     <SecondaryResourceCollection
       v-if="card.productionConfig"
       row="1"
-      rowSpan="2"
+      colSpan="2"
       :resources="card.productionConfig.output"
       :isFiltered="true"
       :isBackgroundVisible="false"
-    />
-    <GameIcon
-      v-if="isActionable || assignedEmployee"
-      :unicodeIcon="`\uf6e3`"
-      :isActionable="isActionable"
-      @tap-game-icon="contextHandler"
     />
   </GridLayout>
 </template>
@@ -37,7 +37,7 @@
 import Vue, { PropType } from "vue";
 import { AssignedEmployee, Card, PlayerActionEnum } from "../../../game/types";
 import SecondaryResourceCollection from "../right-drawer/SecondaryResourceCollection.vue";
-import GameIcon from "../reusable/GameIcon.vue";
+import GameIconImage from "../reusable/GameIconImage.vue";
 import {
   filterCardsToAffordable,
   isActionAvailable,
@@ -59,7 +59,7 @@ import { cardImageRecords } from "../../../game/cards";
 // Value of factory
 
 export default {
-  components: { SecondaryResourceCollection, GameIcon },
+  components: { SecondaryResourceCollection, GameIconImage },
   props: {
     card: {
       type: Object as PropType<Card>,
@@ -275,5 +275,8 @@ export default {
 <style scoped>
 .placeholder {
   opacity: 0.4;
+}
+.assignment {
+  height: 150px;
 }
 </style>

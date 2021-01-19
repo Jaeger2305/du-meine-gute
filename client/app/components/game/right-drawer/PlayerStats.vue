@@ -5,17 +5,17 @@
       src="~/assets/images/sideboard/paper.png"
       stretch="fill"
     />
-    <GameIcon
+    <GameIconImage
       row="0"
       :displayNumber="points"
-      :unicodeIcon="`\uf3ed`"
+      src="~/assets/images/icons/points.png"
       size="large"
       class="grid-item"
     />
-    <GameIcon
+    <GameIconImage
       row="1"
       :displayNumber="cardBoost"
-      :unicodeIcon="`\uf7c2`"
+      src="~/assets/images/icons/draw-cards.png"
       size="large"
       class="grid-item"
     />
@@ -31,12 +31,12 @@
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
-import GameIcon from "../reusable/GameIcon.vue";
+import GameIconImage from "../reusable/GameIconImage.vue";
 import PrimaryResourceCollection from "../reusable/PrimaryResourceCollection.vue";
 import { Resource } from "../../../game/resources";
 
 export default {
-  components: { GameIcon, PrimaryResourceCollection },
+  components: { GameIconImage, PrimaryResourceCollection },
   props: {
     points: {
       type: Number,

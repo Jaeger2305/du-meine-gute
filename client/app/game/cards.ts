@@ -272,7 +272,7 @@ const butcherMetalWheat: Card = {
 };
 const butcherWood: Card = {
   name: "butcher-wood",
-  resource: wool,
+  resource: wool, // this doesn't make sense
   cost: 15,
   points: 4,
   type: BuildingType.butcher,
@@ -1346,7 +1346,7 @@ enum CardName {
 
 export const cardImageRecords: Record<BuildingType, string> = {
   [BuildingType.bakery]: "~/assets/images/factories/bakery.png",
-  [BuildingType.brickMaker]: "~/assets/images/factories/brick-maker.png",
+  [BuildingType.brickMaker]: "~/assets/images/factories/brickmaker.png",
   [BuildingType.butcher]: "~/assets/images/factories/butcher.png",
   [BuildingType.cattleRanch]: "~/assets/images/factories/ranch.png",
   [BuildingType.charburner]: "~/assets/images/factories/coal-mine.png",

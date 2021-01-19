@@ -6,7 +6,11 @@
     :style="style"
     @tap="$emit('tap')"
   >
-    <Label col="0" row="0" class="bg-halo" :text="resourceType" />
+    <Image
+      col="0"
+      row="0"
+      src="~/assets/images/icons/secondary-resource-background.png"
+    />
     <Image col="0" row="0" :src="resourceSrc" class="secondary-icon" />
 
     <shadowed-label
@@ -57,16 +61,16 @@ export default {
 
 <style scoped>
 .bg-halo {
-  height: 100%;
-  width: 100%;
+  height: 90%;
+  width: 90%;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.7);
   text-align: center;
 }
 
 .secondary-icon {
-  height: 90%;
-  width: 90%;
+  height: 100%;
+  width: 100%;
 }
 
 .fg-number {

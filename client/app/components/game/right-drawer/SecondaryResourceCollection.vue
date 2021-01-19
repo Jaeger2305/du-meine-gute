@@ -2,33 +2,30 @@
   <GridLayout columns="*" rows="*">
     <Image
       v-if="isBackgroundVisible"
-      colSpan="3"
-      rowSpan="3"
       src="~/assets/images/sideboard/paper.png"
       stretch="fill"
     />
     <FlexboxLayout
-      justifyContent="center"
-      alignContent="center"
+      justifyContent="space-around"
+      alignContent="space-around"
       flexWrap="wrap"
-      style="margin: 30px;"
+      style="margin: 0%;"
     >
       <SecondaryResource
         v-for="{ resource, count } in displayResources"
         :key="resource.type"
         :resourceType="resource.type"
         :displayNumber="`${count}`"
-        height="30%"
-        width="30%"
-        style="margin: 10px;"
+        :height="`${size}%`"
+        :width="`${size}%`"
+        :style="`margin: ${size / 12}%; height: 100%; width: 100%;`"
         @tap="$emit('tap-resource', resource)"
       />
-      <GameIcon
+      <GameIconImage
         :displayNumber="resourceTotalValue"
-        size="large"
-        :unicodeIcon="`\uf51e`"
-        height="30%"
-        width="30%"
+        src="~/assets/images/icons/money.png"
+        :height="`${size - 10}%`"
+        :width="`${size - 10}%`"
       />
     </FlexboxLayout>
   </GridLayout>
@@ -45,10 +42,10 @@ import {
 import SecondaryResource from "../reusable/SecondaryResource.vue";
 import { aggregateResources } from "../../../game/utils";
 import { differenceBy, sumBy } from "lodash";
-import GameIcon from "../reusable/GameIcon.vue";
+import GameIconImage from "../reusable/GameIconImage.vue";
 
 export default {
-  components: { SecondaryResource, GameIcon },
+  components: { SecondaryResource, GameIconImage },
   props: {
     resources: {
       type: Array as PropType<Array<Resource>>,
@@ -136,6 +133,9 @@ export default {
     },
     resourceTotalValue(): number {
       return sumBy(this.resources, "value");
+    },
+    size() {
+      return this.displayResources.length < 4 ? 45 : 30;
     },
   },
 };
