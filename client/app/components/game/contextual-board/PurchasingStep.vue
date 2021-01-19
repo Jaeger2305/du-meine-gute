@@ -91,6 +91,7 @@ export default {
         resources: Array<Resource>;
       } | null = await this.$showModal(PurchasingVue, {
         fullscreen: true,
+        animated: true,
         props: {
           factory: this.activeEmployee,
           costExtractor: (employee) => employee.cost,

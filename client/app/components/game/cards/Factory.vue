@@ -151,6 +151,7 @@ export default {
         | Parameters<typeof playerActions[PlayerActionEnum.produceAtFactory]>[2]
         | null = await this.$showModal(ProductionVue, {
         fullscreen: true,
+        animated: true,
         props: {
           assignedEmployee: this.assignedEmployee,
           cardsInHand,
@@ -173,6 +174,7 @@ export default {
         resources: Array<Resource>;
       } | null = await this.$showModal(PurchasingVue, {
         fullscreen: true,
+        animated: true,
         props: {
           factory: this.assignedEmployee,
           costExtractor: (factory) => factory.unassignmentCost,
@@ -198,6 +200,7 @@ export default {
         resources: Array<Resource>;
       } | null = await this.$showModal(PurchasingVue, {
         fullscreen: true,
+        animated: true,
         props: {
           factory: this.card,
           costExtractor: (factory) => factory.cost,
@@ -223,6 +226,7 @@ export default {
         AssignmentConfirmationVue,
         {
           fullscreen: true,
+          animated: true,
           props: {
             efficiency: this.$store.state.stagedAssignment.efficiency,
             employee: this.$store.state.stagedAssignment.employee,

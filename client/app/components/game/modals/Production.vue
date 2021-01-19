@@ -79,7 +79,6 @@ import {
 } from "../../../game/utils";
 import EmployeeVue from "./../cards/Employee.vue";
 import CardVue from "./../cards/Card.vue";
-import GameIcon from "./../reusable/GameIcon.vue";
 import { employeeRecords } from "../../../game/worker";
 import PrimaryResourceCollection from "../reusable/PrimaryResourceCollection.vue";
 import SecondaryResourceCollection from "../right-drawer/SecondaryResourceCollection.vue";
@@ -123,7 +122,6 @@ export default {
   components: {
     Employee: EmployeeVue,
     Card: CardVue,
-    GameIcon,
     PrimaryResourceCollection,
     SecondaryResourceCollection,
     PlayerHand,

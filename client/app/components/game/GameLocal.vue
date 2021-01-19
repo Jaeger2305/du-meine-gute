@@ -198,6 +198,7 @@ export default {
     },
     async endGameSummary(winner) {
       await this.$showModal(GameSummary, {
+        animated: true,
         fullscreen: true,
         props: { winner },
       });
