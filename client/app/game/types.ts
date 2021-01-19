@@ -57,6 +57,7 @@ export type GameConfig = {
   drawCount: number; // standard rules should be 2. Affects how many cards are able to be drawn at the beginning of the round.
   pointsPerResource: number; // standard rules should be 0.25. This means with total resource value of 37, a floored 7 points will be awarded.
   workerCount: number; // the number of workers to include - 4/6/8 depending on number of players.
+  isTutorialEnabled: boolean; // give extra hints to the user as to what to do.
 };
 
 export type PlayerState = {

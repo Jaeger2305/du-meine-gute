@@ -8,6 +8,7 @@ export const emptyGame: GameState = {
     drawCount: 2,
     pointsPerResource: 0.25,
     workerCount: 4,
+    isTutorialEnabled: false,
   },
   cardsInDeck: [],
   cardsInDiscard: [],

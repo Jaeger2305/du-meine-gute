@@ -59,7 +59,10 @@
           @player-action="playerAction"
         />
         <Notification
-          v-if="activeNotification"
+          v-if="
+            activeNotification &&
+              $store.state.gameState.config.isTutorialEnabled
+          "
           col="0"
           row="0"
           colSpan="2"

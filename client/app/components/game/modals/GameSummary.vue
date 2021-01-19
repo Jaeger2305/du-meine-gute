@@ -106,7 +106,7 @@ export default {
 
 <style scoped>
 .h1 {
-  font-size: 24px;
+  font-size: 26px;
   color: white;
   font-family: "Grenze Gotisch", "GrenzeGotisch-Bold";
   font-weight: bold;
@@ -117,7 +117,7 @@ export default {
 }
 
 .bgh1 {
-  font-size: 26px;
+  font-size: 27px;
   color: rgb(88, 120, 164);
   font-family: "Grenze Gotisch", "GrenzeGotisch-Bold";
   font-weight: bold;

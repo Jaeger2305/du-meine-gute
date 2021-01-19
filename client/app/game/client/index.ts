@@ -37,10 +37,11 @@ export function newGame(): GameState {
   const gameState: GameState = {
     config: {
       marketSuns: 4,
-      buildCountForEndGame: 8,
+      buildCountForEndGame: 4,
       drawCount: 2,
       pointsPerResource: 0.25,
       workerCount: 4, // should be dependent on number of players
+      isTutorialEnabled: false,
     },
     cardsInDeck: [],
     cardsInDiscard: [],
