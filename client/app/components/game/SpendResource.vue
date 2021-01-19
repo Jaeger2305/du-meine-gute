@@ -9,10 +9,10 @@
       :resourceType="resource.type"
       @tap="addToBasket"
     />
-    <GameIcon
+    <GameIconImage
       :displayNumber="resource.value"
       size="large"
-      :unicodeIcon="`\uf51e`"
+      src="~/assets/images/icons/money.png"
       height="80%"
       width="80%"
     />
@@ -28,7 +28,7 @@
 import Vue, { PropType } from "vue";
 import { Resource, ResourceType } from "../../game/resources";
 import SecondaryResource from "./reusable/SecondaryResource.vue";
-import GameIcon from "./reusable/GameIcon.vue";
+import GameIconImage from "./reusable/GameIconImage.vue";
 import { CustomEvents } from "../../types";
 
 export type ResourcePair = {
@@ -38,7 +38,7 @@ export type ResourcePair = {
 };
 
 export default {
-  components: { SecondaryResource, GameIcon },
+  components: { SecondaryResource, GameIconImage },
   props: {
     resource: {
       type: Object as () => Resource,

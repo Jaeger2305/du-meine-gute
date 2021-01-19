@@ -37,12 +37,12 @@
           :employee="itemBeingPurchased"
         />
         <Card v-else column="1" rowSpan="2" :card="itemBeingPurchased" />
-        <GameIcon
+        <GameIconImage
           column="1"
           row="2"
           :displayNumber="stagedMoney"
           size="large"
-          :unicodeIcon="`\uf51e`"
+          src="~/assets/images/icons/money.png"
         />
         <FlexboxLayout
           column="2"
@@ -80,11 +80,16 @@ import { aggregateResources, verifyResources } from "../../../game/utils";
 import SpendResource, { ResourcePair } from "./../SpendResource.vue";
 import EmployeeVue from "./../cards/Employee.vue";
 import CardVue from "./../cards/Card.vue";
-import GameIcon from "./../reusable/GameIcon.vue";
+import GameIconImage from "./../reusable/GameIconImage.vue";
 import { employeeRecords } from "../../../game/worker";
 
 export default {
-  components: { SpendResource, Employee: EmployeeVue, Card: CardVue, GameIcon },
+  components: {
+    SpendResource,
+    Employee: EmployeeVue,
+    Card: CardVue,
+    GameIconImage,
+  },
   props: {
     resources: {
       type: Array as PropType<PlayerState["resources"]>,
