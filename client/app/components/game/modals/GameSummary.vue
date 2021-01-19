@@ -1,26 +1,42 @@
 <template>
   <Frame id="game-summary">
-    <Page>
-      <ActionBar title="winner">
-        <ActionItem
-          @tap="$modal.close(null)"
-          ios.systemIcon="1"
-          ios.position="right"
-          android.systemIcon="ic_menu_close_clear_cancel"
-          android.position="actionBar"
+    <Page actionBarHidden="true">
+      <GridLayout columns="2*,*,*,2*" rows="*,3*">
+        <Image src="~/assets/images/combined-clouds.png" />
+        <shadowed-label :text="winner.name" class="bgh1" />
+        <shadowed-label
+          :text="winner.name"
+          class="h1"
+          textShadow="0 0 10 rgb(88, 120, 164)"
         />
-      </ActionBar>
-      <StackLayout>
-        <Label :text="`winner: ${winner.name}`" />
-        <FlexboxLayout
-          v-for="{ points, description } in pointsBreakdown"
-          :key="description"
-          justifyContent="space-between"
+        <Button col="2" colSpan="2" class="button" @tap="$modal.close"
+          >LOBBY</Button
         >
-          <Label :text="description" />
-          <Label :text="points" />
-        </FlexboxLayout>
-      </StackLayout>
+        <StackLayout
+          v-for="(pointGroup, i) in [
+            pointsBreakdown.slice(0, pointsBreakdown.length / 2),
+            pointsBreakdown.slice(pointsBreakdown.length / 2 + 1),
+          ]"
+          :key="i"
+          :col="i * 2"
+          colSpan="2"
+          row="1"
+        >
+          <FlexboxLayout
+            v-for="{ points, imgSrc, description } in pointGroup"
+            :key="description"
+            justifyContent="space-between"
+            style="margin: 20px"
+          >
+            <GameIconImage :src="imgSrc" />
+            <Label :text="description" class="points-title" />
+            <GameIconImage
+              src="~/assets/images/icons/points.png"
+              :displayNumber="points"
+            />
+          </FlexboxLayout>
+        </StackLayout>
+      </GridLayout>
     </Page>
   </Frame>
 </template>
@@ -29,13 +45,16 @@
 import Vue, { PropType } from "vue";
 import { GameState } from "../../../game/types";
 import { sum } from "lodash";
+import GameIconImage from "../reusable/GameIconImage.vue";
 
 type PointSummary = {
   points: number;
+  imgSrc: string;
   description: string;
 };
 
 export default {
+  components: { GameIconImage },
   props: {
     winner: {
       type: Object as PropType<GameState["winner"]>,
@@ -61,15 +80,55 @@ export default {
       return [
         ...cardsInPlay.map(({ points, name }) => ({
           points,
+          imgSrc: "~/assets/images/icons/factory.png",
           description: name,
         })),
-        ...employees.map(({ points, name }) => ({ points, description: name })),
-        { points: resourcesScore, description: "resources" },
-        { points: total, description: "total" },
-      ];
+        ...employees.map(({ points, name }) => ({
+          points,
+          imgSrc: "~/assets/images/employees/generic-man.png",
+          description: name,
+        })),
+        {
+          points: resourcesScore,
+          imgSrc: "~/assets/images/resources/generic.png",
+          description: "resources",
+        },
+        {
+          points: total,
+          imgSrc: "~/assets/images/icons/points.png",
+          description: "total",
+        },
+      ].filter(({ points }) => points);
     },
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.h1 {
+  font-size: 24px;
+  color: white;
+  font-family: "Grenze Gotisch", "GrenzeGotisch-Bold";
+  font-weight: bold;
+
+  text-align: center;
+  vertical-align: middle;
+  text-shadow: 2px 2px 0px #ff0000;
+}
+
+.bgh1 {
+  font-size: 26px;
+  color: rgb(88, 120, 164);
+  font-family: "Grenze Gotisch", "GrenzeGotisch-Bold";
+  font-weight: bold;
+
+  text-align: center;
+  vertical-align: middle;
+}
+
+.points-title {
+  font-size: 20px;
+  font-family: "Grenze Gotisch", "GrenzeGotisch-Bold";
+  text-align: left;
+}
+</style>

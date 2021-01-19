@@ -87,4 +87,10 @@ export default {
   width: 180px;
   font-size: 35px;
 }
+
+.small {
+  height: 100px;
+  width: 100px;
+  font-size: 15px;
+}
 </style>

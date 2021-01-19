@@ -175,7 +175,10 @@ export default {
       });
     },
     async endGameSummary(winner) {
-      await this.$showModal(GameSummary, { props: { winner } });
+      await this.$showModal(GameSummary, {
+        fullscreen: true,
+        props: { winner },
+      });
       this.$navigateBack({ frame: "base" });
     },
     close({ direction }: SwipeGestureEventData) {
