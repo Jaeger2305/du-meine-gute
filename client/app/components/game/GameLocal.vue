@@ -11,7 +11,11 @@
         @swipe="close"
         style="background-color: transparent"
       >
-        <Banner v-if="drawerLocation === 'Top'" @player-action="playerAction" />
+        <Banner
+          v-if="drawerLocation === 'Top'"
+          @player-action="playerAction"
+          @swipe="close"
+        />
         <MessageHistory
           v-if="drawerLocation === 'Left'"
           :drawerMessages="$store.state.messages"
@@ -82,7 +86,7 @@
 <script lang="ts">
 import { getString, setString } from "@nativescript/core/application-settings";
 import orientation from "nativescript-orientation";
-import { MutationEnum, ActionEnum } from "../../store";
+import { MutationEnum, ActionEnum, GettersEnum } from "../../store";
 import Lobby from "../Lobby.vue";
 import GameSummary from "./modals/GameSummary.vue";
 
@@ -99,6 +103,7 @@ import StatSummary from "./right-drawer/StatSummary.vue";
 import NotificationComponent from "./reusable/Notification.vue";
 import { notificationConfig, Notification } from "../../game/round-description";
 import SplashscreenVue from "./modals/Splashscreen.vue";
+import { isActionAvailable } from "../../game/utils";
 
 type SideDrawerConfig = {
   bubbleSwipes: Array<SwipeDirection>;
@@ -172,10 +177,24 @@ export default {
   },
   methods: {
     async playerAction(type: PlayerActionEnum, payload: any) {
-      this.$store.dispatch(ActionEnum.PlayerAction, {
+      await this.$store.dispatch(ActionEnum.PlayerAction, {
         type,
         payload,
       });
+
+      const isBannerActionAvailable = this.$store.getters[
+        GettersEnum.getDynamicActions
+      ].length;
+
+      const isDynamicActionAvailable = this.$store.getters[
+        GettersEnum.getDynamicActions
+      ].length;
+
+      if (isDynamicActionAvailable) {
+        this.$nextTick(() => this.$refs.drawer.closeDrawer());
+      } else if (isBannerActionAvailable) {
+        this.$nextTick(() => this.$refs.drawer.showDrawer());
+      }
     },
     async endGameSummary(winner) {
       await this.$showModal(GameSummary, {
@@ -200,14 +219,12 @@ export default {
     swipe({ direction }: SwipeGestureEventData) {
       if (direction === SwipeDirection.left) {
         this.drawerLocation = SideDrawerLocation.Right;
-        this.$nextTick(() => this.$refs.drawer.showDrawer());
       } else if (direction === SwipeDirection.right) {
         this.drawerLocation = SideDrawerLocation.Left;
-        this.$nextTick(() => this.$refs.drawer.showDrawer());
       } else if (direction === SwipeDirection.down) {
         this.drawerLocation = SideDrawerLocation.Top;
-        this.$nextTick(() => this.$refs.drawer.showDrawer());
       }
+      this.$nextTick(() => this.$refs.drawer.showDrawer());
     },
   },
 };

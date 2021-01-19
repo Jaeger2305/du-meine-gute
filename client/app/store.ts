@@ -14,7 +14,7 @@ import {
   EventSource,
   ServerActionEventTypeLookup,
 } from "./game/types";
-import { cloneDeep } from "lodash";
+import { cloneDeep, intersection } from "lodash";
 import { ServerActionResponse } from "./game/server-action/types";
 
 Vue.use(Vuex);
@@ -42,6 +42,11 @@ const state: {
   stagedAssignment: null,
 };
 
+export enum GettersEnum {
+  getBannerActions = "BANNER_ACTIONS",
+  getDynamicActions = "DYNAMIC_ACTIONS",
+}
+
 export enum MutationEnum {
   ReceiveMessage = "RECEIVE_MESSAGE",
   SetupGame = "SETUP_GAME",
@@ -57,6 +62,35 @@ export enum ActionEnum {
 
 export default new Vuex.Store({
   state,
+  getters: {
+    [GettersEnum.getBannerActions](state): Array<PlayerActionEnum> {
+      const bannerActions = [
+        PlayerActionEnum.endStep,
+        PlayerActionEnum.drawCard,
+        PlayerActionEnum.discard,
+        PlayerActionEnum.assignEmployee,
+        PlayerActionEnum.hireWorker,
+      ];
+      const availableBannerActions = intersection(
+        state.playerState.availableActions,
+        bannerActions
+      );
+      return availableBannerActions;
+    },
+    [GettersEnum.getDynamicActions](state): Array<PlayerActionEnum> {
+      const dynamicActions = [
+        PlayerActionEnum.reserveFactory,
+        PlayerActionEnum.unassignEmployee,
+        PlayerActionEnum.produceAtFactory,
+        PlayerActionEnum.buildFactory,
+      ];
+      const availableDynamicActions = intersection(
+        state.playerState.availableActions,
+        dynamicActions
+      );
+      return availableDynamicActions;
+    },
+  },
   mutations: {
     [MutationEnum.SetupGame](state) {
       Vue.set(state, "gameState", newGame());

@@ -83,6 +83,7 @@ import PrimaryResourceCollection from "../reusable/PrimaryResourceCollection.vue
 import ProductionEfficiency from "../reusable/ProductionEfficiency.vue";
 import { isActionAvailable } from "../../../game/utils";
 import { MutationEnum } from "../../../store";
+import { CustomEvents } from "../../../types";
 
 export enum Size {
   Small = "small",
@@ -129,6 +130,7 @@ export default {
           efficiency,
         });
       }
+      this.$emit(CustomEvents.TAP_EMPLOYEE_EFFICIENCY, efficiency);
     },
   },
 };

@@ -8,4 +8,5 @@ export enum CustomEvents {
   TAP_GAME_ICON = "tap-game-icon",
   ADD_RESOURCE_TO_BASKET = "add-resource-to-basket",
   REMOVE_RESOURCE_FROM_BASKET = "remove-resource-from-basket",
+  TAP_EMPLOYEE_EFFICIENCY = "tap-employee-efficiency",
 }

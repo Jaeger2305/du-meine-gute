@@ -16,6 +16,7 @@
       <Employee
         v-if="unassignedEmployees.length"
         :employee="unassignedEmployees[activeEmployeeIndex]"
+        @tap-employee-efficiency="close"
       />
     </CarouselSelect>
     <FlexboxLayout
@@ -32,6 +33,10 @@
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
+import {
+  SwipeGestureEventData,
+  SwipeDirection,
+} from "tns-core-modules/ui/gestures";
 import { PlayerActionEnum } from "../../../game/client";
 import Notification from "../reusable/Notification.vue";
 import PrimaryResourceCollection from "../reusable/PrimaryResourceCollection.vue";
@@ -84,6 +89,11 @@ export default {
   methods: {
     endStep() {
       this.$emit(CustomEvents.PLAYER_ACTION, PlayerActionEnum.endStep, null);
+    },
+    close() {
+      this.$emit("swipe", {
+        direction: SwipeDirection.up,
+      } as SwipeGestureEventData);
     },
   },
 };
