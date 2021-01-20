@@ -3,7 +3,7 @@
     <Label v-if="isActionable" col="0" row="0" class="button" />
     <Label col="0" row="0" :text="unicodeIcon" class="fa-icon" :class="size" />
 
-    <shadowed-label
+    <Label
       v-if="displayNumber"
       col="0"
       row="0"
@@ -11,7 +11,7 @@
       class="bg-number"
       :class="size"
     />
-    <shadowed-label
+    <Label
       v-if="displayNumber"
       col="0"
       row="0"

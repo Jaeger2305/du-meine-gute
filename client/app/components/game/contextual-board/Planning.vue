@@ -36,7 +36,7 @@ import Vue, { PropType } from "vue";
 import {
   SwipeGestureEventData,
   SwipeDirection,
-} from "tns-core-modules/ui/gestures";
+} from "@nativescript/core/ui/gestures";
 import { PlayerActionEnum } from "../../../game/client";
 import Notification from "../reusable/Notification.vue";
 import PrimaryResourceCollection from "../reusable/PrimaryResourceCollection.vue";

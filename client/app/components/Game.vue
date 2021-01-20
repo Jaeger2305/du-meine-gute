@@ -57,7 +57,7 @@
 <script lang="ts">
 import { getString, setString } from "@nativescript/core/application-settings";
 import Lobby from "./Lobby.vue";
-import { setTimeout, clearTimeout } from "tns-core-modules/timer";
+import { setTimeout, clearTimeout } from "@nativescript/core/timer";
 
 const WS = require("nativescript-websockets");
 

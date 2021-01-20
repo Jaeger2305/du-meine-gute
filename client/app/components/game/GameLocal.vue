@@ -26,13 +26,13 @@
       <!-- The overall grid -->
       <!-- | ---------- cards in play ---------- | -->
       <!-- | --------------- hand -------------- | -->
-      <GridLayout
-        ~mainContent
-        columns="5*, *"
-        rows="7*, 2*"
-        class="play-area"
-        @swipe="swipe"
-      >
+      <GridLayout ~mainContent columns="5*, *" rows="7*, 2*" @swipe="swipe">
+        <Image
+          colSpan="2"
+          rowSpan="2"
+          src="~/assets/images/grass.png"
+          stretch="fill"
+        />
         <Factories
           colSpan="2"
           :factories="$store.state.playerState.cardsInPlay"
@@ -41,17 +41,32 @@
         />
 
         <!-- Bottom panel -->
-        <Label column="0" colSpan="2" row="1" class="bottom-panel" />
+        <Image
+          colSpan="2"
+          row="1"
+          src="~/assets/images/backboard.png"
+          stretch="aspectFill"
+        />
         <!-- Grass border -->
         <GridLayout
-          columns="*"
+          columns="*,*"
           rows="22*, 47*, 9*, 17*"
           column="0"
           colSpan="2"
           row="0"
           rowSpan="2"
         >
-          <Label column="0" row="2" class="grass-separator" />
+          <Image
+            row="2"
+            src="~/assets/images/grass-separator.png"
+            stretch="fill"
+          />
+          <Image
+            col="1"
+            row="2"
+            src="~/assets/images/grass-separator.png"
+            stretch="fill"
+          />
         </GridLayout>
         <!-- Player hand -->
         <PlayerHand
@@ -90,13 +105,13 @@ import { MutationEnum, ActionEnum, GettersEnum } from "../../store";
 import Lobby from "../Lobby.vue";
 import GameSummary from "./modals/GameSummary.vue";
 
-import { setTimeout, clearTimeout } from "tns-core-modules/timer";
+import { setTimeout, clearTimeout } from "@nativescript/core/timer";
 import { PlayerActionEnum, ServerActionEnum } from "../../game/types";
 import { RoundSteps } from "../../game/server-action";
 import {
   SwipeGestureEventData,
   SwipeDirection,
-} from "tns-core-modules/ui/gestures";
+} from "@nativescript/core/ui/gestures";
 import { SideDrawerLocation } from "nativescript-ui-sidedrawer";
 import MessageHistory from "./left-drawer/MessageHistory.vue";
 import StatSummary from "./right-drawer/StatSummary.vue";
@@ -232,28 +247,7 @@ export default {
 </script>
 
 <style scoped>
-.play-area {
-  background-image: url("~/assets/images/grass.png");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-}
-
 .notification-modal {
   margin: 10%;
-}
-
-.bottom-panel {
-  background-image: url("~/assets/images/backboard.png");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-}
-.grass-separator {
-  width: 100%;
-  height: 150px;
-  background-image: url("~/assets/images/grass-separator.png");
-  background-position: center;
-  background-repeat: repeat-x;
 }
 </style>

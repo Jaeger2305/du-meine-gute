@@ -13,14 +13,14 @@
     />
     <Image col="0" row="0" :src="resourceSrc" class="secondary-icon" />
 
-    <shadowed-label
+    <Label
       v-if="displayNumber"
       col="0"
       row="0"
       :text="displayNumber"
       class="bg-number"
     />
-    <shadowed-label
+    <Label
       v-if="displayNumber"
       col="0"
       row="0"

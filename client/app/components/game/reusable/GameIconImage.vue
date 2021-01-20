@@ -1,32 +1,21 @@
 <template>
   <GridLayout columns="*" rows="*" class="game-icon" :class="size">
     <Label v-if="isActionable" col="0" row="0" class="button" />
-    <Image col="0" row="0" :src="src" />
+    <Image :src="src" />
 
-    <shadowed-label
+    <Label
       v-if="displayNumber"
-      col="0"
-      row="0"
       :text="displayNumber"
       class="bg-number"
       :class="size"
     />
-    <shadowed-label
+    <Label
       v-if="displayNumber"
-      col="0"
-      row="0"
       :text="displayNumber"
       class="fg-number"
       :class="size"
-      textShadow="0 0 3 rgb(88, 120, 164)"
     />
-    <Label
-      v-if="isActionable"
-      col="0"
-      row="0"
-      class="hitbox"
-      @tap="tapGameIcon"
-    />
+    <Label v-if="isActionable" class="hitbox" @tap="tapGameIcon" />
   </GridLayout>
 </template>
 

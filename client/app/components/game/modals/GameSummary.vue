@@ -3,8 +3,8 @@
     <Page actionBarHidden="true">
       <GridLayout columns="2*,*,*,2*" rows="*,3*">
         <Image src="~/assets/images/combined-clouds.png" />
-        <shadowed-label :text="winner.name" class="bgh1" />
-        <shadowed-label
+        <Label :text="winner.name" class="bgh1" />
+        <Label
           :text="winner.name"
           class="h1"
           textShadow="0 0 10 rgb(88, 120, 164)"

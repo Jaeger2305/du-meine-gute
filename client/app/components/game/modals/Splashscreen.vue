@@ -12,7 +12,7 @@
 <script lang="ts">
 import Vue, { PropType } from "vue";
 import Notification from "../reusable/Notification.vue";
-import { setTimeout } from "tns-core-modules/timer";
+import { setTimeout, clearTimeout } from "@nativescript/core/timer";
 
 export default {
   components: {

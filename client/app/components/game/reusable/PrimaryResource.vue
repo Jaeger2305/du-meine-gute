@@ -1,17 +1,9 @@
 <template>
-  <GridLayout columns="*" rows="*" class="primary-icon" @tap="$emit('tap')">
-    <Image
-      col="0"
-      row="0"
-      :src="resourceSrc"
-      class="primary-image"
-      stretch="aspectFill"
-    />
+  <GridLayout class="primary-icon" @tap="$emit('tap')">
+    <Image :src="resourceSrc" class="primary-image" stretch="fill" />
 
-    <shadowed-label col="0" row="0" :text="formattedNumber" class="bg-number" />
-    <shadowed-label
-      col="0"
-      row="0"
+    <Label :text="formattedNumber" class="bg-number" />
+    <Label
       :text="formattedNumber"
       class="fg-number"
       textShadow="0 0 3 rgb(88, 120, 164)"

@@ -1,7 +1,10 @@
 <template>
   <Frame id="banner">
-    <Page actionBarHidden="true" class="cover-image">
-      <component v-if="componentName" v-on="$listeners" :is="componentName" />
+    <Page actionBarHidden="true">
+      <GridLayout>
+        <Image src="~/assets/images/backboard.png" stretch="aspectFill" />
+        <component v-if="componentName" v-on="$listeners" :is="componentName" />
+      </GridLayout>
     </Page>
   </Frame>
 </template>
@@ -51,11 +54,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.cover-image {
-  background-image: url("~/assets/images/backboard.png");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-}
-</style>
+<style scoped></style>

@@ -4,26 +4,34 @@
   "description": "A native application for the niche German boardgame",
   "author": "Richard <richard.webb@sgef-df.com>",
   "license": "MIT",
+  "nativescript": {
+    "id": "org.nativescript.application",
+    "templateVersion": "v2",
+    "tns-android": {
+      "version": "6.5.0"
+    },
+    "tns-ios": {
+      "version": "6.5.0"
+    }
+  },
   "dependencies": {
-    "@nativescript/core": "7.0.0",
     "@nativescript/theme": "^2.2.1",
-    "@nativescript/webpack": "^3.0.9",
     "@vue/devtools": "^5.3.3",
     "axios": "^0.19.2",
     "nativescript-orientation": "^2.2.5",
+    "nativescript-shadowed-label": "^1.0.0",
     "nativescript-socketio": "^3.3.1",
     "nativescript-toasty": "^3.0.0-alpha.2",
-    "nativescript-ui-sidedrawer": "^9.0.3",
+    "nativescript-ui-sidedrawer": "^8.0.1",
     "nativescript-vue": "^2.6.1",
     "nativescript-vue-devtools": "^1.4.0",
     "nativescript-websockets": "^1.5.5",
+    "tns-core-modules": "^6.5.1",
     "vuex": "^3.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
-    "@nativescript/android": "7.0.1",
-    "@nativescript/types": "7.0.0",
     "@types/jest": "^26.0.14",
     "@types/lodash": "^4.14.162",
     "@types/node": "^13.11.1",
@@ -31,13 +39,16 @@
     "babel-loader": "^8.1.0",
     "jest": "^26.5.2",
     "lodash": "^4.17.20",
+    "nativescript-dev-webpack": "^1.5.1",
     "nativescript-vue-template-compiler": "^2.7.1",
+    "nativescript-worker-loader": "^0.11.0",
     "node-sass": "^4.13.1",
     "rimraf": "^3.0.2",
+    "tns-platform-declarations": "^6.5.1",
     "ts-jest": "^26.4.1",
     "typescript": "^4.0.3",
     "vue": "^2.6.11",
-    "vue-loader": "^15.9.3"
-  },
-  "main": "main"
+    "vue-loader": "^15.9.3",
+    "webpack": "^4.44.1"
+  }
 }

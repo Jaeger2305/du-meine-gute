@@ -1,7 +1,7 @@
 import Vue from "nativescript-vue";
 import App from "./components/App.vue";
 import VueDevtools from "nativescript-vue-devtools";
-const app = require("tns-core-modules/application");
+const app = require("@nativescript/core/application");
 import RadSideDrawerPlugin from "nativescript-ui-sidedrawer/vue";
 
 Vue.registerElement(
@@ -24,11 +24,6 @@ import Banner from "./components/game/contextual-board/Banner.vue";
 import PlayerHand from "./components/game/PlayerHand.vue";
 import Factories from "./components/game/Factories.vue";
 
-Vue.registerElement(
-  "ShadowedLabel",
-  () => require("nativescript-shadowed-label").ShadowedLabel
-);
-
 Vue.component("App", App); // Locally registering inside of the Lobby didn't seem to work. Maybe it needs a different frame.
 Vue.component("GameListItem", GameListItem); // Locally registering inside of the Lobby didn't seem to work. Maybe it needs a different frame.
 Vue.component("Banner", Banner);
@@ -42,7 +37,8 @@ new Vue({
     if (app.android) {
       const activity = app.android.startActivity;
       const win = activity.getWindow();
-      win.addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
+      const FULL_SCREEN_ENUM = 4; // No guidance on how to do this via NS7, lost during migration. Obviously fragile.
+      win.addFlags(FULL_SCREEN_ENUM);
     }
   },
 }).$start();

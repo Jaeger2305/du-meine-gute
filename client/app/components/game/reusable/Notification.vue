@@ -7,8 +7,8 @@
       src="~/assets/images/combined-clouds.png"
     />
 
-    <shadowed-label col="0" row="0" :text="header" class="bgh1" :class="size" />
-    <shadowed-label
+    <Label col="0" row="0" :text="header" class="bgh1" :class="size" />
+    <Label
       col="0"
       row="0"
       :text="header"
