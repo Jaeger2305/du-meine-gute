@@ -4,11 +4,14 @@
     justifyContent="space-between"
     alignContent="center"
   >
-    <SecondaryResource
-      :displayNumber="`${availableCount}`"
-      :resourceType="resource.type"
-      @tap="addToBasket"
-    />
+    <transition name="bounce" appear>
+      <SecondaryResource
+        v-if="availableCount"
+        :displayNumber="`${availableCount}`"
+        :resourceType="resource.type"
+        @tap="addToBasket"
+      />
+    </transition>
     <GameIconImage
       :displayNumber="resource.value"
       size="large"
@@ -16,11 +19,14 @@
       height="80%"
       width="80%"
     />
-    <SecondaryResource
-      :displayNumber="`${stagedCount}`"
-      :resourceType="resource.type"
-      @tap="removeFromBasket"
-    />
+    <transition name="bounce" appear>
+      <SecondaryResource
+        v-if="stagedCount"
+        :displayNumber="`${stagedCount}`"
+        :resourceType="resource.type"
+        @tap="removeFromBasket"
+      />
+    </transition>
   </FlexboxLayout>
 </template>
 
@@ -68,4 +74,33 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.bounce-enter-active {
+  animation-name: bounce-in;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-in-out;
+}
+
+.bounce-leave-active {
+  animation-name: bounce-in;
+  animation-duration: 0.25s;
+  animation-fill-mode: forwards;
+  animation-direction: reverse;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+</style>
