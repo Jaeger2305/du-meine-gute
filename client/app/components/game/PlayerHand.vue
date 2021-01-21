@@ -58,6 +58,7 @@ export default Vue.extend({
     discard(card) {
       // Maybe there's refactoring here, when we allow discarding a card for its resource as part of production
       this.$store.commit(MutationEnum.StageCardDiscard, card);
+      this.$emit(CustomEvents.DISCARD_CARD, card);
     },
   },
 });

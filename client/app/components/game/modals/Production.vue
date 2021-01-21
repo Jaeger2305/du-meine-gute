@@ -51,8 +51,9 @@
         <PlayerHand
           row="1"
           colSpan="3"
-          :availableActions="$store.state.playerState.availableActions"
+          :availableActions="playerHandActions"
           :cards="availableCards"
+          @discard-card="discardCardForResource"
         />
       </GridLayout>
     </Page>
@@ -118,6 +119,10 @@ function checkChainedOutstandingResources(
   return { requiredExtraResources, productionCount };
 }
 
+// Warning: don't be too attached to this code.
+// It would be simpler if refactored into separate components.
+// There's basically duplicated logic with 2 baskets for basic and chain production, and the bridge is the player cards
+// Unlikely to happen until after a first release.
 export default {
   components: {
     Employee: EmployeeVue,
@@ -146,17 +151,18 @@ export default {
   },
   data(): {
     availableCards: Array<Card>;
-    availableResources: Array<Resource | { key: string }>;
+    availableMarketResources: Array<Resource | { key: string }>;
+    availableChainResources: Array<Resource | { key: string }>;
     discardedCards: Array<Card>;
     basket: Array<Resource>;
     chainBasket: Array<Resource>;
   } {
     return {
       availableCards: this.cardsInHand.slice(),
-      availableResources: keyArray<Resource>([
-        ...this.resources.slice(),
-        ...this.marketResources.slice(),
-      ]),
+      availableMarketResources: keyArray<Resource>(
+        this.marketResources.slice()
+      ),
+      availableChainResources: keyArray<Resource>(this.resources.slice()),
       discardedCards: [],
       basket: [],
       chainBasket: [],
@@ -244,6 +250,17 @@ export default {
       console.warn("not implemented yet");
       return true;
     },
+    playerHandActions(): Array<PlayerActionEnum> {
+      return [
+        ...this.$store.state.playerState.availableActions,
+        PlayerActionEnum.discard,
+      ];
+    },
+    availableResources(): Array<Resource> {
+      return this.initialProductionCount
+        ? this.availableChainResources
+        : this.availableMarketResources;
+    },
   },
   methods: {
     cancel(): void {
@@ -251,51 +268,66 @@ export default {
     },
     reset(): void {
       this.availableCards = this.cardsInHand.slice();
-      this.availableResources = keyArray([
-        ...this.resources.slice(),
-        ...this.marketResources.slice(),
-      ]);
+      this.availableMarketResources = keyArray(this.marketResources.slice());
+      this.availableChainResources = keyArray(this.resources.slice());
       this.discardedCards = [];
       this.basket = [];
       this.chainBasket = [];
     },
     addToBasket({ type: availableResourceType }: Resource): void {
-      const index = this.availableResources.findIndex(
+      const availableResources = this.initialProductionCount
+        ? this.availableChainResources
+        : this.availableMarketResources;
+      const index = availableResources.findIndex(
         ({ type }) => type === availableResourceType
       );
       const basket = this.initialProductionCount
         ? this.chainBasket
         : this.basket;
-      basket.push(...this.availableResources.splice(index, 1));
+      basket.push(...availableResources.splice(index, 1));
     },
     removeFromBasket(
       { type: stagedResourceType }: Resource,
       basket: Array<Resource>
     ): void {
+      const availableResources = this.initialProductionCount
+        ? this.availableChainResources
+        : this.availableMarketResources;
       const index = this.basket.findIndex(
         ({ type }) => type === stagedResourceType
       );
-      this.availableResources.push(...basket.splice(index, 1));
+      availableResources.push(...basket.splice(index, 1));
     },
-    discardCardForResource(index: number): void {
-      const card = this.availableCards.splice(index, 1)[0];
+    discardCardForResource({ name: discardedCardName }: Card): void {
+      const availableResources = this.initialProductionCount
+        ? this.availableChainResources
+        : this.availableMarketResources;
+      const cardIndex = this.availableCards.findIndex(
+        ({ name: availableCardName }) => discardedCardName === availableCardName
+      );
+      if (cardIndex < 0)
+        throw new Error(`Card with ${discardedCardName} couldn't be found`);
+      const card = this.availableCards.splice(cardIndex, 1)[0];
       this.discardedCards.push(card);
-      this.availableResources.push({
+      availableResources.push({
         ...card.resource,
         key: generatePoorRandomKey(),
       });
     },
     undoDiscardedCard(index: number): void {
+      const availableResources = this.initialProductionCount
+        ? this.availableChainResources
+        : this.availableMarketResources;
       const card = this.discardedCards.splice(index, 1)[0];
       this.availableCards.push(card);
 
       // Remove the associated resource.
       // The resource could be in any of the baskets or the available, so start with the least disruptive first.
-      const resourceInAvailableIndex = this.availableResources.findIndex(
+      const resourceInAvailableIndex = availableResources.findIndex(
         (resource) => resource.type === card.resource.type
       );
       if (resourceInAvailableIndex > -1)
-        return this.availableResources.splice(resourceInAvailableIndex, 1);
+        return availableResources.splice(resourceInAvailableIndex, 1);
 
       const resourceInChainBasketIndex = this.chainBasket.findIndex(
         (resource) => resource.type === card.resource.type
