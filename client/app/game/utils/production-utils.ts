@@ -49,7 +49,7 @@ export function checkOutstandingResources(
   // if extra inputKnownBaseResources are left over, they can fill the place holder requirement
   const extraInputUnknownBaseResources = differenceResources(
     inputKnownBaseResources,
-    requiredKnownBaseResources
+    requiredPlaceholders
   );
   const extraRequiredUnknownBaseResources = new Array(
     Math.max(

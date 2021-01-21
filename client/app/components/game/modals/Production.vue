@@ -193,15 +193,20 @@ export default {
     chainedProductionStatus(): ReturnType<
       typeof checkChainedOutstandingResources
     > {
+      // Not all assignments have a chained input, e.g. the glassblower.
+      // In this case, this code shouldn't even be called, and could end up in an undefined state.
+      // But, it's easier to just pass an empty array at this point, and this can be refactored later.
       const productionConfig = this.assignedEmployee.assignment
         .productionConfig;
-      const inputResources = productionConfig.chainInput;
+      const inputResources = productionConfig.chainInput || [];
       const resources = this.chainBasket;
       return checkChainedOutstandingResources(inputResources, resources);
     },
     chainedProductionCount(): number {
       if (!this.initialProductionCount) return 0; // chained production can only happen once initial production is started
-      return this.chainedProductionStatus.productionCount;
+      return this.assignedEmployee.assignment.productionConfig.chainInput
+        ? this.chainedProductionStatus.productionCount
+        : 0;
     },
     chainedProductionRequiredResources(): Array<Resource> {
       return this.chainedProductionStatus.requiredExtraResources;
@@ -236,7 +241,10 @@ export default {
           ...this.assignedEmployee.assignment.productionConfig,
           output: this.outputResources,
           input: this.initialProductionRequiredResources,
-          chainInput: this.chainedProductionRequiredResources,
+          chainInput: this.assignedEmployee.assignment.productionConfig
+            .chainInput
+            ? this.chainedProductionRequiredResources
+            : undefined,
         },
       };
     },
