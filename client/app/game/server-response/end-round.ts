@@ -16,6 +16,10 @@ export function endRound(
   gameState.winner = winner;
   gameState.isGameEnding = isGameEnding;
   gameState.winner = winner;
+  if (playerState.reservedFactory) {
+    playerState.cardsInHand.push(playerState.reservedFactory);
+    playerState.reservedFactory = null;
+  }
   playerState.score = score;
   playerState.assignedEmployees.splice(
     0,

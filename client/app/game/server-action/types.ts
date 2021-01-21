@@ -16,6 +16,7 @@ export enum ServerActionEnum {
   assignWorkers = "assignWorkers",
   produceAtFactory = "produceAtFactory",
   reserveFactory = "reserveFactory",
+  unreserveFactory = "unreserveFactory",
   buildFactory = "buildFactory",
   revealMarket = "revealMarket",
   startRound = "startRound",

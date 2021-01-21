@@ -81,7 +81,9 @@ export default {
         Boolean(
           this.card.productionConfig &&
             (this.isUnassignable || this.isAssignable || this.isProductionable)
-        ) || this.isConstructable
+        ) ||
+        this.isConstructable ||
+        this.isUnreservable
       );
     },
     isProductionable(): boolean {
@@ -104,6 +106,14 @@ export default {
           this.assignedEmployee &&
           this.assignedEmployee.unassignmentCost &&
           !this.isPlaceholder
+      );
+    },
+    isUnreservable(): boolean {
+      return Boolean(
+        isActionAvailable(
+          this.$store.state.playerState.availableActions,
+          PlayerActionEnum.unreserveFactory
+        ) && this.isPlaceholder
       );
     },
     isAssignable(): boolean {
@@ -251,6 +261,12 @@ export default {
       );
       this.$store.commit(MutationEnum.StageEmployee, null);
     },
+    unreserveFactory() {
+      this.$emit(
+        CustomEvents.UNRESERVE_FACTORY,
+        PlayerActionEnum.unreserveFactory
+      );
+    },
     contextHandler(): Promise<void> {
       if (!this.isActionable) return;
 
@@ -262,6 +278,8 @@ export default {
         this.produceAtFactory();
       } else if (this.isConstructable) {
         this.buildFactory();
+      } else if (this.isUnreservable) {
+        this.unreserveFactory();
       } else {
         handleValidationError(
           new Error(

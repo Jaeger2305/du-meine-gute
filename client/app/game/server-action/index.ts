@@ -15,6 +15,7 @@ import { discard } from "./actions/discard";
 import { drawCard } from "./actions/draw-card";
 import { endStep } from "./actions/end-step";
 import { reserveFactory } from "./actions/reserve-factory";
+import { unreserveFactory } from "./actions/unreserve-factory";
 import { hireEmployee } from "./actions/hire-employee";
 import { drawStep } from "./round-steps/draw-step";
 import { assignmentStep } from "./round-steps/assignment-step";
@@ -65,7 +66,7 @@ export function setupGame(game: GameState): void {
       cardsInPlay: [
         chosenCoalMine,
         cardRecords.MARKET_OFFICE_CLAY2,
-        cardRecords.CATTLE_RANCH_METAL_WHEAT,
+        cardRecords.GLASSMAKER,
         cardRecords.TANNERY_WOOD_WOOL,
         cardRecords.MARKET_OFFICE_DRAW2,
       ],
@@ -86,6 +87,7 @@ export const serverActions: Record<ServerActionEnum, ServerActionHandler> = {
   [ServerActionEnum.discard]: discard,
   [ServerActionEnum.drawCard]: drawCard,
   [ServerActionEnum.reserveFactory]: reserveFactory,
+  [ServerActionEnum.unreserveFactory]: unreserveFactory,
   [ServerActionEnum.buildFactory]: buildFactory,
   [ServerActionEnum.produceAtFactory]: produceAtFactory,
   [ServerActionEnum.assignEmployee]: assignEmployee,

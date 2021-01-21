@@ -3,6 +3,7 @@ import { drawCard } from "./draw-card";
 import { discard } from "./discard";
 import { endStep } from "./end-step";
 import { reserveFactory } from "./reserve-factory";
+import { unreserveFactory } from "./unreserve-factory";
 import { assignEmployee } from "./assign-employee";
 import { unassignEmployee } from "./unassign-employee";
 import { buildFactory } from "./build-factory";
@@ -15,6 +16,7 @@ export enum PlayerActionEnum {
   discard = "discard",
   assignEmployee = "assignEmployee",
   reserveFactory = "reserveFactory",
+  unreserveFactory = "unreserveFactory",
   unassignEmployee = "unassignEmployee",
   produceAtFactory = "produceAtFactory",
   buildFactory = "buildFactory",
@@ -27,6 +29,7 @@ export const playerActions = {
   [PlayerActionEnum.discard]: discard,
   [PlayerActionEnum.assignEmployee]: assignEmployee,
   [PlayerActionEnum.reserveFactory]: reserveFactory,
+  [PlayerActionEnum.unreserveFactory]: unreserveFactory,
   [PlayerActionEnum.unassignEmployee]: unassignEmployee,
   [PlayerActionEnum.produceAtFactory]: produceAtFactory,
   [PlayerActionEnum.buildFactory]: buildFactory,

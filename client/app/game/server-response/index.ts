@@ -10,6 +10,7 @@ import { purchaseStep } from "./purchase-step";
 import { startRound } from "./start-round";
 import { endRound } from "./end-round";
 import { drawStep } from "./draw-step";
+import { unreserveFactory } from "./unreserve-factory";
 
 type ServerResponseHandler = (
   gameState: GameState,
@@ -30,6 +31,7 @@ export const serverResponse: Record<ServerActionEnum, ServerResponseHandler> = {
   [ServerActionEnum.hireEmployee]: () => {}, // the optimistic response is fine
   [ServerActionEnum.assignEmployee]: () => {}, // the optimistic response is fine
   [ServerActionEnum.reserveFactory]: () => {}, // the optimistic response is fine
+  [ServerActionEnum.unreserveFactory]: unreserveFactory, // the optimistic response is fine
   [ServerActionEnum.produceStep]: produceStep,
   [ServerActionEnum.purchaseStep]: purchaseStep,
   [ServerActionEnum.assignWorkers]: assignmentStep,

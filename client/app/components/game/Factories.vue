@@ -14,6 +14,7 @@
       @assign-employee="bubbleAction"
       @unassign-employee="bubbleAction"
       @build-factory="bubbleAction"
+      @unreserve-factory="bubbleAction"
     />
   </GridLayout>
 </template>

@@ -1,8 +1,4 @@
-import {
-  GameState,
-  ServerActionEnum,
-  PlayerActionEnum,
-} from "../../types";
+import { GameState, ServerActionEnum, PlayerActionEnum } from "../../types";
 import { ServerActionResponse } from "../types";
 
 /**
@@ -19,13 +15,14 @@ export function assignmentStep(
   serverState.players[playerNumber].availableActions = [
     PlayerActionEnum.assignEmployee,
     PlayerActionEnum.reserveFactory,
+    PlayerActionEnum.unreserveFactory,
     PlayerActionEnum.endStep,
   ];
   return {
     type: ServerActionEnum.assignWorkers,
     isOK: true,
     response: {
-      availableActions: serverState.players[playerNumber].availableActions
+      availableActions: serverState.players[playerNumber].availableActions,
     },
   };
 }

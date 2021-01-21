@@ -3,6 +3,7 @@ export enum CustomEvents {
   ASSIGN_EMPLOYEE = "assign-employee",
   UNASSIGN_EMPLOYEE = "unassign-employee",
   HIRE_EMPLOYEE = "hire-employee",
+  UNRESERVE_FACTORY = "unreserve-factory",
   BUILD_FACTORY = "build-factory",
   PRODUCE_AT_FACTORY = "produce-at-factory",
   TAP_GAME_ICON = "tap-game-icon",
