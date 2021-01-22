@@ -44,12 +44,10 @@
       <GameIconImage
         src="~/assets/images/icons/points.png"
         :displayNumber="employee.points"
-        :isActionable="isActionable"
       />
       <GameIconImage
         src="~/assets/images/icons/money.png"
         :displayNumber="employee.cost"
-        :isActionable="isActionable"
       />
     </FlexboxLayout>
     <Image
@@ -59,7 +57,7 @@
       src="~/assets/images/employees/generic-man.png"
     />
     <FlexboxLayout
-      v-if="isLarge"
+      v-if="isLarge && employee.resourceSpecialty"
       col="2"
       row="1"
       flexDirection="column-reverse"

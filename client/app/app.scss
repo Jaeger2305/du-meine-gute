@@ -49,6 +49,45 @@ frame {
   --server-color-lowlight: rgb(58, 155, 53);
 }
 
+.lowlight-outline-self {
+  border-color: var(--self-color-lowlight);
+}
+.lowlight-bg-self {
+  background-color: var(--self-color-lowlight);
+}
+.highlight-bg-self {
+  background-color: var(--self-color-highlight);
+}
+.base-bg-self {
+  background-color: var(--self-color-base);
+}
+
+.lowlight-outline-server {
+  border-color: var(--server-color-lowlight);
+}
+.lowlight-bg-server {
+  background-color: var(--server-color-lowlight);
+}
+.highlight-bg-server {
+  background-color: var(--server-color-highlight);
+}
+.base-bg-server {
+  background-color: var(--server-color-base);
+}
+
+.lowlight-outline-opponent {
+  border-color: var(--opponent-color-lowlight);
+}
+.lowlight-bg-opponent {
+  background-color: var(--opponent-color-lowlight);
+}
+.highlight-bg-opponent {
+  background-color: var(--opponent-color-highlight);
+}
+.base-bg-opponent {
+  background-color: var(--opponent-color-base);
+}
+
 .button {
   font-family: "Grandstander", "Grandstander-Regular";
   font-size: 30px;

@@ -5,34 +5,39 @@
       stretch="fill"
       class="container-bg"
     />
-    <ScrollView class="container">
-      <StackLayout @swipe="($event) => $emit('close', $event)">
-        <EventMessage
-          v-for="{ message, eventType, eventSource } in drawerMessages"
-          :key="message"
-          :message="message"
-          :eventType="eventType"
-          :eventSource="eventSource"
-          style="margin: 5 25 5 20;"
-        />
-      </StackLayout>
-    </ScrollView>
+    <StackLayout @swipe="($event) => $emit('close', $event)">
+      <component
+        :is="eventType"
+        v-for="{
+          message,
+          eventType,
+          eventSource,
+          eventDetails,
+        } in drawerMessages"
+        :key="message"
+        :message="message"
+        :eventType="eventType"
+        :eventSource="eventSource"
+        :eventDetails="eventDetails"
+        style="margin: 5 25 5 20;"
+      />
+    </StackLayout>
   </GridLayout>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue";
-import EventMessageComponent from "./EventMessage.vue";
+import MessageComponents from "./messages";
 import { EventMessage } from "../../../game/types";
+import { LogLevel } from "../../../game/server-action/types";
 
 export default {
-  components: {
-    EventMessage: EventMessageComponent,
-  },
-  props: {
-    drawerMessages: {
-      type: Array as PropType<Array<EventMessage>>,
-      required: true,
+  components: { ...MessageComponents },
+  computed: {
+    drawerMessages(): Array<EventMessage> {
+      return this.$store.state.messages
+        .filter(({ logLevel }) => logLevel >= LogLevel.Visible) // Remove
+        .slice(-6)
+        .reverse();
     },
   },
 };

@@ -60,7 +60,7 @@
           :key="resource.type"
           alignSelf="center"
           :resource="resource"
-          :displayNumber="count"
+          :displayNumber="`${count}`"
         />
       </FlexboxLayout>
       <!-- Output -->
@@ -72,7 +72,7 @@
         rowSpan="3"
         :colSpan="isLarge ? 1 : 5"
         :resource="resource"
-        :displayNumber="count > 1 ? count : null"
+        :displayNumber="count > 1 ? `${count}` : null"
       />
       <!-- Chain input -->
       <FlexboxLayout
@@ -89,7 +89,7 @@
           :key="resource.type"
           alignSelf="center"
           :resource="resource"
-          :displayNumber="count"
+          :displayNumber="`${count}`"
         />
       </FlexboxLayout>
       <!-- Arrows -->
@@ -126,12 +126,10 @@
       <GameIconImage
         src="~/assets/images/icons/points.png"
         :displayNumber="card.points"
-        :isActionable="isActionable"
       />
       <GameIconImage
         src="~/assets/images/icons/money.png"
         :displayNumber="card.cost"
-        :isActionable="isActionable"
       />
     </FlexboxLayout>
     <Image v-if="isLarge" col="2" row="1" :src="factorySrc" />
@@ -148,11 +146,9 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue";
 import GameIconImage from "../reusable/GameIconImage.vue";
-import ResourceComponent from "../reusable/Resource.vue";
+import Resource from "../reusable/Resource.vue";
 import PrimaryResource from "../reusable/PrimaryResource.vue";
-import { ResourceType, Resource } from "../../../game/resources";
 import { Card } from "../../../game/types";
 import { aggregateResources } from "../../../game/utils";
 import { cardImageRecords } from "../../../game/cards";
@@ -189,7 +185,7 @@ export default {
       default: false,
     },
   },
-  components: { GameIconImage, Resource: ResourceComponent, PrimaryResource },
+  components: { GameIconImage, Resource, PrimaryResource },
   computed: {
     isLarge(): boolean {
       return this.size === Size.Large;

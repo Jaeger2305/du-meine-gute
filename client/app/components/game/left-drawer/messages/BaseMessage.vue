@@ -6,34 +6,30 @@
       colSpan="2"
       src="~/assets/images/sideboard/paper.png"
       stretch="fill"
-      class="event-message"
+      class="event-message-container"
     />
-    <Label
-      col="1"
-      row="0"
-      colSpan="2"
-      :text="message"
-      :textWrap="true"
-      class="event-message"
-    />
+    <StackLayout col="1" row="0" colSpan="2" class="event-message">
+      <slot> </slot>
+    </StackLayout>
     <!-- Paint the icon over the top -->
-    <EventIcon
-      col="0"
-      row="0"
+    <StackLayout
       colSpan="2"
-      :eventSource="eventSource"
-      :eventType="eventType"
-    />
+      :class="[
+        'event-icon-container',
+        `lowlight-outline-${eventSource}`,
+        `highlight-bg-${eventSource}`,
+      ]"
+    >
+      <slot name="icon"></slot>
+    </StackLayout>
   </GridLayout>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
-import EventIcon from "./EventIcon.vue";
-import { EventSource, EventType } from "../../../game/types";
+import { EventSource, EventType } from "../../../../game/types";
 
 export default {
-  components: { EventIcon },
   props: {
     eventType: {
       type: String as PropType<EventType>,
@@ -52,17 +48,20 @@ export default {
 </script>
 
 <style scoped>
-.event-icon {
+.event-icon-container {
   width: 100%;
   height: 100%;
-  background: blue;
   border-radius: 5%;
   border-width: 10px;
 }
 
-.event-message {
-  padding-left: 90px;
+.event-message-container {
   margin: 20px;
+  padding-left: 90px;
+}
+
+.event-message {
+  margin: 10px 25px 10px 80px;
   font-size: 16px;
   font-family: "Grandstander", "Grandstander-Regular";
   text-align: center;
