@@ -18,9 +18,10 @@ import Vue, { PropType } from "vue";
 import { CustomEvents } from "../../types";
 import { PlayerActionEnum } from "../../game/client";
 import { isActionAvailable } from "../../game/utils";
-import { GameState, PlayerState } from "../../game/types";
+import { PlayerState } from "../../game/types";
 import CardComponent from "./cards/Card.vue";
 import { MutationEnum } from "../../store";
+import { LogLevel } from "../../game/server-action/types";
 
 export default Vue.extend({
   components: { Card: CardComponent },
@@ -52,6 +53,7 @@ export default Vue.extend({
       this.$emit(
         CustomEvents.PLAYER_ACTION,
         PlayerActionEnum.reserveFactory,
+        LogLevel.Debug,
         factory
       );
     },

@@ -26,13 +26,13 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue";
 import { PlayerActionEnum } from "../../../game/client";
 import Notification from "../reusable/Notification.vue";
 import PrimaryResourceCollection from "../reusable/PrimaryResourceCollection.vue";
 import { RoundSteps, ServerActionEnum } from "../../../game/types";
-import { Resource, ResourceType } from "../../../game/resources";
+import { Resource } from "../../../game/resources";
 import { CustomEvents } from "../../../types";
+import { LogLevel } from "../../../game/server-action/types";
 
 export default {
   props: {},
@@ -52,7 +52,12 @@ export default {
   },
   methods: {
     endStep() {
-      this.$emit(CustomEvents.PLAYER_ACTION, PlayerActionEnum.endStep, null);
+      this.$emit(
+        CustomEvents.PLAYER_ACTION,
+        PlayerActionEnum.endStep,
+        LogLevel.Debug,
+        null
+      );
     },
   },
 };

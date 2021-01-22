@@ -38,13 +38,19 @@ import { PlayerActionEnum } from "../../../game/client";
 import Notification from "../reusable/Notification.vue";
 import NotificationMessageContainer from "../reusable/NotificationMessageContainer.vue";
 import { CustomEvents } from "../../../types";
+import { LogLevel } from "../../../game/server-action/types";
 
 export default {
   props: {},
   components: { Notification, NotificationMessageContainer },
   methods: {
     endStep() {
-      this.$emit(CustomEvents.PLAYER_ACTION, PlayerActionEnum.endStep, null);
+      this.$emit(
+        CustomEvents.PLAYER_ACTION,
+        PlayerActionEnum.endStep,
+        LogLevel.Debug,
+        null
+      );
     },
   },
 };

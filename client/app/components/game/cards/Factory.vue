@@ -51,6 +51,7 @@ import { Resource } from "../../../game/resources";
 import PurchasingVue from "../modals/Purchasing.vue";
 import AssignmentConfirmationVue from "../modals/AssignmentConfirmation.vue";
 import { cardImageRecords } from "../../../game/cards";
+import { LogLevel } from "../../../game/server-action/types";
 
 // Is assigned already?
 // Resource output?
@@ -173,6 +174,7 @@ export default {
         this.$emit(
           CustomEvents.PRODUCE_AT_FACTORY,
           PlayerActionEnum.produceAtFactory,
+          LogLevel.Debug,
           production
         );
       }
@@ -201,6 +203,7 @@ export default {
         this.$emit(
           CustomEvents.UNASSIGN_EMPLOYEE,
           PlayerActionEnum.unassignEmployee,
+          LogLevel.Debug,
           unassignmentPayload
         );
       }
@@ -227,6 +230,7 @@ export default {
         this.$emit(
           CustomEvents.BUILD_FACTORY,
           PlayerActionEnum.buildFactory,
+          LogLevel.Debug,
           buildPayload
         );
       }
@@ -257,6 +261,7 @@ export default {
       this.$emit(
         CustomEvents.ASSIGN_EMPLOYEE,
         PlayerActionEnum.assignEmployee,
+        LogLevel.Debug,
         assignmentPayload
       );
       this.$store.commit(MutationEnum.StageEmployee, null);
@@ -264,7 +269,8 @@ export default {
     unreserveFactory() {
       this.$emit(
         CustomEvents.UNRESERVE_FACTORY,
-        PlayerActionEnum.unreserveFactory
+        PlayerActionEnum.unreserveFactory,
+        LogLevel.Debug
       );
     },
     contextHandler(): Promise<void> {

@@ -18,14 +18,13 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue";
 import { PlayerActionEnum } from "../../../game/client";
-import { ActionEnum } from "../../../store";
 import { isActionAvailable, createUnknownCard } from "../../../game/utils";
 import Notification from "../reusable/Notification.vue";
 import CardComponent from "../cards/Card.vue";
 import { Card } from "../../../game/types";
 import { CustomEvents } from "../../../types";
+import { LogLevel } from "../../../game/server-action/types";
 
 export default {
   props: {},
@@ -55,11 +54,21 @@ export default {
   },
   methods: {
     endStep() {
-      this.$emit(CustomEvents.PLAYER_ACTION, PlayerActionEnum.endStep, null);
+      this.$emit(
+        CustomEvents.PLAYER_ACTION,
+        PlayerActionEnum.endStep,
+        LogLevel.Debug,
+        null
+      );
     },
     drawCard() {
       this.drawnCard = createUnknownCard();
-      this.$emit(CustomEvents.PLAYER_ACTION, PlayerActionEnum.drawCard, null);
+      this.$emit(
+        CustomEvents.PLAYER_ACTION,
+        PlayerActionEnum.drawCard,
+        LogLevel.Debug,
+        null
+      );
     },
   },
 };

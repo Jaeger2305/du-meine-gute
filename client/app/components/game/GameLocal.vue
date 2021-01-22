@@ -16,11 +16,7 @@
           @player-action="playerAction"
           @swipe="close"
         />
-        <MessageHistory
-          v-if="drawerLocation === 'Left'"
-          :drawerMessages="$store.state.messages"
-          @close="close"
-        />
+        <MessageHistory v-if="drawerLocation === 'Left'" @close="close" />
         <StatSummary v-if="drawerLocation === 'Right'" />
       </StackLayout>
       <!-- The overall grid -->
@@ -118,7 +114,7 @@ import StatSummary from "./right-drawer/StatSummary.vue";
 import NotificationComponent from "./reusable/Notification.vue";
 import { notificationConfig, Notification } from "../../game/round-description";
 import SplashscreenVue from "./modals/Splashscreen.vue";
-import { isActionAvailable } from "../../game/utils";
+import { LogLevel } from "../../game/server-action/types";
 
 type SideDrawerConfig = {
   bubbleSwipes: Array<SwipeDirection>;
@@ -191,9 +187,14 @@ export default {
     },
   },
   methods: {
-    async playerAction(type: PlayerActionEnum, payload: any) {
+    async playerAction(
+      type: PlayerActionEnum,
+      logLevel: LogLevel,
+      payload: any
+    ) {
       await this.$store.dispatch(ActionEnum.PlayerAction, {
         type,
+        logLevel,
         payload,
       });
 

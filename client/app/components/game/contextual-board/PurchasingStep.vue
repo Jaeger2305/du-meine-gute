@@ -32,7 +32,6 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue";
 import { sumBy } from "lodash";
 
 import Notification from "../reusable/Notification.vue";
@@ -45,6 +44,7 @@ import { PlayerActionEnum, playerActions } from "../../../game/client";
 import { Employee } from "../../../game/types";
 import { Resource } from "../../../game/resources";
 import { differenceResources } from "../../../game/utils";
+import { LogLevel } from "../../../game/server-action/types";
 
 export default {
   props: {},
@@ -84,7 +84,12 @@ export default {
   },
   methods: {
     endStep() {
-      this.$emit(CustomEvents.PLAYER_ACTION, PlayerActionEnum.endStep, null);
+      this.$emit(
+        CustomEvents.PLAYER_ACTION,
+        PlayerActionEnum.endStep,
+        LogLevel.Debug,
+        null
+      );
     },
     async hireEmployee(): Promise<void> {
       const purchaseResult: {
@@ -100,14 +105,15 @@ export default {
       });
       if (purchaseResult) {
         const hireEmployeePayload: Parameters<
-          typeof playerActions[PlayerActionEnum.hireWorker]
+          typeof playerActions[PlayerActionEnum.hireEmployee]
         >[2] = {
           employee: this.activeEmployee,
           resourcePayment: purchaseResult.resources,
         };
         this.$emit(
           CustomEvents.PLAYER_ACTION,
-          PlayerActionEnum.hireWorker,
+          PlayerActionEnum.hireEmployee,
+          LogLevel.Debug,
           hireEmployeePayload
         );
       }

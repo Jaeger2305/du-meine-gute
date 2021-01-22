@@ -32,7 +32,6 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue";
 import {
   SwipeGestureEventData,
   SwipeDirection,
@@ -46,6 +45,7 @@ import EmployeeComponent from "../cards/Employee.vue";
 import { Employee } from "../../../game/types";
 import { getUnassignedEmployees } from "../../../game/utils";
 import CarouselSelect from "../../CarouselSelect.vue";
+import { LogLevel } from "../../../game/server-action/types";
 
 export default {
   props: {},
@@ -88,7 +88,12 @@ export default {
   },
   methods: {
     endStep() {
-      this.$emit(CustomEvents.PLAYER_ACTION, PlayerActionEnum.endStep, null);
+      this.$emit(
+        CustomEvents.PLAYER_ACTION,
+        PlayerActionEnum.endStep,
+        LogLevel.Debug,
+        null
+      );
     },
     close() {
       this.$emit("swipe", {

@@ -29,13 +29,12 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue";
 import { PlayerActionEnum } from "../../../game/client";
-import { ActionEnum, MutationEnum } from "../../../store";
-import Draw from "./Draw.vue";
+import { MutationEnum } from "../../../store";
 import Notification from "../reusable/Notification.vue";
 import NotificationMessageContainer from "../reusable/NotificationMessageContainer.vue";
 import { CustomEvents } from "../../../types";
+import { LogLevel } from "../../../game/server-action/types";
 
 export default {
   props: {},
@@ -50,12 +49,18 @@ export default {
       await this.$emit(
         CustomEvents.PLAYER_ACTION,
         PlayerActionEnum.discard,
+        LogLevel.Debug,
         this.$store.state.stagedCardsForDiscard
       );
       this.$store.commit(MutationEnum.ResetDiscard);
     },
     endStep(): void {
-      this.$emit(CustomEvents.PLAYER_ACTION, PlayerActionEnum.endStep, null);
+      this.$emit(
+        CustomEvents.PLAYER_ACTION,
+        PlayerActionEnum.endStep,
+        LogLevel.Debug,
+        null
+      );
     },
   },
 };
