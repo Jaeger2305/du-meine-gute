@@ -10,7 +10,7 @@
       col="0"
       row="0"
       colSpan="2"
-      src="~/assets/images/icons/factory.png"
+      src="~/assets/images/factories/unknown.png"
       :displayNumber="buildCountForEndGame"
       size="large"
     />

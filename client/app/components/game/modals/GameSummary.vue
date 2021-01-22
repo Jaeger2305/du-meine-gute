@@ -80,7 +80,7 @@ export default {
       return [
         ...cardsInPlay.map(({ points, name }) => ({
           points,
-          imgSrc: "~/assets/images/icons/factory.png",
+          imgSrc: "~/assets/images/factories/unknown.png",
           description: name,
         })),
         ...employees.map(({ points, name }) => ({
