@@ -34,7 +34,7 @@ export function hireEmployee(
     resourcePayment
   );
 
-  removeActionFromAvailableActions(playerState, PlayerActionEnum.hireWorker);
+  removeActionFromAvailableActions(playerState, PlayerActionEnum.hireEmployee);
 
   // Return the info needed for the server update
   return {

@@ -1,4 +1,4 @@
-import { DrawCardResponse } from "../types";
+import { DrawCardResponse, LogLevel } from "../types";
 import { drawFromDeck, obfuscateDeck } from "../../utils";
 import { GameState, ServerActionEnum, PlayerState } from "../../types";
 
@@ -32,6 +32,7 @@ export function drawCard(
   return {
     type: ServerActionEnum.drawCard,
     isOK: true,
+    logLevel: LogLevel.Visible,
     response: {
       drawnCard,
       cardsInDiscard: serverState.cardsInDiscard,
@@ -39,4 +40,3 @@ export function drawCard(
     },
   };
 }
-

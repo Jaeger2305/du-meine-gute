@@ -1,9 +1,5 @@
-import {
-  GameState,
-  ServerActionEnum,
-  PlayerActionEnum,
-} from "../../types";
-import { ServerActionResponse } from "../types";
+import { GameState, ServerActionEnum, PlayerActionEnum } from "../../types";
+import { LogLevel, ServerActionResponse } from "../types";
 
 /**
  * Initiate the assignment step in the round
@@ -23,8 +19,9 @@ export function produceStep(
   return {
     type: ServerActionEnum.produceStep,
     isOK: true,
+    logLevel: LogLevel.Info,
     response: {
-      availableActions: serverState.players[playerNumber].availableActions
+      availableActions: serverState.players[playerNumber].availableActions,
     },
   };
 }

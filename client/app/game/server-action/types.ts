@@ -26,14 +26,22 @@ export enum ServerActionEnum {
   endRound = "endRound",
 }
 
+export enum LogLevel {
+  Debug,
+  Info,
+  Visible,
+  Toast,
+}
 export interface ServerActionRequest {
   type: ServerActionEnum;
+  logLevel: LogLevel;
   playerActionResponse?: any;
 }
 
 export interface ServerActionResponse {
   type: ServerActionEnum;
   isOK: boolean;
+  logLevel: LogLevel;
   response: any;
 }
 
@@ -42,6 +50,13 @@ export type ServerActionHandler = (
   playerNumber: PlayerState["playerNumber"],
   playerActionResponse?: any
 ) => any;
+
+export interface StartRoundResponse extends ServerActionResponse {
+  type: ServerActionEnum.startRound;
+  response: {
+    availableActions: PlayerState["availableActions"];
+  };
+}
 
 export interface DrawCardResponse extends ServerActionResponse {
   type: ServerActionEnum.drawCard;
@@ -69,6 +84,21 @@ export interface RevealMarketResponse extends ServerActionResponse {
     cardsInDeck: Array<Card>;
     availableActions: PlayerState["availableActions"];
   };
+}
+
+export interface FactoryBuildResponse extends ServerActionResponse {
+  type: ServerActionEnum.buildFactory;
+  response: {};
+}
+
+export interface HireEmployeeResponse extends ServerActionResponse {
+  type: ServerActionEnum.hireEmployee;
+  response: {};
+}
+
+export interface ProduceAtFactoryResponse extends ServerActionResponse {
+  type: ServerActionEnum.produceAtFactory;
+  response: {};
 }
 
 export interface EndStepResponse extends ServerActionResponse {

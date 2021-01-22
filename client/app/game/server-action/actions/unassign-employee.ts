@@ -1,4 +1,4 @@
-import { ServerActionResponse } from "../types";
+import { LogLevel, ServerActionResponse } from "../types";
 import { AssignedEmployee, GameState, PlayerState } from "../../types";
 import { Resource } from "../../resources";
 import { spendResources, removeActionFromAvailableActions } from "../../utils";
@@ -50,6 +50,7 @@ export function unassignEmployee(
   return {
     type: null,
     isOK: true,
+    logLevel: LogLevel.Info,
     response: {},
   };
 }

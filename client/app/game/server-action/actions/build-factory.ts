@@ -1,7 +1,7 @@
-import { ServerActionResponse } from "../types";
+import { LogLevel, FactoryBuildResponse, ServerActionEnum } from "../types";
 import { GameState, PlayerState } from "../../types";
-import { payForFactory } from '../../client/build-factory/build-factory-utils';
-import { Resource } from '../../resources';
+import { payForFactory } from "../../client/build-factory/build-factory-utils";
+import { Resource } from "../../resources";
 
 export function buildFactory(
   serverState: GameState,
@@ -11,12 +11,14 @@ export function buildFactory(
   }: {
     resources: Array<Resource>;
   }
+): FactoryBuildResponse {
   payForFactory(serverState, serverState.players[playerNumber], resources);
   serverState.players[playerNumber].reservedFactory = null;
 
   return {
-    type: null,
+    type: ServerActionEnum.buildFactory,
     isOK: true,
+    logLevel: LogLevel.Visible,
     response: {},
   };
 }

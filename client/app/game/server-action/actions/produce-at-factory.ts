@@ -1,4 +1,4 @@
-import { ServerActionResponse } from "../types";
+import { LogLevel, ProduceAtFactoryResponse, ServerActionEnum } from "../types";
 import { GameState, PlayerState, AssignedEmployee, Card } from "../../types";
 import { Resource } from "../../resources";
 import { removeActionFromAvailableActions, produceGood } from "../../utils";
@@ -18,7 +18,7 @@ export function produceAtFactory(
     outputResources: Array<Resource>;
     assignedEmployee: AssignedEmployee;
   }
-): ServerActionResponse {
+): ProduceAtFactoryResponse {
   console.warn(
     "The produce at factor server action is very similar to the client side optimistic update, but this should be doing extra validation"
   );
@@ -70,8 +70,9 @@ export function produceAtFactory(
   }
 
   return {
-    type: null,
+    type: ServerActionEnum.produceAtFactory,
     isOK: true,
+    logLevel: LogLevel.Visible,
     response: {},
   };
 }

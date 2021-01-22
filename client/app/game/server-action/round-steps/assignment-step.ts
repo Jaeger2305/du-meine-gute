@@ -1,5 +1,5 @@
 import { GameState, ServerActionEnum, PlayerActionEnum } from "../../types";
-import { ServerActionResponse } from "../types";
+import { LogLevel, ServerActionResponse } from "../types";
 
 /**
  * Initiate the assignment step in the round
@@ -21,6 +21,7 @@ export function assignmentStep(
   return {
     type: ServerActionEnum.assignWorkers,
     isOK: true,
+    logLevel: LogLevel.Info,
     response: {
       availableActions: serverState.players[playerNumber].availableActions,
     },

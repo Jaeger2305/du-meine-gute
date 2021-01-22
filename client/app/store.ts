@@ -15,7 +15,7 @@ import {
   ServerActionEventTypeLookup,
 } from "./game/types";
 import { cloneDeep, intersection } from "lodash";
-import { ServerActionResponse } from "./game/server-action/types";
+import { LogLevel, ServerActionResponse } from "./game/server-action/types";
 
 Vue.use(Vuex);
 
@@ -69,7 +69,7 @@ export default new Vuex.Store({
         PlayerActionEnum.drawCard,
         PlayerActionEnum.discard,
         PlayerActionEnum.assignEmployee,
-        PlayerActionEnum.hireWorker,
+        PlayerActionEnum.hireEmployee,
       ];
       const availableBannerActions = intersection(
         state.playerState.availableActions,
@@ -105,12 +105,13 @@ export default new Vuex.Store({
       ); // just to test
     },
     [MutationEnum.ReceiveMessage](state, payload: ServerActionResponse) {
-      const visibleMessageType = ServerActionEventTypeLookup[payload.type];
-      if (visibleMessageType) {
+      if (payload.logLevel > LogLevel.Debug) {
         state.messages.push({
           eventSource: EventSource.Server,
-          eventType: visibleMessageType,
-          message: "RECEIVED:" + JSON.stringify(payload),
+          eventType: ServerActionEventTypeLookup[payload.type],
+          eventDetails: payload.response,
+          logLevel: payload.logLevel,
+          message: "RECEIVED:" + new Date() + JSON.stringify(payload),
         });
       }
       // If explicitly nothing, do nothing with this message.
@@ -149,7 +150,7 @@ export default new Vuex.Store({
   actions: {
     async [ActionEnum.PlayerAction](
       { state, dispatch },
-      payload: { type: PlayerActionEnum; payload: any }
+      payload: { type: PlayerActionEnum; logLevel: LogLevel; payload: any }
     ) {
       const playerActionResponse = await playerActions[payload.type](
         state.gameState,
@@ -158,6 +159,7 @@ export default new Vuex.Store({
       );
       dispatch(ActionEnum.SendMessage, {
         type: payload.type,
+        logLevel: payload.logLevel,
         playerActionResponse,
       });
     },
@@ -165,12 +167,13 @@ export default new Vuex.Store({
       // There's still a question here of whether child components will be responsible for sending/receiving messages.
       // Current architecture is no, everything is done in the global Game component. But not much thought has gone into that, other than keeping it simple.
       // This could even be a mixin though.
-      const visibleMessageType = ServerActionEventTypeLookup[payload.type];
-      if (visibleMessageType) {
+      if (payload.logLevel > LogLevel.Debug) {
         state.messages.push({
           eventSource: EventSource.Self,
-          eventType: visibleMessageType,
-          message: "SENT:" + JSON.stringify(payload),
+          eventType: ServerActionEventTypeLookup[payload.type],
+          logLevel: payload.logLevel,
+          eventDetails: payload,
+          message: "SENT:" + new Date() + JSON.stringify(payload),
         });
       }
       if (state.isLocal) {

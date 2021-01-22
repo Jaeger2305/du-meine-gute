@@ -1,4 +1,4 @@
-import { ServerActionResponse } from "../types";
+import { LogLevel, ServerActionResponse } from "../types";
 import { GameState, PlayerState, ServerActionEnum } from "../../types";
 import { PlayerActionEnum } from "../../client";
 
@@ -18,6 +18,7 @@ export function unreserveFactory(
   return {
     type: ServerActionEnum.unreserveFactory,
     isOK: true,
+    logLevel: LogLevel.Info,
     response: {
       availableActions: serverState.players[playerNumber].availableActions,
     },

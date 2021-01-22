@@ -1,4 +1,4 @@
-import { ServerActionResponse } from "../types";
+import { LogLevel, ServerActionResponse } from "../types";
 import { Card, GameState, PlayerState } from "../../types";
 
 /**
@@ -23,6 +23,7 @@ export function reserveFactory(
   return {
     type: null,
     isOK: true,
+    logLevel: LogLevel.Info,
     response: {},
   };
 }

@@ -1,7 +1,7 @@
 import { Resource } from "./resources";
 import { Employee, ProductionEfficiency, AssignedEmployee } from "./worker";
 import { PlayerActionEnum } from "./client";
-import { ServerActionEnum } from "./server-action/types";
+import { LogLevel, ServerActionEnum } from "./server-action/types";
 
 export { RoundSteps } from "./server-action";
 export { EmployeeType } from "./worker";
@@ -106,6 +106,7 @@ export enum EventSource {
  * Perhaps this links to the server action enum eventually, but for now it's standalone.
  */
 export enum EventType {
+  StartRound = "START_ROUND",
   Draw = "DRAW",
   Discard = "DISCARD",
   MarketOpened = "MARKET_OPENED",
@@ -114,7 +115,6 @@ export enum EventType {
   Production = "PRODUCTION",
   PointsUpdate = "POINTS_UPDATE",
   HiredEmployee = "HIRED_EMPLOYEE",
-  Construction = "CONSTRUCTION",
 }
 
 /** Map a servers events to events the player should see.
@@ -123,12 +123,12 @@ export enum EventType {
 export const ServerActionEventTypeLookup: {
   [key in ServerActionEnum]?: EventType;
 } = {
+  [ServerActionEnum.startRound]: EventType.StartRound,
   [ServerActionEnum.drawCard]: EventType.Draw,
   [ServerActionEnum.discard]: EventType.Discard,
   [ServerActionEnum.endRound]: EventType.PointsUpdate,
   [ServerActionEnum.hireEmployee]: EventType.HiredEmployee,
-  [ServerActionEnum.purchaseStep]: EventType.Construction,
-  [ServerActionEnum.reserveFactory]: EventType.Construction,
+  [ServerActionEnum.buildFactory]: EventType.FactoryOpened,
   [ServerActionEnum.produceAtFactory]: EventType.Production,
   [ServerActionEnum.revealMarket]: EventType.MarketOpened,
 };
@@ -137,4 +137,6 @@ export type EventMessage = {
   eventType: EventType;
   eventSource: EventSource;
   message: string;
+  logLevel: LogLevel;
+  eventDetails?: any;
 };

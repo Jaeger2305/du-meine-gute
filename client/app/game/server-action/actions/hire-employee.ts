@@ -1,4 +1,4 @@
-import { ServerActionResponse } from "../types";
+import { LogLevel, HireEmployeeResponse, ServerActionEnum } from "../types";
 import { AssignedEmployee, GameState, PlayerState } from "../../types";
 import { Resource } from "../../resources";
 import { spendResources, removeActionFromAvailableActions } from "../../utils";
@@ -14,7 +14,7 @@ export function hireEmployee(
     employeeToHireName: AssignedEmployee["name"];
     resourcePayment?: Array<Resource>;
   }
-): ServerActionResponse {
+): HireEmployeeResponse {
   console.warn("no validation done here");
   const playerState = serverState.players[playerNumber];
 
@@ -38,11 +38,12 @@ export function hireEmployee(
   playerState.employees.push(employeeBeingHired);
 
   // Only one employee can be hired, so always remove it from the available actions
-  removeActionFromAvailableActions(playerState, PlayerActionEnum.hireWorker);
+  removeActionFromAvailableActions(playerState, PlayerActionEnum.hireEmployee);
 
   return {
-    type: null,
+    type: ServerActionEnum.hireEmployee,
     isOK: true,
+    logLevel: LogLevel.Visible,
     response: {},
   };
 }

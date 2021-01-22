@@ -6,7 +6,7 @@ import {
   EmployeeType,
 } from "../../types";
 import { PlayerActionEnum } from "../../client";
-import { EndRoundResponse } from "../types";
+import { EndRoundResponse, LogLevel } from "../types";
 
 /**
  * Initiate the final step in the round
@@ -75,6 +75,7 @@ export function endRound(
   return {
     type: ServerActionEnum.endRound,
     isOK: true,
+    logLevel: LogLevel.Visible,
     response: {
       discardedCards,
       assignedEmployees: playerState.assignedEmployees,

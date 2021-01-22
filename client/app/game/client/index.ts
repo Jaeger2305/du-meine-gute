@@ -20,7 +20,7 @@ export enum PlayerActionEnum {
   unassignEmployee = "unassignEmployee",
   produceAtFactory = "produceAtFactory",
   buildFactory = "buildFactory",
-  hireWorker = "hireWorker",
+  hireEmployee = "hireEmployee",
 }
 
 export const playerActions = {
@@ -33,7 +33,7 @@ export const playerActions = {
   [PlayerActionEnum.unassignEmployee]: unassignEmployee,
   [PlayerActionEnum.produceAtFactory]: produceAtFactory,
   [PlayerActionEnum.buildFactory]: buildFactory,
-  [PlayerActionEnum.hireWorker]: hireEmployee,
+  [PlayerActionEnum.hireEmployee]: hireEmployee,
 };
 
 export function newGame(): GameState {

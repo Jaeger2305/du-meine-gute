@@ -1,6 +1,6 @@
 import { GameState, ServerActionEnum } from "../../types";
 import { PlayerActionEnum } from "../../client";
-import { ServerActionResponse } from "../types";
+import { LogLevel, StartRoundResponse } from "../types";
 
 /**
  * Returns valid actions that can be performed, which is drawing 3 cards.
@@ -9,7 +9,7 @@ import { ServerActionResponse } from "../types";
 export function startRound(
   serverState: GameState,
   playerNumber: number
-): ServerActionResponse {
+): StartRoundResponse {
   const playerState = serverState.players[playerNumber];
   playerState.availableActions = [
     PlayerActionEnum.discard,
@@ -19,6 +19,7 @@ export function startRound(
   return {
     type: ServerActionEnum.startRound,
     isOK: true,
+    logLevel: LogLevel.Visible,
     response: {
       availableActions: serverState.players[playerNumber].availableActions,
     },

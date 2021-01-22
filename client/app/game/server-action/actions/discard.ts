@@ -1,4 +1,4 @@
-import { DiscardResponse } from "../types";
+import { DiscardResponse, LogLevel } from "../types";
 import {
   drawFromDeck,
   obfuscateDeck,
@@ -31,6 +31,7 @@ export function discard(
   return {
     type: ServerActionEnum.discard,
     isOK: true,
+    logLevel: LogLevel.Visible,
     response: {
       drawnCards,
       cardsInDiscard: serverState.cardsInDiscard,
