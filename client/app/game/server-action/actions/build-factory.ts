@@ -6,8 +6,11 @@ import { Resource } from '../../resources';
 export function buildFactory(
   serverState: GameState,
   playerNumber: PlayerState["playerNumber"],
-  resources: Array<Resource>
-): ServerActionResponse {
+  {
+    resources,
+  }: {
+    resources: Array<Resource>;
+  }
   payForFactory(serverState, serverState.players[playerNumber], resources);
   serverState.players[playerNumber].reservedFactory = null;
 
