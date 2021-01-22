@@ -8,13 +8,13 @@
   >
     <SecondaryResource
       :resourceType="placeholderSecondaryResource"
-      :displayNumber="productionEfficiency.productionCount"
+      :displayNumber="`${productionEfficiency.productionCount}`"
       style="height: 120px; width: 120px"
     />
     <PrimaryResource
       v-if="productionEfficiency.resourceSparingCount"
       :resourceType="placeholderPrimaryResource"
-      :displayNumber="productionEfficiency.resourceSparingCount"
+      :displayNumber="`${productionEfficiency.resourceSparingCount}`"
     />
   </FlexboxLayout>
 </template>

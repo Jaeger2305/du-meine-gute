@@ -18,7 +18,7 @@ import { ResourceType } from "../../../game/resources";
 export default {
   props: {
     displayNumber: {
-      type: Number,
+      type: String,
       required: false,
       default: null,
     },
@@ -32,7 +32,7 @@ export default {
       return `~/assets/images/resources/${this.resourceType}.png`;
     },
     formattedNumber(): string {
-      return this.displayNumber ?? 0;
+      return this.displayNumber ?? `0`;
     },
   },
 };

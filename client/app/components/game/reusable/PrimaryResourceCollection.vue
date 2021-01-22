@@ -4,7 +4,7 @@
       v-for="{ resource, count } in displayResources"
       :key="resource.type"
       :resourceType="resource.type"
-      :displayNumber="count"
+      :displayNumber="`${count}`"
       height="50%"
       width="30%"
       @tap="$emit('tap-resource', resource)"
