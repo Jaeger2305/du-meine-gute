@@ -1,7 +1,7 @@
 <template>
   <Frame id="base">
     <Page>
-      <ActionBar title="Du Meine Güte" />
+      <ActionBar title="Industrialist" />
       <GridLayout columns="*, *" rows="*">
         <Button column="0" text="gotologin" @tap="login" />
         <Button column="1" text="quickStart" @tap="quickStart" />

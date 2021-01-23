@@ -3,7 +3,7 @@
     <Page actionBarHidden="true">
       <GridLayout columns="*" rows="*" @swipe="$modal.close()">
         <Image src="~/assets/images/backboard.png" stretch="fill" />
-        <Notification size="large" header="Du Meine Güte" />
+        <Notification size="large" header="Industrialist" />
       </GridLayout>
     </Page>
   </Frame>
