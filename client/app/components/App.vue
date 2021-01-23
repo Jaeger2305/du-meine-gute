@@ -1,12 +1,6 @@
 <template>
   <Frame id="base">
-    <Page>
-      <ActionBar title="Industrialist" />
-      <GridLayout columns="*, *" rows="*">
-        <Button column="0" :text="$t('action.login')" @tap="login" />
-        <Button column="1" :text="$t('action.quickStart')" @tap="quickStart" />
-      </GridLayout>
-    </Page>
+    <GameLocal />
   </Frame>
 </template>
 
@@ -19,6 +13,7 @@ orientation.enableRotation();
 orientation.setOrientation("landscape");
 
 export default {
+  components: { GameLocal },
   methods: {
     login() {
       this.$navigateTo(Login, { frame: "base" });
