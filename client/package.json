@@ -1,7 +1,7 @@
 {
-  "name": "du-meine-gute",
+  "name": "industrialist",
   "version": "1.0.0",
-  "description": "A native application for the niche German boardgame",
+  "description": "A native application inspired by a niche German boardgame",
   "author": "Richard <richard.webb@sgef-df.com>",
   "license": "MIT",
   "dependencies": {
