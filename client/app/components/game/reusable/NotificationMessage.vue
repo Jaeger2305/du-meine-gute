@@ -1,7 +1,7 @@
 <template>
   <FlexboxLayout justifyContent="space-around" alignContent="center">
-    <Label v-if="subheader" :text="subheader" textWrap class="subheader" />
-    <Label :text="content" class="content" textWrap flexShrink="3" />
+    <Label v-if="subheader" :text="$t(subheader)" textWrap class="subheader" />
+    <Label :text="$t(content)" class="content" textWrap flexShrink="3" />
   </FlexboxLayout>
 </template>
 

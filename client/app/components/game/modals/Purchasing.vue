@@ -51,13 +51,15 @@
           justifyContent="space-around"
           flexDirection="column"
         >
-          <Button class="button" @tap="cancel">CANCEL</Button>
-          <Button class="button" @tap="reset">RESET</Button>
+          <Button class="button" @tap="cancel">{{
+            $t("action.cancel")
+          }}</Button>
+          <Button class="button" @tap="reset">{{ $t("action.reset") }}</Button>
           <Button
             class="button"
             :isEnabled="isValidPayment"
             @tap="submitPayment"
-            >CONFIRM</Button
+            >{{ $t("action.confirm") }}</Button
           >
         </FlexboxLayout>
       </GridLayout>

@@ -9,9 +9,9 @@
           class="h1"
           textShadow="0 0 10 rgb(88, 120, 164)"
         />
-        <Button col="2" colSpan="2" class="button" @tap="$modal.close"
-          >LOBBY</Button
-        >
+        <Button col="2" colSpan="2" class="button" @tap="$modal.close">{{
+          $t("action.backToLobby")
+        }}</Button>
         <StackLayout
           v-for="(pointGroup, i) in [
             pointsBreakdown.slice(0, pointsBreakdown.length / 2),

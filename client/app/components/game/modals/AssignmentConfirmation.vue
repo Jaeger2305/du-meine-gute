@@ -25,8 +25,12 @@
           justifyContent="center"
           alignItems="stretch"
         >
-          <Button class="button" @tap="cancel">CANCEL</Button>
-          <Button class="button" @tap="confirm">CONFIRM</Button>
+          <Button class="button" @tap="cancel">{{
+            $t("action.cancel")
+          }}</Button>
+          <Button class="button" @tap="confirm">{{
+            $t("action.confirm")
+          }}</Button>
         </FlexboxLayout>
       </GridLayout>
     </Page>

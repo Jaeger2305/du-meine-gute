@@ -9,10 +9,10 @@
       justifyContent="center"
       flexDirection="column"
     >
-      <Button v-if="isDrawCardPossible" class="button" @tap="drawCard"
-        >DRAW</Button
-      >
-      <Button class="button" @tap="endStep">END</Button>
+      <Button v-if="isDrawCardPossible" class="button" @tap="drawCard">{{
+        $t("action.draw")
+      }}</Button>
+      <Button class="button" @tap="endStep">{{ $t("action.end") }}</Button>
     </FlexboxLayout>
   </GridLayout>
 </template>

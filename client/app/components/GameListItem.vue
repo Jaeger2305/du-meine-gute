@@ -6,7 +6,7 @@
       width="70"
       backgroundColor="#1c6b48"
     />
-    <Button text="join" @tap="joinGame" />
+    <Button :text="$t('action.join')" @tap="joinGame" />
   </FlexboxLayout>
 </template>
 

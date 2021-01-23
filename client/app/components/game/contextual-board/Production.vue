@@ -21,7 +21,7 @@
       justifyContent="center"
       flexDirection="column"
     >
-      <Button class="button" @tap="endStep">END</Button>
+      <Button class="button" @tap="endStep">{{ $t("action.end") }}</Button>
     </FlexboxLayout>
   </GridLayout>
 </template>

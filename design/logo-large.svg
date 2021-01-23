@@ -15,9 +15,9 @@
    id="svg8"
    inkscape:version="1.0.1 (c497b03c, 2020-09-10)"
    sodipodi:docname="logo-large.svg"
-   inkscape:export-filename="/Users/richard/personal/du-meine-gute/design/logo-large.png"
-   inkscape:export-xdpi="96"
-   inkscape:export-ydpi="96">
+   inkscape:export-filename="/Users/richard/personal/du-meine-gute/client/app/App_Resources/Android/src/main/res/drawable-ldpi/logo.png"
+   inkscape:export-xdpi="10.75"
+   inkscape:export-ydpi="10.75">
   <defs
      id="defs2">
     <inkscape:path-effect
@@ -793,7 +793,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>

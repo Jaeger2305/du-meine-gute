@@ -7,13 +7,21 @@
       src="~/assets/images/combined-clouds.png"
     />
 
-    <Label col="0" row="0" :text="header" class="bgh1" :class="size" />
     <Label
       col="0"
       row="0"
-      :text="header"
+      :text="$t(header)"
+      class="bgh1"
+      :class="size"
+      :textWrap="true"
+    />
+    <Label
+      col="0"
+      row="0"
+      :text="$t(header)"
       class="h1"
       :class="size"
+      :textWrap="true"
       textShadow="0 0 10 rgb(88, 120, 164)"
     />
     <NotificationMessageContainer
@@ -76,7 +84,7 @@ export default {
 
 <style scoped>
 .h1 {
-  font-size: 40px;
+  font-size: 36px;
   color: white;
   font-family: "Grenze Gotisch", "GrenzeGotisch-Bold";
   font-weight: bold;
@@ -90,7 +98,7 @@ export default {
   font-size: 70px;
 }
 .bgh1 {
-  font-size: 42px;
+  font-size: 38px;
   color: rgb(88, 120, 164);
   font-family: "Grenze Gotisch", "GrenzeGotisch-Bold";
   font-weight: bold;

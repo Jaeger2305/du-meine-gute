@@ -3,8 +3,8 @@
     <Page>
       <ActionBar title="Industrialist" />
       <GridLayout columns="*, *" rows="*">
-        <Button column="0" text="gotologin" @tap="login" />
-        <Button column="1" text="quickStart" @tap="quickStart" />
+        <Button column="0" :text="$t('action.login')" @tap="login" />
+        <Button column="1" :text="$t('action.quickStart')" @tap="quickStart" />
       </GridLayout>
     </Page>
   </Frame>

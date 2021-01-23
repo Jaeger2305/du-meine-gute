@@ -14,7 +14,11 @@
       justifyContent="center"
       class="title-container highlight-bg-employee"
     >
-      <Label :text="employee.name" class="h1" />
+      <Label
+        :text="$t(`employee.${employee.type}`)"
+        class="h1"
+        :textWrap="true"
+      />
     </FlexboxLayout>
     <!-- Production info -->
     <FlexboxLayout col="0" row="1" justifyContent="center">

@@ -21,7 +21,7 @@
       class="title-container"
       :class="[`highlight-bg-${card.resource.type}`]"
     >
-      <Label :text="card.name" class="h1" />
+      <Label :text="$t(`factory.${card.type}`)" class="h1" :textWrap="true" />
     </FlexboxLayout>
     <!-- Production info -->
     <Image

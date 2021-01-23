@@ -3,6 +3,10 @@ import App from "./components/App.vue";
 import VueDevtools from "nativescript-vue-devtools";
 const app = require("@nativescript/core/application");
 import RadSideDrawerPlugin from "nativescript-ui-sidedrawer/vue";
+import VueI18n from "vue-i18n";
+
+Vue.use(VueI18n);
+import { i18n } from "./i18n-setup";
 
 Vue.registerElement(
   "RadSideDrawer",
@@ -31,6 +35,7 @@ Vue.component("Factories", Factories);
 Vue.component("PlayerHand", PlayerHand);
 
 new Vue({
+  i18n,
   store,
   render: (h) => h(App),
   mounted() {

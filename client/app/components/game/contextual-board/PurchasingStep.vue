@@ -9,7 +9,7 @@
       flexDirection="column"
       @tap="hireEmployee"
     >
-      <Button class="button">BUY</Button>
+      <Button class="button">{{ $t("action.buy") }}</Button>
     </FlexboxLayout>
     <CarouselSelect
       v-if="activeEmployee"
@@ -26,7 +26,7 @@
       justifyContent="center"
       flexDirection="column"
     >
-      <Button class="button" @tap="endStep">END</Button>
+      <Button class="button" @tap="endStep">{{ $t("action.end") }}</Button>
     </FlexboxLayout>
   </GridLayout>
 </template>

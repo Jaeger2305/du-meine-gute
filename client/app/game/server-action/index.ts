@@ -8,7 +8,7 @@ import {
   coalMineWheat,
   cardRecords,
 } from "../cards";
-import { seedWorkers, employeeRecords } from "../worker";
+import { seedWorkers, employeeRecords, EmployeeType } from "../worker";
 import { generateTestCards } from "./utils";
 
 import { discard } from "./actions/discard";
@@ -58,7 +58,10 @@ export function setupGame(game: GameState): void {
     {
       id: "test-player-id-1",
       playerNumber: 0,
-      employees: [employeeRecords.boss, employeeRecords.banker],
+      employees: [
+        employeeRecords[EmployeeType.Boss],
+        employeeRecords[EmployeeType.Banker],
+      ],
       cardsInHand: [
         cardRecords.MARKET_OFFICE_CLAY2,
         cardRecords.TANNERY_WHEAT_WOOL,

@@ -20,10 +20,13 @@
       justifyContent="center"
       flexDirection="column"
     >
-      <Button v-if="isCardStagedForDiscard" @tap="confirmDiscard" class="button"
-        >CONFIRM</Button
+      <Button
+        v-if="isCardStagedForDiscard"
+        @tap="confirmDiscard"
+        class="button"
+        >{{ $t("action.confirm") }}</Button
       >
-      <Button @tap="endStep" class="button">END</Button>
+      <Button @tap="endStep" class="button">{{ $t("action.end") }}</Button>
     </FlexboxLayout>
   </GridLayout>
 </template>

@@ -1,11 +1,7 @@
 import { RevealMarketResponse } from "../server-action/types";
-import {
-    BuildingType,
-    GameState,
-    PlayerState,
-  } from "../types";
+import { GameState, PlayerState } from "../types";
 
-export function revealMarket (
+export function revealMarket(
   gameState: GameState,
   playerState: PlayerState,
   { drawnCards, cardsInDiscard, cardsInDeck }: RevealMarketResponse["response"]
@@ -24,5 +20,5 @@ export function revealMarket (
       ...cardsInDeck
     );
   }
-  gameState.marketCards.push(...drawnCards)
-};
+  gameState.marketCards.push(...drawnCards);
+}

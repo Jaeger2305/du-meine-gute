@@ -41,10 +41,15 @@
           justifyContent="space-around"
           flexDirection="column"
         >
-          <Button class="button" @tap="cancel">CANCEL</Button>
-          <Button class="button" @tap="reset">RESET</Button>
-          <Button class="button" :isEnabled="isValidProduction" @tap="confirm"
-            >CONFIRM</Button
+          <Button class="button" @tap="cancel">{{
+            $t("action.cancel")
+          }}</Button>
+          <Button class="button" @tap="reset">{{ $t("action.reset") }}</Button>
+          <Button
+            class="button"
+            :isEnabled="isValidProduction"
+            @tap="confirm"
+            >{{ $t("action.confirm") }}</Button
           >
         </FlexboxLayout>
         <!-- Not able to discard from the player hand yet - it's coupled to global state and needs refactoring -->
