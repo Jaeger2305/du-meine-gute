@@ -13,6 +13,7 @@
     </StackLayout>
     <!-- Paint the icon over the top -->
     <StackLayout
+      v-if="isIconShown"
       colSpan="2"
       :class="[
         'event-icon-container',
@@ -31,6 +32,11 @@ import { EventSource, EventType } from "../../../../game/types";
 
 export default {
   props: {
+    isIconShown: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     eventType: {
       type: String as PropType<EventType>,
       required: true,

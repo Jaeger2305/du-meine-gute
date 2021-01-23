@@ -1,5 +1,5 @@
 <template>
-  <BaseMessage v-bind="$props">
+  <BaseMessage v-bind="$props" :isIconShown="false">
     <Label :textWrap="true">
       <FormattedString>
         <Span text="New round started" />
