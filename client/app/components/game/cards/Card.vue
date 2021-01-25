@@ -148,7 +148,6 @@
 <script lang="ts">
 import GameIconImage from "../reusable/GameIconImage.vue";
 import Resource from "../reusable/Resource.vue";
-import PrimaryResource from "../reusable/PrimaryResource.vue";
 import { Card } from "../../../game/types";
 import { aggregateResources } from "../../../game/utils";
 import { cardImageRecords } from "../../../game/cards";
@@ -185,7 +184,7 @@ export default {
       default: false,
     },
   },
-  components: { GameIconImage, Resource, PrimaryResource },
+  components: { GameIconImage, Resource },
   computed: {
     isLarge(): boolean {
       return this.size === Size.Large;

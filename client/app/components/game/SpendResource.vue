@@ -4,14 +4,13 @@
     justifyContent="space-between"
     alignContent="center"
   >
-    <transition name="bounce" appear>
-      <SecondaryResource
-        v-if="availableCount"
-        :displayNumber="`${availableCount}`"
-        :resourceType="resource.type"
-        @tap="addToBasket"
-      />
-    </transition>
+    <SecondaryResource
+      :class="{ activity: unstagedActivity }"
+      :displayNumber="`${availableCount}`"
+      :resourceType="resource.type"
+      :isAnimated="false"
+      @tap="addToBasket"
+    />
     <GameIconImage
       :displayNumber="resource.value"
       size="large"
@@ -19,14 +18,13 @@
       height="80%"
       width="80%"
     />
-    <transition name="bounce" appear>
-      <SecondaryResource
-        v-if="stagedCount"
-        :displayNumber="`${stagedCount}`"
-        :resourceType="resource.type"
-        @tap="removeFromBasket"
-      />
-    </transition>
+    <SecondaryResource
+      :class="{ activity: stagedActivity }"
+      :displayNumber="`${stagedCount}`"
+      :resourceType="resource.type"
+      :isAnimated="false"
+      @tap="removeFromBasket"
+    />
   </FlexboxLayout>
 </template>
 
@@ -59,48 +57,29 @@ export default {
       default: 0,
     },
   },
+  data() {
+    return {
+      stagedActivity: false,
+      unstagedActivity: false,
+    };
+  },
   methods: {
     addToBasket(): void {
       if (this.availableCount > 0) {
         this.$emit(CustomEvents.ADD_RESOURCE_TO_BASKET, this.resource);
       }
+      this.stagedActivity = false;
+      this.$nextTick(() => (this.stagedActivity = true));
     },
     removeFromBasket(): void {
       if (this.stagedCount > 0) {
         this.$emit(CustomEvents.REMOVE_RESOURCE_FROM_BASKET, this.resource);
       }
+      this.unstagedActivity = false;
+      this.$nextTick(() => (this.unstagedActivity = true));
     },
   },
 };
 </script>
 
-<style scoped>
-.bounce-enter-active {
-  animation-name: bounce-in;
-  animation-duration: 1s;
-  animation-fill-mode: forwards;
-  animation-timing-function: ease-in-out;
-}
-
-.bounce-leave-active {
-  animation-name: bounce-in;
-  animation-duration: 0.25s;
-  animation-fill-mode: forwards;
-  animation-direction: reverse;
-  animation-timing-function: ease-in-out;
-}
-
-@keyframes bounce-in {
-  0% {
-    transform: scale(0);
-  }
-
-  50% {
-    transform: scale(1.2);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
-</style>
+<style scoped></style>

@@ -1,5 +1,10 @@
 <template>
-  <GridLayout columns="*" rows="*" class="game-icon" :class="size">
+  <GridLayout
+    columns="*"
+    rows="*"
+    class="game-icon"
+    :class="[size, { activity: isActionHappening }]"
+  >
     <Label v-if="isActionable" col="0" row="0" class="button" />
     <Image :src="src" />
 
@@ -20,10 +25,11 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue";
 import { CustomEvents } from "../../../types";
+import { activity } from "../../../mixins/activity";
 
 export default {
+  mixins: [activity],
   props: {
     displayNumber: {
       type: Number,

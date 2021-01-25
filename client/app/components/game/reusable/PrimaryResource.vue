@@ -1,5 +1,9 @@
 <template>
-  <GridLayout class="primary-icon" @tap="$emit('tap')">
+  <GridLayout
+    class="primary-icon"
+    :class="{ activity: isActionHappening }"
+    @tap="$emit('tap')"
+  >
     <Image :src="resourceSrc" class="primary-image" stretch="fill" />
 
     <Label :text="formattedNumber" class="bg-number" />
@@ -14,8 +18,10 @@
 <script lang="ts">
 import Vue, { PropType } from "vue";
 import { ResourceType } from "../../../game/resources";
+import { activity } from "../../../mixins/activity";
 
 export default {
+  mixins: [activity],
   props: {
     displayNumber: {
       type: String,

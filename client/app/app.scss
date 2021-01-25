@@ -116,3 +116,101 @@ frame {
     rgb(250, 254, 255) 100%
   );
 }
+
+.activity {
+  animation-iteration-count: 1;
+  animation-name: pulse;
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animated-fade {
+  animation-iteration-count: 1;
+  animation-name: fadeZoom;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes fadeZoom {
+  0% {
+    transform: scale(0.2);
+    opacity: 0.1;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  80% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes shakeDelay {
+  0%,
+  2%,
+  5%,
+  8%,
+  10%,
+  100% {
+    transform: translateX(0);
+  }
+  4% {
+    transform: translateX(8px);
+  }
+  6% {
+    transform: translateX(-8px);
+  }
+}
+
+.bounce {
+  animation-name: bounce;
+}
+
+.button-activity {
+  animation-iteration-count: 1;
+  animation-name: rubberBand;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes rubberBand {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scaleX(1.25) scaleY(0.75);
+  }
+  40% {
+    transform: scaleX(0.75) scaleY(1.25);
+  }
+  60% {
+    transform: scaleX(1.15) scaleY(0.85);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.rubberBand {
+  animation-name: rubberBand;
+}
