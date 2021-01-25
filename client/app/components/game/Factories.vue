@@ -9,7 +9,7 @@
       :card="factory"
       :assignedEmployee="factory.assignedEmployee"
       :isPlaceholder="factory.isPlaceholder"
-      class="factory"
+      class="factory animated-fade"
       @produce-at-factory="bubbleAction"
       @assign-employee="bubbleAction"
       @unassign-employee="bubbleAction"

@@ -1,11 +1,16 @@
 <template>
-  <GridLayout columns="*,*" rows="*,2*" :class="{ placeholder: isPlaceholder }">
+  <GridLayout
+    columns="*,*"
+    rows="*,2*"
+    :class="{ placeholder: isPlaceholder && !isActionable }"
+  >
     <Image rowSpan="2" colSpan="2" :src="factorySrc" />
     <GameIconImage
       v-if="isActionable || assignedEmployee"
       src="~/assets/images/employees/generic-man.png"
       :isActionable="isActionable"
       class="assignment"
+      :class="{ 'animated-bounce': isActionable }"
       @tap-game-icon="contextHandler"
     />
     <Image
@@ -302,8 +307,17 @@ export default {
 
 <style scoped>
 .placeholder {
-  opacity: 0.4;
+  opacity: 0.5;
 }
+
+.animated-bounce {
+  animation-iteration-count: infinite;
+  animation-name: shakeDelay;
+  animation-duration: 9s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-in-out;
+}
+
 .assignment {
   height: 150px;
 }
