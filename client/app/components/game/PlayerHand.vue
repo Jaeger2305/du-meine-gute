@@ -7,6 +7,7 @@
       :isPlayable="isReserveFactoryPossible"
       :isDiscardable="isDiscardPossible"
       size="small"
+      :class="{ 'animated-zoom': isActionable }"
       @reserve="reserveFactory(card)"
       @discard="discard(card)"
     />
@@ -38,6 +39,9 @@ export default Vue.extend({
     },
   },
   computed: {
+    isActionable(): boolean {
+      return this.isReserveFactoryPossible || this.isDiscardPossible;
+    },
     isReserveFactoryPossible(): boolean {
       return isActionAvailable(
         this.availableActions,
@@ -69,5 +73,13 @@ export default Vue.extend({
 <style scoped>
 .container {
   padding: 15px;
+}
+
+.animated-zoom {
+  animation-iteration-count: 1;
+  animation-name: zoomEmphasis;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-in-out;
 }
 </style>
