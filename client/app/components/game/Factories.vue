@@ -9,7 +9,6 @@
       :card="factory"
       :assignedEmployee="factory.assignedEmployee"
       :isPlaceholder="factory.isPlaceholder"
-      class="factory animated-fade"
       @produce-at-factory="bubbleAction"
       @assign-employee="bubbleAction"
       @unassign-employee="bubbleAction"
@@ -134,9 +133,4 @@ export default Vue.extend({
 });
 </script>
 
-<style scoped>
-.factory {
-  height: 80%;
-  width: 80%;
-}
-</style>
+<style scoped></style>

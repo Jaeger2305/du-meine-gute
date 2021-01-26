@@ -4,10 +4,15 @@
     rows="*,2*"
     :class="{ placeholder: isPlaceholder && !isActionable }"
   >
-    <Image rowSpan="2" colSpan="2" :src="factorySrc" />
+    <Image
+      rowSpan="2"
+      colSpan="2"
+      :src="factorySrc"
+      :class="{ 'animated-fade': isAnimated }"
+    />
     <GameIconImage
       v-if="isActionable || assignedEmployee"
-      src="~/assets/images/employees/generic-man.png"
+      :src="actionSrc"
       :isActionable="isActionable"
       class="assignment"
       :class="{ 'animated-bounce': isActionable }"
@@ -58,12 +63,6 @@ import AssignmentConfirmationVue from "../modals/AssignmentConfirmation.vue";
 import { cardImageRecords } from "../../../game/cards";
 import { LogLevel } from "../../../game/server-action/types";
 
-// Is assigned already?
-// Resource output?
-// Is produced already?
-// Number of goods
-// Value of factory
-
 export default {
   components: { SecondaryResourceCollection, GameIconImage },
   props: {
@@ -82,6 +81,23 @@ export default {
     },
   },
   computed: {
+    actionSrc(): string {
+      if (this.isProductionable) return "~/assets/images/resources/generic.png";
+      if (this.isAssignable) return "~/assets/images/employees/generic-man.png";
+      if (this.isUnassignable) return "~/assets/images/icons/unassignment.png";
+      if (this.isConstructable)
+        return "~/assets/images/icons/pay-construction.png";
+      if (this.isUnreservable)
+        return "~/assets/images/icons/undo-construction.png";
+      if (this.assignedEmployee.hasProduced)
+        return "~/assets/images/icons/exhausted-production.png";
+      return "~/assets/images/employees/generic-man.png";
+    },
+    isAnimated(): boolean {
+      // This is a bit of a hack - when the props change, the component gets re-rendered and so animation will always trigger.
+      // If we want the animation class to trigger selectively, we have to manually hook into what we think the animated states are.
+      return !this.isPlaceholder || this.isUnreservable;
+    },
     isActionable(): boolean {
       return (
         Boolean(
