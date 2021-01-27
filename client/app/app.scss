@@ -161,6 +161,14 @@ frame {
   }
 }
 
+.animated-bounce {
+  animation-iteration-count: infinite;
+  animation-name: shakeDelay;
+  animation-duration: 9s;
+  animation-fill-mode: forwards;
+  animation-timing-function: linear;
+}
+
 @keyframes shakeDelay {
   0%,
   2%,
@@ -168,13 +176,13 @@ frame {
   8%,
   10%,
   100% {
-    transform: translateX(0);
+    transform: scale(1) translateX(0);
   }
   4% {
-    transform: translateX(8px);
+    transform: scale(0.9) translateX(5px);
   }
   6% {
-    transform: translateX(-8px);
+    transform: scale(0.9) translateX(-2px);
   }
 }
 

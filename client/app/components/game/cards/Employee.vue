@@ -27,7 +27,12 @@
         :key="`${mode.productionCount}-${mode.resourceSparingCount}`"
         @tap="selectEfficiency(employee, mode)"
       >
-        <ProductionEfficiency :productionEfficiency="mode" />
+        <ProductionEfficiency
+          :productionEfficiency="mode"
+          :class="{
+            'animated-bounce': isAssignable && !$store.state.stagedAssignment,
+          }"
+        />
         <Label
           v-if="index !== employee.modes.length - 1"
           text=""
@@ -118,15 +123,16 @@ export default {
     modes() {
       return this.employee.modes;
     },
+    isAssignable(): boolean {
+      return isActionAvailable(
+        this.$store.state.playerState.availableActions,
+        PlayerActionEnum.assignEmployee
+      );
+    },
   },
   methods: {
     selectEfficiency(employee, efficiency) {
-      if (
-        isActionAvailable(
-          this.$store.state.playerState.availableActions,
-          PlayerActionEnum.assignEmployee
-        )
-      ) {
+      if (this.isAssignable) {
         this.$store.commit(MutationEnum.StageEmployee, {
           employee,
           efficiency,
