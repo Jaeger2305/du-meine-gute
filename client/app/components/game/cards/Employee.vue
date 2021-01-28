@@ -70,12 +70,12 @@
       col="2"
       row="1"
       flexDirection="column-reverse"
-      class="attribute-container"
     >
       <PrimaryResourceCollection
         :resources="employee.resourceSpecialty"
         :isFiltered="true"
         alignSelf="flex-end"
+        class="resources-container"
       />
     </FlexboxLayout>
   </GridLayout>
@@ -191,6 +191,10 @@ export default {
 
 .attribute-container {
   margin: 5px;
+}
+
+.resources-container {
+  margin-top: 40%;
 }
 
 .separator {

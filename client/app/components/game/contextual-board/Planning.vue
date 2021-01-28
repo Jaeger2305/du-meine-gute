@@ -116,6 +116,6 @@ export default {
 }
 
 .market-resources {
-  margin: 10px 5px 10px 5px;
+  margin: 25px 5px 25px 5px;
 }
 </style>

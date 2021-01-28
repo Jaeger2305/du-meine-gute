@@ -14,6 +14,7 @@
     <CarouselSelect
       v-if="activeEmployee"
       column="1"
+      class="grid-item"
       :index.sync="activeIndex"
       :selectableListLength="employees.length"
     >
