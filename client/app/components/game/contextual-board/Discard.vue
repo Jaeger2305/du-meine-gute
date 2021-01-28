@@ -64,6 +64,7 @@ export default {
         LogLevel.Debug,
         null
       );
+      this.$store.commit(MutationEnum.ResetDiscard);
     },
   },
 };
