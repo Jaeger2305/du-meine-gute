@@ -2,6 +2,12 @@
   <Frame id="game-summary">
     <Page actionBarHidden="true">
       <GridLayout columns="2*,*,*,2*" rows="*,3*">
+        <Image
+          colSpan="4"
+          rowSpan="3"
+          src="~/assets/images/backboard.png"
+          stretch="fill"
+        />
         <Image src="~/assets/images/combined-clouds.png" />
         <Label :text="winner.name" class="bgh1" />
         <Label
