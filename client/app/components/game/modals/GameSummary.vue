@@ -134,6 +134,7 @@ export default {
 
 .points-title {
   font-size: 20px;
+  color: white;
   font-family: "Grenze Gotisch", "GrenzeGotisch-Bold";
   text-align: left;
 }
