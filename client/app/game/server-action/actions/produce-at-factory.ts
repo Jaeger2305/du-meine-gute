@@ -73,6 +73,9 @@ export function produceAtFactory(
     type: ServerActionEnum.produceAtFactory,
     isOK: true,
     logLevel: LogLevel.Visible,
-    response: {},
+    response: {
+      factory: assignedEmployee.assignment,
+      producedResources: outputResources,
+    },
   };
 }

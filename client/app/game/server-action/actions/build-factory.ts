@@ -12,6 +12,7 @@ export function buildFactory(
     resources: Array<Resource>;
   }
 ): FactoryBuildResponse {
+  const factory = serverState.players[playerNumber].reservedFactory;
   payForFactory(serverState, serverState.players[playerNumber], resources);
   serverState.players[playerNumber].reservedFactory = null;
 
@@ -19,6 +20,8 @@ export function buildFactory(
     type: ServerActionEnum.buildFactory,
     isOK: true,
     logLevel: LogLevel.Visible,
-    response: {},
+    response: {
+      builtFactory: factory,
+    },
   };
 }

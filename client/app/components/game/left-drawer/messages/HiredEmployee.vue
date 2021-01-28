@@ -3,7 +3,10 @@
     <Label :textWrap="true">
       <FormattedString>
         <Span text="Hired employee " />
-        <Span text="PLACEHOLDER - no api response data" fontWeight="bold" />
+        <Span
+          :text="$t(`employee.${eventDetails.hiredEmployee.type}`)"
+          fontWeight="bold"
+        />
       </FormattedString>
     </Label>
     <template v-slot:icon>

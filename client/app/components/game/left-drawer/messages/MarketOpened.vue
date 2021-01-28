@@ -2,7 +2,7 @@
   <BaseMessage v-bind="$props">
     <Label :textWrap="true" class="event-message">
       <FormattedString>
-        <Span text="Market opened with " />
+        <Span text="Market added " />
         <Span :text="eventDetails.drawnCards.length" fontWeight="bold" />
         <Span text=" resources" />
       </FormattedString>

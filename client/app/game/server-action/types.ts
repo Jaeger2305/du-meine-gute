@@ -1,6 +1,8 @@
+import { Resource } from "../resources";
 import {
   AssignedEmployee,
   Card,
+  Employee,
   GameState,
   Player,
   PlayerState,
@@ -88,17 +90,24 @@ export interface RevealMarketResponse extends ServerActionResponse {
 
 export interface FactoryBuildResponse extends ServerActionResponse {
   type: ServerActionEnum.buildFactory;
-  response: {};
+  response: {
+    builtFactory: Card;
+  };
 }
 
 export interface HireEmployeeResponse extends ServerActionResponse {
   type: ServerActionEnum.hireEmployee;
-  response: {};
+  response: {
+    hiredEmployee: Employee;
+  };
 }
 
 export interface ProduceAtFactoryResponse extends ServerActionResponse {
   type: ServerActionEnum.produceAtFactory;
-  response: {};
+  response: {
+    factory: Card;
+    producedResources: Array<Resource>;
+  };
 }
 
 export interface EndStepResponse extends ServerActionResponse {

@@ -2,8 +2,16 @@
   <BaseMessage v-bind="$props">
     <Label :textWrap="true">
       <FormattedString>
-        <Span text="Produced at factory " />
-        <Span text="PLACEHOLDER - no api response data" fontWeight="bold" />
+        <Span text="Produced " />
+        <Span
+          :text="$t(eventDetails.producedResources.length)"
+          fontWeight="bold"
+        />
+        <Span text=" resources at " />
+        <Span
+          :text="$t(`factory.${eventDetails.factory.type}`)"
+          fontWeight="bold"
+        />
       </FormattedString>
     </Label>
     <template v-slot:icon>

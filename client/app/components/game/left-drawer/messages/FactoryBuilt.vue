@@ -3,7 +3,10 @@
     <Label :textWrap="true">
       <FormattedString>
         <Span text="Built factory " />
-        <Span text="PLACEHOLDER - no api response data" fontWeight="bold" />
+        <Span
+          :text="$t(`factory.${eventDetails.builtFactory.type}`)"
+          fontWeight="bold"
+        />
       </FormattedString>
     </Label>
     <template v-slot:icon>

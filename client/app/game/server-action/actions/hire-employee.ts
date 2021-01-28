@@ -44,6 +44,8 @@ export function hireEmployee(
     type: ServerActionEnum.hireEmployee,
     isOK: true,
     logLevel: LogLevel.Visible,
-    response: {},
+    response: {
+      hiredEmployee: employeeBeingHired,
+    },
   };
 }

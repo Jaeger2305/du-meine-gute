@@ -3,7 +3,10 @@
     <Label :textWrap="true">
       <FormattedString v-if="eventDetails && eventDetails.drawnCard">
         <Span text="Drew " />
-        <Span :text="eventDetails.drawnCard.name" fontWeight="bold" />
+        <Span
+          :text="$t(`factory.${eventDetails.drawnCard.type}`)"
+          fontWeight="bold"
+        />
       </FormattedString>
       <FormattedString v-else>
         <Span :text="message" />
