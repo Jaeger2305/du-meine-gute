@@ -73,22 +73,24 @@
           :availableActions="$store.state.playerState.availableActions"
           @player-action="playerAction"
         />
-        <Notification
-          v-if="
-            activeNotification &&
-              $store.state.gameState.config.isTutorialEnabled
-          "
-          col="0"
-          row="0"
-          colSpan="2"
-          rowSpan="2"
-          :header="activeNotification.header"
-          :messages="activeNotification.messages"
-          :isDismissable="true"
-          size="large"
-          class="notification-modal"
-          @close="activeNotification = null"
-        />
+        <transition name="bounce" appear mode="out-in">
+          <Notification
+            v-if="
+              activeNotification &&
+                $store.state.gameState.config.isTutorialEnabled
+            "
+            col="0"
+            row="0"
+            colSpan="2"
+            rowSpan="2"
+            :header="activeNotification.header"
+            :messages="activeNotification.messages"
+            :isDismissable="true"
+            size="large"
+            class="notification-modal"
+            @close="activeNotification = null"
+          />
+        </transition>
       </GridLayout>
     </RadSideDrawer>
   </Page>
@@ -250,5 +252,34 @@ export default {
 <style scoped>
 .notification-modal {
   margin: 10%;
+}
+
+.bounce-enter-active {
+  animation-name: bounce-in;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-in-out;
+}
+
+.bounce-leave-active {
+  animation-name: fadeInLeft;
+  animation-duration: 0.25s;
+  animation-fill-mode: forwards;
+  animation-direction: reverse;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 </style>
