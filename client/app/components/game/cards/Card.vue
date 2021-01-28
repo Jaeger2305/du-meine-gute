@@ -7,7 +7,7 @@
       `base-bg-${card.resource.type}`,
       `lowlight-outline-${card.resource.type}`,
       `size-${size}`,
-      isDiscardable || isPlayable ? 'actionable' : 'disabled',
+      isActionable ? 'actionable' : 'disabled',
     ]"
     @tap="contextualAction"
   >
@@ -142,6 +142,10 @@
     >
       <Resource :resource="card.resource" alignSelf="flex-end" />
     </FlexboxLayout>
+    <FlexboxLayout v-if="isActionable" class="sheen">
+      <Label text="" class="sheen-high" />
+      <Label text="" class="sheen-low" />
+    </FlexboxLayout>
   </GridLayout>
 </template>
 
@@ -188,6 +192,9 @@ export default {
   computed: {
     isLarge(): boolean {
       return this.size === Size.Large;
+    },
+    isActionable(): boolean {
+      return this.isPlayable || this.isDiscardable;
     },
     inputResources() {
       return aggregateResources(this.card.productionConfig?.input);
@@ -297,7 +304,6 @@ export default {
 }
 
 .actionable {
-  border-width: 10px;
   opacity: 1;
   android-elevation: 10;
 }
@@ -371,5 +377,34 @@ export default {
 }
 .right {
   color: black;
+}
+
+@keyframes swipe {
+  0% {
+    transform: scale(4) translateX(-50%) translateY(50%) rotate(-40deg);
+  }
+  10%,
+  100% {
+    transform: translateX(60%) translateY(-60%) rotate(-40deg);
+  }
+}
+
+.sheen {
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+  animation-name: swipe;
+  animation-duration: 10s;
+  animation-timing-function: ease-in;
+  opacity: 0.2;
+}
+.sheen-high {
+  background-color: white;
+  height: 100%;
+  width: 10%;
+}
+.sheen-low {
+  background-color: grey;
+  height: 100%;
+  width: 10%;
 }
 </style>

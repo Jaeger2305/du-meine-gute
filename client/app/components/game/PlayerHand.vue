@@ -7,7 +7,10 @@
       :isPlayable="isReserveFactoryPossible"
       :isDiscardable="isDiscardPossible"
       size="small"
-      :class="{ 'animated-zoom': isActionable }"
+      :class="{
+        'animated-zoom': isActionable,
+        'animated-pulse-opacity': isStagedDiscard(card),
+      }"
       @reserve="reserveFactory(card)"
       @discard="discard(card)"
     />
@@ -66,6 +69,11 @@ export default Vue.extend({
       this.$store.commit(MutationEnum.StageCardDiscard, card);
       this.$emit(CustomEvents.DISCARD_CARD, card);
     },
+    isStagedDiscard(card: PlayerState["cardsInHand"][0]): boolean {
+      return !!this.$store.state.stagedCardsForDiscard.find(
+        ({ name }) => card.name === name
+      );
+    },
   },
 });
 </script>
@@ -73,6 +81,15 @@ export default Vue.extend({
 <style scoped>
 .container {
   padding: 15px;
+}
+
+.animated-pulse-opacity {
+  animation-name: pulse-opacity;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+  animation-direction: normal;
+  animation-duration: 3s;
+  animation-timing-function: ease-in-out;
 }
 
 .animated-zoom {

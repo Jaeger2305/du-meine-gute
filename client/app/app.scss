@@ -139,6 +139,16 @@ frame {
   }
 }
 
+@keyframes pulse-opacity {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
 .animated-fade {
   animation-iteration-count: 1;
   animation-name: fadeZoom;
