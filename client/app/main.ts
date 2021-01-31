@@ -42,8 +42,23 @@ new Vue({
     if (app.android) {
       const activity = app.android.startActivity;
       const win = activity.getWindow();
-      const FULL_SCREEN_ENUM = 4; // No guidance on how to do this via NS7, lost during migration. Obviously fragile.
-      win.addFlags(FULL_SCREEN_ENUM);
+      var decorView = win.getDecorView();
+      try {
+        const SYSTEM_UI_FLAG_HIDE_NAVIGATION = 2;
+        const SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN = 4;
+        const SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION = 512;
+        const SYSTEM_UI_FLAG_IMMERSIVE_STICKY = 4098;
+        decorView.setSystemUiVisibility(
+          SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+            SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+            SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+            SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        );
+      } catch {
+        console.warn(
+          "Failed to set full screen flag - SDK did not recognise constants"
+        );
+      }
     }
   },
 }).$start();
