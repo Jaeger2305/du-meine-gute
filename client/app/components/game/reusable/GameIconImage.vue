@@ -5,7 +5,12 @@
     class="game-icon"
     :class="[size, { activity: isActionHappening }]"
   >
-    <Label v-if="isActionable" col="0" row="0" class="button" />
+    <Label
+      v-if="isActionable && isHitboxVisible"
+      col="0"
+      row="0"
+      class="button"
+    />
     <Image :src="src" />
 
     <Label
@@ -48,6 +53,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    isHitboxVisible: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   methods: {

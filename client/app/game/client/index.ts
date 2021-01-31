@@ -44,7 +44,7 @@ export function newGame(): GameState {
       drawCount: 2,
       pointsPerResource: 0.25,
       workerCount: 4, // should be dependent on number of players
-      isTutorialEnabled: false,
+      isTutorialEnabled: true,
     },
     cardsInDeck: [],
     cardsInDiscard: [],

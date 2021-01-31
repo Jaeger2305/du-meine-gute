@@ -45,6 +45,8 @@
         <GameIconImage
           src="~/assets/images/icons/close.png"
           size="large"
+          :isActionable="true"
+          :isHitboxVisible="false"
           @tap-game-icon="$emit('close')"
         />
       </FlexboxLayout>
@@ -98,7 +100,8 @@ export default {
   font-size: 70px;
 }
 .bgh1 {
-  font-size: 38px;
+  font-size: 36px;
+  transform: scale(1.01);
   color: rgb(88, 120, 164);
   font-family: "Grenze Gotisch", "GrenzeGotisch-Bold";
   font-weight: bold;

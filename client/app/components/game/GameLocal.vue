@@ -262,7 +262,7 @@ export default {
 }
 
 .bounce-leave-active {
-  animation-name: fadeInLeft;
+  animation-name: bounce-in;
   animation-duration: 0.25s;
   animation-fill-mode: forwards;
   animation-direction: reverse;
