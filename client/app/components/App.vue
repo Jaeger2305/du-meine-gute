@@ -1,24 +1,28 @@
 <template>
   <Frame id="base">
-    <GameLocal />
+    <Page>
+      <FlexboxLayout flexDirection="column">
+        <TextField v-model="username" hint="Enter username..." height="70" />
+        <Button text="Start" @tap="quickStart" height="70" />
+      </FlexboxLayout>
+    </Page>
   </Frame>
 </template>
 
 <script lang="ts">
-import Login from "./Login.vue";
 import GameLocal from "./game/GameLocal.vue";
-import orientation from "nativescript-orientation";
-
-orientation.enableRotation();
-orientation.setOrientation("landscape");
+import { getString, setString } from "@nativescript/core/application-settings";
 
 export default {
   components: { GameLocal },
+  data() {
+    return {
+      username: getString("username") || "Hans",
+    };
+  },
   methods: {
-    login() {
-      this.$navigateTo(Login, { frame: "base" });
-    },
     quickStart() {
+      setString("username", this.username);
       this.$navigateTo(GameLocal, {
         frame: "base",
         animated: true,

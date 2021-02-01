@@ -16,6 +16,7 @@ import {
 } from "./game/types";
 import { cloneDeep, intersection } from "lodash";
 import { LogLevel, ServerActionResponse } from "./game/server-action/types";
+import { getString } from "@nativescript/core/application-settings";
 
 Vue.use(Vuex);
 
@@ -25,6 +26,7 @@ type StagedAssignment = Omit<
 >;
 
 const state: {
+  username: string;
   playerState: PlayerState;
   serverState: GameState | null; // We should have separate types for server/game state, where one permits unknown cards but the other does not.
   gameState: GameState; // The UI should use only the gameState, and the serverState is used for local games. Keeping these in sync will be a challenge.
@@ -33,6 +35,7 @@ const state: {
   stagedCardsForDiscard: Array<Card>;
   stagedAssignment: StagedAssignment | null;
 } = {
+  username: getString("username"),
   isLocal: true,
   serverState: newGame(),
   gameState: newGame(),
@@ -95,7 +98,7 @@ export default new Vuex.Store({
     [MutationEnum.SetupGame](state) {
       Vue.set(state, "gameState", newGame());
       Vue.set(state, "messages", []);
-      setupGame(state.gameState);
+      setupGame(state.gameState, state.username);
 
       Vue.set(state, "playerState", state.gameState.players[0]);
       Vue.set(

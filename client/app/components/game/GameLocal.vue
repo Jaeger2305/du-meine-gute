@@ -97,14 +97,11 @@
 </template>
 
 <script lang="ts">
-import { getString, setString } from "@nativescript/core/application-settings";
 import orientation from "nativescript-orientation";
 import { MutationEnum, ActionEnum, GettersEnum } from "../../store";
-import Lobby from "../Lobby.vue";
 import GameSummary from "./modals/GameSummary.vue";
 
-import { setTimeout, clearTimeout } from "@nativescript/core/timer";
-import { PlayerActionEnum, ServerActionEnum } from "../../game/types";
+import { PlayerActionEnum } from "../../game/types";
 import { RoundSteps } from "../../game/server-action";
 import {
   SwipeGestureEventData,
@@ -115,7 +112,6 @@ import MessageHistory from "./left-drawer/MessageHistory.vue";
 import StatSummary from "./right-drawer/StatSummary.vue";
 import NotificationComponent from "./reusable/Notification.vue";
 import { notificationConfig, Notification } from "../../game/round-description";
-import SplashscreenVue from "./modals/Splashscreen.vue";
 import { LogLevel } from "../../game/server-action/types";
 
 type SideDrawerConfig = {
@@ -163,7 +159,6 @@ export default {
     };
   },
   created() {
-    this.$showModal(SplashscreenVue, { fullscreen: true });
     this.$store.commit(MutationEnum.SetupGame);
     orientation.setOrientation("landscape");
   },

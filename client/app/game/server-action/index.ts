@@ -33,7 +33,7 @@ import { produceAtFactory } from "./actions/produce-at-factory";
  * Initialises the deck of cards
  * Returns valid actions that can be performed, which is just acknowledgements
  */
-export function setupGame(game: GameState): void {
+export function setupGame(game: GameState, playerName: string): void {
   game.reservedCards.splice(
     0,
     game.reservedCards.length,
@@ -56,7 +56,7 @@ export function setupGame(game: GameState): void {
 
   const players: Array<PlayerState> = [
     {
-      id: "test-player-id-1",
+      id: playerName,
       playerNumber: 0,
       employees: [
         employeeRecords[EmployeeType.Boss],
@@ -78,7 +78,7 @@ export function setupGame(game: GameState): void {
       assignedEmployees: [],
       reservedFactory: null,
       score: 0,
-      player: { name: "test-player-name-1" },
+      player: { name: playerName },
     },
   ];
   game.players.splice(0, game.players.length, ...players);
