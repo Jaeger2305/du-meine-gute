@@ -60,7 +60,7 @@ const messages = {
         hireEmployee:
           "Browse the shop for a new employee. Employees require different combinations of factories, to suit their expertise",
         endGame:
-          "When a player reaches 8 factories, the end game is triggered. The following round, friends and families occupy all the empty factories and all can produce resources. The player with the most points at the end of this round wins the game.",
+          "When a player reaches 8 factories, the end game is triggered. The following round, desperate investors occupy all the empty factories and all can produce resources. The player with the most points at the end of this round wins the game.",
         scoresUpdated:
           "1 point for every 5 resource value, points for built factories, points for hired employees",
       },
