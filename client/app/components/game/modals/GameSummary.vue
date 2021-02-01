@@ -138,4 +138,7 @@ export default {
   font-family: "Grenze Gotisch", "GrenzeGotisch-Bold";
   text-align: left;
 }
+.button {
+  color: black;
+}
 </style>

@@ -69,6 +69,9 @@ export default {
 </script>
 
 <style scoped>
+.button {
+  color: black;
+}
 .fg-number {
   font-size: 20px;
   color: white;

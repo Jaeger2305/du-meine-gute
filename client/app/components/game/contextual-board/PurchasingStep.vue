@@ -124,6 +124,9 @@ export default {
 </script>
 
 <style scoped>
+.button {
+  color: black;
+}
 /* needed to make the grid spacing even between items or at the end */
 .grid-container {
   margin-left: 15px;

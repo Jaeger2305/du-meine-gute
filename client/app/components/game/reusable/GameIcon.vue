@@ -64,6 +64,9 @@ export default {
 </script>
 
 <style scoped>
+.button {
+  color: black;
+}
 .game-icon {
   height: 80px;
   width: 80px;

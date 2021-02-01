@@ -372,4 +372,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.button {
+  color: black;
+}
+</style>
