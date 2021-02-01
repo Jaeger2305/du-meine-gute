@@ -101,11 +101,16 @@ import PlayerHand from "../PlayerHand.vue";
 function checkChainedOutstandingResources(
   requiredResources: Array<Resource>,
   inputResources: Array<Resource>
-): { requiredExtraResources: Array<Resource>; productionCount: number } {
+): {
+  requiredExtraResources: Array<Resource>;
+  productionCount: number;
+  isExactToProduce: boolean;
+} {
   let trackedInputResources = inputResources.slice();
   let requiredExtraResources = [];
   let isEnoughToProduce = true;
   let productionCount = 0;
+  let isExactToProduce = true;
   while (isEnoughToProduce) {
     ({ isEnoughToProduce, requiredExtraResources } = checkOutstandingResources(
       requiredResources,
@@ -117,11 +122,12 @@ function checkChainedOutstandingResources(
         trackedInputResources,
         requiredResources
       );
-      productionCount += 1;
+      productionCount += requiredResources.length;
     }
+    isExactToProduce = trackedInputResources.length === 0;
   }
 
-  return { requiredExtraResources, productionCount };
+  return { requiredExtraResources, productionCount, isExactToProduce };
 }
 
 // Warning: don't be too attached to this code.
@@ -260,8 +266,11 @@ export default {
       };
     },
     isValidProduction(): boolean {
-      console.warn("not implemented yet");
-      return true;
+      return (
+        this.initialProductionStatus.isExactToProduce &&
+        (!this.assignedEmployee.assignment.productionConfig.chainInput ||
+          this.chainedProductionStatus.isExactToProduce)
+      );
     },
     playerHandActions(): Array<PlayerActionEnum> {
       return [
@@ -294,9 +303,11 @@ export default {
       const index = availableResources.findIndex(
         ({ type }) => type === availableResourceType
       );
-      const basket = this.initialProductionCount
-        ? this.chainBasket
-        : this.basket;
+      const basket =
+        this.initialProductionCount &&
+        this.assignedEmployee.assignment.productionConfig.chainInput
+          ? this.chainBasket
+          : this.basket;
       basket.push(...availableResources.splice(index, 1));
     },
     removeFromBasket(
