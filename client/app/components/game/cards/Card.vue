@@ -329,7 +329,7 @@ export default {
 }
 
 .h1 {
-  font-size: 20px;
+  font-size: 18px;
   color: white;
   font-family: "Grenze Gotisch", "GrenzeGotisch-Bold";
   font-weight: bold;
