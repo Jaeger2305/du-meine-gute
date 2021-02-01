@@ -48,12 +48,10 @@ new Vue({
         const SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN = 4;
         const SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION = 512;
         const SYSTEM_UI_FLAG_IMMERSIVE_STICKY = 4098;
-        decorView.setSystemUiVisibility(
-          SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-            SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-            SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
-            SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-        );
+        win.addFlags(SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        win.addFlags(SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        win.addFlags(SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        win.addFlags(SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
       } catch {
         console.warn(
           "Failed to set full screen flag - SDK did not recognise constants"
