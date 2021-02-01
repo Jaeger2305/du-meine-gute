@@ -272,7 +272,7 @@ const butcherMetalWheat: Card = {
 };
 const butcherWood: Card = {
   name: "butcher-wood",
-  resource: wool, // this doesn't make sense
+  resource: wool,
   cost: 15,
   points: 4,
   type: BuildingType.butcher,
