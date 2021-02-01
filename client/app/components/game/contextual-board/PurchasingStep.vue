@@ -44,7 +44,7 @@ import { CustomEvents } from "../../../types";
 import { PlayerActionEnum, playerActions } from "../../../game/client";
 import { Employee } from "../../../game/types";
 import { Resource } from "../../../game/resources";
-import { differenceResources } from "../../../game/utils";
+import { differenceResources, isActionAvailable } from "../../../game/utils";
 import { LogLevel } from "../../../game/server-action/types";
 
 export default {
@@ -67,7 +67,14 @@ export default {
         : null;
     },
     isActiveEmployeePurchasable(): boolean {
-      if (!this.activeEmployee) return false;
+      if (
+        !this.activeEmployee ||
+        !isActionAvailable(
+          this.$store.state.playerState.availableActions,
+          PlayerActionEnum.hireEmployee
+        )
+      )
+        return false;
       const money = sumBy(this.$store.state.playerState.resources, "value");
       const sufficientMoney = money >= this.activeEmployee.cost;
 
