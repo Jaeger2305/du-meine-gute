@@ -7,23 +7,30 @@
       src="~/assets/images/combined-clouds.png"
     />
 
-    <Label
-      col="0"
-      row="0"
-      :text="$t(header)"
-      class="bgh1"
-      :class="size"
-      :textWrap="true"
-    />
-    <Label
-      col="0"
-      row="0"
-      :text="$t(header)"
-      class="h1"
-      :class="size"
-      :textWrap="true"
-      textShadow="0 0 10 rgb(88, 120, 164)"
-    />
+    <FlexboxLayout
+      justifyContent="center"
+      alignContent="center"
+      alignItems="center"
+    >
+      <GridLayout columns="*" rows="*">
+        <Label :text="$t(header)" class="bgh1" :class="size" :textWrap="true" />
+        <Label
+          :text="$t(header)"
+          class="h1"
+          :class="size"
+          :textWrap="true"
+          textShadow="0 0 10 rgb(88, 120, 164)"
+        />
+      </GridLayout>
+      <GameIconImage
+        v-if="isDismissable"
+        src="~/assets/images/icons/close.png"
+        size="large"
+        :isActionable="true"
+        :isHitboxVisible="false"
+        @tap-game-icon="$emit('close')"
+      />
+    </FlexboxLayout>
     <NotificationMessageContainer
       v-if="messages"
       :messages="messages"
@@ -31,26 +38,6 @@
       row="1"
       style="margin: 20px 90px 10px 30px;"
     />
-    <FlexboxLayout
-      v-if="isDismissable"
-      col="0"
-      rowSpan="2"
-      justifyContent="flex-end"
-    >
-      <FlexboxLayout
-        class="notification-button"
-        justifyContent="center"
-        @tap="$emit('close')"
-      >
-        <GameIconImage
-          src="~/assets/images/icons/close.png"
-          size="large"
-          :isActionable="true"
-          :isHitboxVisible="false"
-          @tap-game-icon="$emit('close')"
-        />
-      </FlexboxLayout>
-    </FlexboxLayout>
   </GridLayout>
 </template>
 
@@ -86,7 +73,7 @@ export default {
 
 <style scoped>
 .h1 {
-  font-size: 36px;
+  font-size: 34px;
   color: white;
   font-family: "Grenze Gotisch", "GrenzeGotisch-Bold";
   font-weight: bold;
@@ -100,7 +87,7 @@ export default {
   font-size: 70px;
 }
 .bgh1 {
-  font-size: 36px;
+  font-size: 34px;
   transform: scale(1.01);
   color: rgb(88, 120, 164);
   font-family: "Grenze Gotisch", "GrenzeGotisch-Bold";

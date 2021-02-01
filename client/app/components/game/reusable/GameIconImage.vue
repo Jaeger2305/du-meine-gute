@@ -98,4 +98,8 @@ export default {
   width: 100px;
   font-size: 15px;
 }
+
+.hitbox {
+  transform: scale(1.5);
+}
 </style>
