@@ -106,4 +106,15 @@ Maybe this will be retained between builds on the same machine, but on a fresh c
 
 ## Deployment to the app store
 
-Needs investigating.
+`ns build android`
+outputs a apk file locally - this can be uploaded to the app store, to the Industrialist app.
+
+But, to upload and create a release, it must be signed.
+
+First generate a key store, and store it in the ./sensitive folder locally - this won't be comitted.
+
+The password for the keystore is probably in my phone. The alias is the name of the file.
+
+`ns build android --aab --release --key-store-password <password> --key-store-path ./sensitive/key.jks --key-store-alias key --key-store-alias-password test`
+
+`/Users/richard/personal/du-meine-gute/client/platforms/android/app/build/outputs/apk/debug/app-debug.apk`
